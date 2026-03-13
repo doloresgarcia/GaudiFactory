@@ -408,7 +408,11 @@ discriminant, fit pathologies) that Asimov data cannot reveal.
 
 The agent:
 - Selects 10% of SR data events using a fixed random seed for reproducibility
-- Runs the full fit on this subsample
+- Scales MC predictions to match the luminosity fraction of the data subsample
+  (i.e., MC is normalized to the luminosity corresponding to 10% of data, not
+  to 10% of MC events). This is standard practice — MC is always normalized to
+  the luminosity of the data being compared.
+- Runs the full fit on this subsample with the appropriately scaled MC
 - Evaluates goodness-of-fit, nuisance parameter pulls, and impact ranking
 - Compares observed and expected results — they should be statistically
   compatible given the large uncertainties
@@ -955,6 +959,21 @@ Each shared sub-analysis:
 - Produces a calibration artifact with **central values + uncertainties** that
   channels consume as inputs
 - The uncertainties propagate into Phase 4 as systematic terms in the fit model
+- **Must demonstrate its effect.** The calibration artifact should include
+  before/after comparisons showing how the calibration improves agreement with
+  data (e.g., an energy calibration should show improved mass peak resolution or
+  position; an efficiency calibration should show better data/MC agreement in
+  the relevant observable). The specific comparison depends on what is being
+  calibrated — the agent chooses the most informative demonstration.
+
+Calibrations do not receive their own dedicated review tier. Instead, their
+quality is validated through two mechanisms: (1) the calibration artifact's own
+before/after plots provide self-evident validation, and (2) downstream phase
+reviews (Phase 3 selection, Phase 4a inference) can flag calibration problems
+through the upstream feedback or regression mechanism if results are
+inconsistent. A calibration that produces suspicious scale factors or
+uncertainties will surface as a data/MC disagreement or fit pathology
+downstream.
 
 Shared sub-analyses are identified in Phase 1 (strategy) or Phase 2
 (exploration, when the agent discovers what calibrations are needed). They run

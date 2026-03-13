@@ -27,6 +27,45 @@ reads the existing log and appends to it. This is the only mutable shared state
 within a phase — it prevents agents from re-trying failed approaches and gives
 humans visibility into decision-making.
 
+**Concurrency note:** Parallel tracks (per-channel work in Phase 3, concurrent
+calibrations) each have their own experiment log in their own directory. The
+experiment log is shared only across *sequential* sessions within a single
+track — never across parallel agents. If sub-agents within a single session
+need to append to the same log, they must do so sequentially.
+
+## Agent Session Identity
+
+Every agent session is assigned a **session name** — a random human first name
+(e.g., "Gerald", "Margaret", "Tomoko"). The orchestrator draws from a pool of
+names and never reuses a name within an analysis run. This serves two purposes:
+
+1. **Traceability.** Every file produced by a session includes the session name
+   and timestamp. When reading artifacts, agents and humans can trace who
+   produced what and when.
+
+2. **No clobbering.** Iteration produces new files rather than overwriting
+   previous versions. The second executor run creates a new artifact alongside
+   the first. Agents always read the most recent artifact (by timestamp);
+   humans can compare versions.
+
+**Naming convention for handoff files:**
+```
+{ARTIFACT}_{session_name}_{YYYY-MM-DD}_{HH-MM}.md
+```
+
+Examples:
+- `STRATEGY_gerald_2026-03-13_14-30.md`
+- `STRATEGY_CRITICAL_REVIEW_florence_2026-03-13_15-00.md`
+- `STRATEGY_ARBITER_hiroshi_2026-03-13_15-30.md`
+- `inputs_margaret_2026-03-13_15-45.md`
+
+The orchestrator tells each agent its assigned session name in the input
+prompt. The agent uses this name when naming its output files. Downstream
+agents discover the current artifact by finding the most recent file matching
+the artifact type pattern (e.g., `STRATEGY_*_*.md`), sorted by timestamp.
+This eliminates the need to overwrite files on iteration — each session's
+work is preserved and the history is self-documenting.
+
 ## Directory Layout
 
 ```
@@ -56,23 +95,26 @@ analysis_name/
     scripts/                     # Phase-level codebase (can grow to thousands of lines)
     figures/
     exec/
-      inputs.md
+      inputs_gerald_2026-03-13_14-30.md       # Session-named inputs
       session.log
-      plan.md
-      STRATEGY.md
+      plan_gerald_2026-03-13_14-30.md
+      STRATEGY_gerald_2026-03-13_14-30.md     # Session-named artifact
+      # On iteration, new files appear alongside (no overwrites):
+      # inputs_margaret_2026-03-13_16-00.md
+      # STRATEGY_margaret_2026-03-13_16-00.md
     review/
       critical/
-        inputs.md
+        inputs_florence_2026-03-13_15-00.md
         session.log
-        STRATEGY_CRITICAL_REVIEW.md
+        STRATEGY_CRITICAL_REVIEW_florence_2026-03-13_15-00.md
       constructive/
-        inputs.md
+        inputs_tomoko_2026-03-13_15-00.md
         session.log
-        STRATEGY_CONSTRUCTIVE_REVIEW.md
+        STRATEGY_CONSTRUCTIVE_REVIEW_tomoko_2026-03-13_15-00.md
       arbiter/
-        inputs.md
+        inputs_hiroshi_2026-03-13_15-30.md
         session.log
-        STRATEGY_ARBITER.md
+        STRATEGY_ARBITER_hiroshi_2026-03-13_15-30.md
 
   phase2_exploration/
     experiment_log.md
@@ -245,13 +287,17 @@ tiers:
 
 ## Cost Controls
 
-**Review iteration warnings:** Review cycles emit warnings to flag runaway
-iteration, but the arbiter's ESCALATE mechanism is the actual termination
-condition.
+**Review iteration limits:** Correctness (arbiter PASS or no Category A
+issues) is the intended termination condition for review cycles. Warnings
+at 3 and 5 iterations flag potential problems. A hard cap
+(`max_review_iterations`, default 10) prevents infinite loops if the
+review cycle is pathologically stuck — hitting this cap forces escalation
+to a human.
 
 - After 3 iterations: orchestrator logs a warning
-- After 5 iterations: orchestrator logs a strong warning and notifies human
-- Termination: arbiter issues ESCALATE, which pauses for human review
+- After 5 iterations: orchestrator logs a strong warning
+- At `max_review_iterations`: orchestrator forces human escalation
+- Normal termination: arbiter PASS (3-bot) or no Category A issues (1-bot)
 
 **Execution budget:** Configurable per-phase (tokens or iterations).
 When approached, the agent produces best-effort artifact with open issues.
@@ -261,8 +307,9 @@ review if threshold exceeded.
 
 ```yaml
 cost_controls:
-  review_warn_threshold: 3       # Warn after this many iterations
-  review_strong_warn_threshold: 5 # Strongly warn; rely on ESCALATE to terminate
+  max_review_iterations: 10      # Hard cap on review cycles (prevents infinite loops)
+  review_warn_threshold: 3       # Soft warn after this many iterations
+  review_strong_warn_threshold: 5 # Strongly warn
   phase2_max_iterations: 20
   phase3_max_iterations: 30
   total_budget_warn: 500000  # tokens, or dollar amount
@@ -364,29 +411,58 @@ End with: PASS / ITERATE (list Category A items) / ESCALATE (document why).
 
 ## Automation
 
+The following pseudocode illustrates the orchestration logic. It is not a
+runnable script — helper functions like `find_latest_artifact`, `extract_decision`,
+and `present_for_human_review` are orchestrator responsibilities whose
+implementation depends on the agent system. The logic and control flow are
+what matter.
+
 ```bash
+# --- Configuration ---
+
+# exec_model is derived from the model_tier setting in analysis_config.yaml:
+#   auto:         sonnet for phases 2-4 execution, opus for phase 1
+#   uniform_high: opus everywhere
+#   uniform_mid:  sonnet everywhere
+exec_model=${EXEC_MODEL:-sonnet}
+
+# Hard cap on review iterations. Correctness is the real termination condition
+# (arbiter PASS or reviewer finding no Category A issues), but this prevents
+# infinite loops if something goes pathologically wrong.
+max_review_iterations=${MAX_REVIEW_ITER:-10}
+
+# --- Session naming ---
+
+# Pool of human first names. The orchestrator picks randomly without
+# replacement within an analysis run. See "Agent Session Identity" above.
+pick_session_name() {
+  # Returns an unused name from the pool. Implementation detail —
+  # any unique-per-run naming scheme works.
+  echo "$(shuf -n1 names_pool.txt)"
+}
+
 # --- Regression detection and upstream feedback ---
 
 run_regression_check() {
-  # Checks arbiter/reviewer output for regression triggers and dispatches fixes.
+  # Checks review output for regression triggers. If found, dispatches
+  # investigation and fixes. Returns non-zero if regression was found,
+  # signaling that the caller should not proceed to the next phase.
   dir=$1
   review_artifact=$(find_latest_review_artifact "$dir")
 
   if grep -q "regression trigger" "$review_artifact"; then
     origin_phase=$(extract_regression_origin "$review_artifact")
     echo "REGRESSION detected in $dir — origin: $origin_phase"
-
-    # Log to top-level regression log
     echo "$(date): $dir -> $origin_phase" >> regression_log.md
 
-    # Spawn investigator agent (opus-tier) with structured instructions
-    run_agent --model opus --output "$origin_phase/REGRESSION_TICKET.md" \
-      "Investigate regression trigger from $dir. Read the trigger in $review_artifact. \
-       Trace impact through artifacts selectively (do not re-read everything). \
-       Produce REGRESSION_TICKET.md with: root cause, affected phases, proposed fix."
+    # Investigator (opus) produces a scoped regression ticket
+    run_agent --name "$(pick_session_name)" --model opus \
+      --output "$origin_phase/REGRESSION_TICKET.md" \
+      "Investigate regression trigger from $dir."
 
-    # Dispatch fixes to the origin phase
-    run_agent --model $exec_model --output "$origin_phase/exec" \
+    # Fix the origin phase
+    run_agent --name "$(pick_session_name)" --model $exec_model \
+      --output "$origin_phase/exec" \
       "Fix regression described in $origin_phase/REGRESSION_TICKET.md"
 
     # Re-review at the original tier for that phase
@@ -399,168 +475,179 @@ run_regression_check() {
 
     # Re-run all downstream phases from the regressed phase
     rerun_downstream_from "$origin_phase"
-    return 1  # signal that regression was found
+    return 1  # regression found — caller should not proceed
   fi
   return 0
 }
 
 check_upstream_feedback() {
-  # After each phase, check for UPSTREAM_FEEDBACK.md and route to next review.
   dir=$1
   feedback_file="$dir/UPSTREAM_FEEDBACK.md"
   if [ -f "$feedback_file" ]; then
     echo "Upstream feedback found in $dir — routing to next review"
-    # The feedback file is already in the directory; reviewers will see it
-    # via their inputs.md which includes all files in the phase directory.
-    return 0
+    # The feedback file is in the directory; reviewers will discover it
+    # when reading the phase contents for the next review gate.
   fi
-  return 1
 }
 
 # --- Review tier functions ---
 
+# Returns 0 on PASS, 1 on regression, 2 on escalation/max-iterations.
+# Callers should check the return code before proceeding to the next phase.
 run_3bot_review() {
-  dir=$1; iter_warn=${2:-3}; strong_warn=${3:-5}
+  dir=$1
   i=0
-  while true; do
+  while [ $i -lt $max_review_iterations ]; do
     i=$((i + 1))
-    if [ $i -gt $iter_warn ]; then
-      echo "WARNING: review iteration $i for $dir (warn threshold: $iter_warn)"
+    if [ $i -gt 3 ]; then
+      echo "WARNING: review iteration $i for $dir"
     fi
-    if [ $i -gt $strong_warn ]; then
-      echo "STRONG WARNING: review iteration $i for $dir — consider ESCALATE"
+    if [ $i -gt 5 ]; then
+      echo "STRONG WARNING: review iteration $i for $dir"
     fi
-    run_agent --model opus --output "$dir/review/critical" "critical review" &
-    run_agent --model opus --output "$dir/review/constructive" "constructive review" &
+
+    # Critical and constructive reviewers run in parallel (independent)
+    run_agent --name "$(pick_session_name)" --model opus \
+      --output "$dir/review/critical" "critical review" &
+    run_agent --name "$(pick_session_name)" --model opus \
+      --output "$dir/review/constructive" "constructive review" &
     wait
-    run_agent --model opus --output "$dir/review/arbiter" "arbitrate"
+
+    # Arbiter reads both reviews and the artifact
+    run_agent --name "$(pick_session_name)" --model opus \
+      --output "$dir/review/arbiter" "arbitrate"
     decision=$(extract_decision "$dir/review/arbiter")
+
     case $decision in
       PASS)
-        run_regression_check "$dir"
+        if ! run_regression_check "$dir"; then
+          return 1  # regression found — do not proceed
+        fi
         check_upstream_feedback "$dir"
         return 0
         ;;
       ITERATE)
-        # Back up original inputs before first overwrite
-        if [ $i -eq 1 ] && [ -f "$dir/exec/inputs.md" ]; then
-          cp "$dir/exec/inputs.md" "$dir/exec/inputs.md.orig"
-        fi
-        # Write inputs for executor re-run that includes arbiter assessment
-        cat > "$dir/exec/inputs.md" <<INPUTS
-# Iteration $((i+1)) Inputs
-
-## Arbiter Assessment (iteration $i)
-$(cat "$dir/review/arbiter/"*_ARBITER.md)
-
-## Category A Issues to Address
-$(extract_category_a "$dir/review/arbiter")
-
-## Original inputs
-$(cat "$dir/exec/inputs.md.orig" 2>/dev/null || echo "See upstream artifacts.")
-INPUTS
-        run_agent --model $exec_model --output "$dir/exec" "iterate v$((i+1))"
+        # Write new session-named inputs file for the next executor run.
+        # Includes: arbiter assessment, Category A issues, original upstream
+        # artifacts. No file is overwritten — session naming ensures each
+        # iteration's inputs and outputs coexist on disk.
+        exec_name=$(pick_session_name)
+        write_iteration_inputs "$dir" "$i" "$exec_name"
+        run_agent --name "$exec_name" --model $exec_model \
+          --output "$dir/exec" "iterate v$((i+1))"
         ;;
       ESCALATE)
         present_for_human_review "$dir"
         wait_for_human_input
+        # Human may resolve and signal continue, or halt the analysis
         ;;
     esac
   done
+
+  # Fell through — hit the hard cap
+  echo "ERROR: 3-bot review reached $max_review_iterations iterations for $dir"
+  present_for_human_review "$dir"
+  wait_for_human_input
+  return 2
 }
 
+# Returns 0 on PASS, 1 on regression, 2 on escalation/max-iterations.
 run_1bot_review() {
-  dir=$1; iter_warn=${2:-3}; strong_warn=${3:-5}
+  dir=$1
   i=0
-  while true; do
+  while [ $i -lt $max_review_iterations ]; do
     i=$((i + 1))
-    if [ $i -gt $iter_warn ]; then
-      echo "WARNING: review iteration $i for $dir (warn threshold: $iter_warn)"
+    if [ $i -gt 3 ]; then
+      echo "WARNING: 1-bot review iteration $i for $dir"
     fi
-    if [ $i -gt $strong_warn ]; then
-      echo "STRONG WARNING: review iteration $i for $dir — consider escalation"
-    fi
-    run_agent --model sonnet --output "$dir/review/critical" "critical review"
+
+    run_agent --name "$(pick_session_name)" --model sonnet \
+      --output "$dir/review/critical" "critical review"
+
     if ! review_has_category_a "$dir/review/critical"; then
-      run_regression_check "$dir"
+      # No Category A issues — review passes
+      if ! run_regression_check "$dir"; then
+        return 1
+      fi
       check_upstream_feedback "$dir"
       return 0
     fi
-    # Back up original inputs before first overwrite
-    if [ $i -eq 1 ] && [ -f "$dir/exec/inputs.md" ]; then
-      cp "$dir/exec/inputs.md" "$dir/exec/inputs.md.orig"
-    fi
-    # Write inputs for executor re-run that includes critical review
-    cat > "$dir/exec/inputs.md" <<INPUTS
-# Iteration $((i+1)) Inputs
 
-## Critical Review (iteration $i)
-$(cat "$dir/review/critical/"*_CRITICAL_REVIEW.md)
-
-## Category A Issues to Address
-$(extract_category_a_from_review "$dir/review/critical")
-
-## Original inputs
-$(cat "$dir/exec/inputs.md.orig" 2>/dev/null || echo "See upstream artifacts.")
-INPUTS
-    run_agent --model $exec_model --output "$dir/exec" "iterate v$((i+1))"
+    # Category A issues found — iterate
+    exec_name=$(pick_session_name)
+    write_iteration_inputs_1bot "$dir" "$i" "$exec_name"
+    run_agent --name "$exec_name" --model $exec_model \
+      --output "$dir/exec" "iterate v$((i+1))"
   done
+
+  # Fell through — hit the hard cap
+  echo "ERROR: 1-bot review reached $max_review_iterations iterations for $dir"
+  present_for_human_review "$dir"
+  wait_for_human_input
+  return 2
 }
 
 # --- Main pipeline ---
 
-run_agent --model opus --output "phase1_strategy/exec" "execute phase 1"
-run_3bot_review "phase1_strategy"
+run_agent --name "$(pick_session_name)" --model opus \
+  --output "phase1_strategy/exec" "execute phase 1"
+run_3bot_review "phase1_strategy" || exit 1
 git merge phase1_strategy
 
-run_agent --model sonnet --output "phase2_exploration/exec" "execute phase 2"
+run_agent --name "$(pick_session_name)" --model sonnet \
+  --output "phase2_exploration/exec" "execute phase 2"
 # Self-review only — no external review
 git merge phase2_exploration
 
-# Phase 3 — per channel if multi-channel
+# Phase 3 — per channel (parallel execution, sequential review)
 for channel in nunu llbb; do
-  run_agent --model sonnet --output "phase3_selection/channel_$channel/exec" "execute phase 3 ($channel)" &
+  run_agent --name "$(pick_session_name)" --model sonnet \
+    --output "phase3_selection/channel_$channel/exec" \
+    "execute phase 3 ($channel)" &
 done
 wait
-# Per-channel 1-bot reviews before consolidation
 for channel in nunu llbb; do
-  run_1bot_review "phase3_selection/channel_$channel"
+  run_1bot_review "phase3_selection/channel_$channel" || exit 1
 done
-run_agent --model sonnet --output "phase3_selection/exec" "consolidate channels"
+run_agent --name "$(pick_session_name)" --model sonnet \
+  --output "phase3_selection/exec" "consolidate channels"
 git merge phase3_selection
 
 # Shared calibrations (can run in parallel with phases 2-3)
 for cal in btag jet_corrections; do
-  run_agent --model sonnet --output "calibrations/$cal" "calibration: $cal" &
+  run_agent --name "$(pick_session_name)" --model sonnet \
+    --output "calibrations/$cal" "calibration: $cal" &
 done
-
-# Wait for calibrations to complete before Phase 4a — calibration artifacts
-# (b-tagging scale factors, JEC) are required inputs for inference.
+# Calibrations must complete before Phase 4a — calibration artifacts
+# (scale factors, corrections) are required inputs for inference.
 wait
 
-# Phase 4a — agent gate
-run_agent --model sonnet --output "phase4_inference/4a_expected/exec" "execute phase 4a"
-run_3bot_review "phase4_inference/4a_expected"
-if [ $? -ne 0 ]; then
-  echo "ERROR: Phase 4a review did not pass. Cannot proceed to partial unblinding."
+# Phase 4a — agent gate (3-bot review must PASS to proceed)
+run_agent --name "$(pick_session_name)" --model sonnet \
+  --output "phase4_inference/4a_expected/exec" "execute phase 4a"
+run_3bot_review "phase4_inference/4a_expected" || {
+  echo "Phase 4a review did not pass. Cannot proceed to partial unblinding."
   exit 1
-fi
+}
 git merge phase4a_expected
 
 # Phase 4b — 3-bot review then human gate
-run_agent --model sonnet --output "phase4_inference/4b_partial/exec" "partial unblinding"
-run_3bot_review "phase4_inference/4b_partial"
+run_agent --name "$(pick_session_name)" --model sonnet \
+  --output "phase4_inference/4b_partial/exec" "partial unblinding"
+run_3bot_review "phase4_inference/4b_partial" || exit 1
 present_for_human_review "phase4_inference/4b_partial"
 wait_for_human_decision  # APPROVE / REQUEST CHANGES / HALT
 git merge phase4b_partial
 
 # Phase 4c + 5 after human approval
-run_agent --model sonnet --output "phase4_inference/4c_observed/exec" "full unblinding"
-run_1bot_review "phase4_inference/4c_observed"
+run_agent --name "$(pick_session_name)" --model sonnet \
+  --output "phase4_inference/4c_observed/exec" "full unblinding"
+run_1bot_review "phase4_inference/4c_observed" || exit 1
 git merge phase4c_observed
 
-run_agent --model sonnet --output "phase5_documentation/exec" "execute phase 5"
-run_3bot_review "phase5_documentation"
+run_agent --name "$(pick_session_name)" --model sonnet \
+  --output "phase5_documentation/exec" "execute phase 5"
+run_3bot_review "phase5_documentation" || exit 1
 git merge phase5_documentation
 ```
 
