@@ -4,6 +4,29 @@ The analysis proceeds through five phases. Dependencies between phases are
 sequential — each phase consumes artifacts from prior phases. Within a phase,
 work may be parallelized at the agent's discretion.
 
+### Analysis Types
+
+The spec supports two analysis types. The physics prompt must declare which
+type applies; the agent confirms this during Phase 1.
+
+- **Search / limit-setting:** Signal vs. background discrimination, signal
+  region / control region structure, blinding protocol (Section 4), expected
+  limits or significance as the primary deliverable.
+- **Measurement:** Corrected differential or inclusive cross-sections, event
+  shape distributions, or extracted physical parameters (e.g., αs). No
+  signal/background separation per se — the "signal" is the process being
+  measured. Blinding may not apply (the observable is the result). The primary
+  deliverable is a corrected spectrum or extracted parameter with full
+  uncertainties.
+
+Where phase descriptions below reference search-specific concepts (signal
+region, control regions, S/B optimization), measurement analyses substitute
+the analogous concepts: fiducial region, sideband/validation regions,
+purity optimization. The review criteria adapt accordingly — e.g., "closure
+test in VR" becomes "correction validation via cross-checks."
+
+---
+
 ### Phase 1: Strategy
 
 **Goal:** Produce a written analysis strategy that a collaboration reviewer
@@ -24,6 +47,16 @@ could approve.
   control regions needed
 - List anticipated systematic uncertainty categories (experimental, theoretical)
 - Identify which collision data and simulation samples are needed
+
+**For measurement analyses,** the agent must additionally:
+- Define the observable(s) to be measured and their physical interpretation
+- Identify the correction/unfolding strategy (bin-by-bin, matrix inversion,
+  iterative Bayesian, OmniFold) and what inputs it requires (response matrix,
+  MC truth, etc.)
+- Survey prior measurements of the same observable — identify published data
+  points that will serve as the primary validation target
+- Identify what theory predictions or MC generators can be compared to the
+  corrected result
 
 **Output artifact:** `STRATEGY.md` — a document covering the above points,
 written at the level of an internal analysis note introduction. Quantitative
@@ -190,6 +223,18 @@ and compute expected results using Asimov data only.
 impacts, statistical model description, expected results, fit diagnostics, and
 signal injection test outcomes.
 
+**For measurement analyses:** the artifact must additionally include:
+- The full bin-to-bin covariance matrix (statistical + each systematic source
+  separately + total). This is essential for any downstream use of the result
+  (theory fits, combinations, reinterpretation). Provide the matrices in both
+  the artifact (as tables or heatmap figures) and as machine-readable files
+  (NumPy `.npy`, JSON, or CSV).
+- Comparison of the corrected result to at least one theory prediction or MC
+  generator (e.g., Pythia, Herwig, Sherpa at particle level, or fixed-order
+  pQCD where available). Compute a chi2 or p-value using the full covariance
+  matrix. If no theory prediction is available, justify why and compare to
+  published measurements instead.
+
 **Review:** Rigorous multi-reviewer process (Section 4.2: critical reviewer,
 constructive reviewer, arbiter). This cycle gates partial unblinding — it
 repeats until the arbiter issues PASS.
@@ -213,9 +258,12 @@ repeats until the arbiter issues PASS.
 diagnostics, comparison to expected, and assessment of analysis health.
 
 **Draft analysis note:** The agent produces `ANALYSIS_NOTE_DRAFT.md` — a
-near-complete analysis note including the 10% observed results. This must be
-publication-quality: complete methodology, all figures, proper citations,
-self-contained. Only the final (full-data) numbers are missing.
+near-complete analysis note following the full AN structure described in
+Phase 5. This is not a summary — it is the comprehensive AN with all
+sections, cross-checks, systematic descriptions, and appendices, using 10%
+observed results as placeholders for the final numbers. Only the full-data
+results and their interpretation are missing. The Phase 5 step then updates
+numbers, not structure.
 
 **Review:** 3-bot review (Section 6.2) on the draft analysis note. The
 critical and constructive reviewers evaluate the note as collaboration
@@ -251,21 +299,115 @@ diagnostics, interpretation, and comparison to partial and expected results.
 
 ### Phase 5: Documentation
 
-**Goal:** Produce the final publication-quality analysis note.
+**Goal:** Produce a comprehensive internal analysis note (AN).
 
 **Inputs:** All prior phase artifacts, including observed results.
 
-**The agent must:**
-- Update the draft note with observed results, final figures, and conclusions
-- All quantitative results must be inline — the document must be self-contained
-- Figures must be publication-quality
-- All citations must reference published literature with proper identifiers
-- The note should be suitable for submission as an internal collaboration
-  analysis note
+**What an analysis note is.** The AN is the complete, permanent record of the
+analysis — not a journal paper. A journal publication is a distilled summary;
+the AN is the full story. It must contain every detail a physicist needs to
+reproduce the analysis from scratch using only the note and the data: every
+selection cut and its motivation, every systematic variation and how it was
+evaluated, every cross-check and its outcome, every correction and how it was
+derived. ANs in real collaborations routinely reach 100–200+ pages. Length is
+not a goal in itself, but completeness is — and completeness at this level of
+detail requires substantial length. **Err on the side of too much detail, not
+too little.** A reviewer who has to ask "but how exactly did you do X?" has
+found a gap.
 
-**Output artifact:** `ANALYSIS_NOTE.md` (or `.tex` + compiled PDF).
+**The agent must produce a note containing at minimum the following sections:**
+
+1. **Introduction** — Physics motivation, observable definition, theoretical
+   context (perturbative order, resummation, non-perturbative effects where
+   relevant). Prior measurements of the same or related observables with
+   citations.
+
+2. **Data samples** — Complete inventory: experiment, √s, integrated luminosity
+   or event counts, data-taking periods, file-level details. For MC: generator,
+   tune, cross-section, number of generated events, filter efficiency.
+
+3. **Event selection** — Every cut listed with:
+   - The physical motivation (why this cut exists)
+   - The distribution of the cut variable, showing the effect of the cut
+   - The numerical efficiency (per-cut and cumulative)
+   - Sensitivity studies: what happens when the cut is varied or removed
+
+4. **Corrections / unfolding** (for measurements) — Full description of the
+   correction procedure: what is being corrected for, how corrections are
+   derived, validation of the correction method (closure tests, stress tests).
+   For unfolding: response matrix, regularization, number of iterations,
+   convergence checks.
+
+5. **Systematic uncertainties** — One subsection per source, each containing:
+   - What the source is and why it affects the result
+   - How the variation was evaluated (up/down shifts, alternative samples,
+     reweighting, etc.)
+   - The impact on the final result (table + figure showing the variation)
+   - For literature-derived systematics: the source, its applicability, and
+     any inflation applied
+   - Summary table of all sources with per-bin or integrated impacts
+   - Correlation information: which sources are correlated across bins,
+     regions, or processes
+
+6. **Cross-checks** — Every cross-check performed, each as its own subsection:
+   - What is being tested and what a failure would indicate
+   - The quantitative result (ratio plots, chi2, p-values)
+   - Interpretation: does it pass? If marginal, why?
+   - Examples: year-by-year or run-period stability, subdetector comparisons,
+     charged-only vs. full, alternative selections, alternative correction
+     methods, kinematic subsamples, generator comparisons
+
+7. **Statistical method** — For searches: likelihood construction, nuisance
+   parameter treatment, test statistic, CLs or frequentist/Bayesian
+   procedure. For measurements: bin-by-bin vs. unfolded, normalization,
+   uncertainty propagation. In either case: fit validation, signal injection
+   or closure tests, goodness-of-fit.
+
+8. **Results** — The primary result with full uncertainties (stat + syst
+   breakdown). Tables with per-bin values. Summary figures. For measurements:
+   the corrected spectrum, moments or extracted parameters. For searches:
+   observed and expected limits/significance.
+
+9. **Comparison to prior results and theory** — If published measurements
+   exist: overlay plots with ratio panels, chi2/p-value using the full
+   covariance matrix. If theory predictions exist: overlay and quantitative
+   comparison. **"Qualitative consistency" is insufficient when data points
+   are available.** If no prior measurement exists, state this explicitly.
+
+10. **Conclusions** — Summary of the result, its precision, the dominant
+    limitations, and the physics interpretation.
+
+11. **Future directions** — Concrete roadmap per Section 12.7.
+
+12. **Appendices** — Supporting material that would interrupt the main flow:
+    full systematic tables per bin, auxiliary distributions, extended cutflow
+    tables, full correlation/covariance matrices, additional cross-checks.
+    Appendices are not optional padding — they are where the bulk of the
+    detail lives. A 10-page main text with 150 pages of appendices is a
+    normal AN structure.
+
+**Additional requirements:**
+- All quantitative results must be inline — the document must be
+  self-contained
+- Figures must be publication-quality (see Section 5 for figure standards)
+- All citations must reference published literature with proper identifiers
+- **Machine-readable results:** All tabulated results (spectra, uncertainties,
+  covariance matrices) must also be provided in a machine-readable format
+  (CSV, JSON, or YAML) in a `results/` directory alongside the note. Results
+  that exist only inside a PDF are not reusable.
+
+**Completeness test:** A physicist unfamiliar with the analysis should be able
+to read the AN alone — without access to code, experiment logs, or phase
+artifacts — and understand every choice that was made, reproduce every number
+in the results, and evaluate whether the conclusions are supported. If a
+choice requires reading the code to understand, the AN has a gap.
+
+**Output artifact:** `ANALYSIS_NOTE.md` (or `.tex` + compiled PDF) plus
+`results/` directory containing machine-readable data tables.
 
 **Review:** See Section 6. Documentation review reads the note as a
-collaboration editorial board reviewer would.
+collaboration editorial board reviewer would. Reviewers should specifically
+check for completeness — are all cross-checks documented? Are all systematics
+described in sufficient detail? Could a reader reproduce the analysis?
 
 ---

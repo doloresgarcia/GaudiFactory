@@ -67,6 +67,25 @@ literature, assign a conservative uncertainty, and document the source.
 Example: "Luminosity taken from [ALEPH-2000-xyz] with 1.5% uncertainty;
 a dedicated Bhabha analysis could reduce this to 0.5%."
 
+**Systematic sources that cannot be evaluated from own data/MC.** When a
+known systematic uncertainty source (hadronization, detector resolution,
+background contamination, etc.) cannot be evaluated because the required
+inputs are unavailable, the agent must **not leave it as zero**. Zero is
+never a valid estimate for a known non-zero effect. Instead:
+1. Search the literature (via RAG) for the same or analogous measurement and
+   adopt a conservative estimate from published results.
+2. If the published value is for a similar but not identical observable or
+   phase space, inflate the uncertainty to cover the difference.
+3. Mark the systematic as "literature-derived" in the uncertainty table and
+   cite the source.
+4. Flag it in Future Directions as improvable with the missing resource.
+
+Example: "Hadronization uncertainty estimated as 2% based on the Pythia vs.
+Herwig variation reported in [published analysis of the same observable].
+This is conservative — the published analysis uses a similar phase space.
+A dedicated generator comparison with our selection would refine this."
+This is always better than silently omitting a known source.
+
 **Inaccessible data subsets.** Run on what's available. If only 70% of the
 data is accessible, the analysis is still valid — just with reduced
 statistical power. Scale the MC accordingly and note the missing runs.

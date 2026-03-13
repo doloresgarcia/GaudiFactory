@@ -49,7 +49,31 @@ No separate agent invocation.
 | 4a: Expected | Is the fit healthy? Are systematics complete? Do signal injection tests pass? |
 | 4b: Partial unblinding | Is the draft note publication-quality? Are 10% results consistent with expectations? Are diagnostics clean? |
 | 4c: Full unblinding | Are post-fit diagnostics healthy? Are anomalies properly characterized? |
-| Documentation | Is the note self-contained, correct, and publication-ready? |
+| Documentation | Is the note self-contained, correct, and publication-ready? Figures pass cosmetic review (see 6.3.1)? |
+
+#### 6.3.1 Figure and Label Review (all phases producing figures)
+
+Every review that evaluates figures — whether self-review, 1-bot, or 3-bot —
+must include a mechanical pass over all figures checking the following. These
+are Category A if wrong:
+
+- [ ] **√s and energy labels** match the actual dataset (not copied from a
+  template for a different collider or energy)
+- [ ] **Experiment name** is correct in all figure text and annotations
+- [ ] **No figure titles** — captions in the note replace `ax.set_title()`
+- [ ] **Axis labels** include units in brackets; y-axis label matches the
+  normalization actually applied
+- [ ] **Luminosity / event count** annotations match the data sample used
+- [ ] **Legend entries** match what is actually plotted (no stale labels from
+  earlier iterations)
+- [ ] **Aspect ratios and font sizes** are consistent across all figures in
+  the note
+- [ ] **Bin widths** are noted on the y-axis label for variable-width binning
+
+This is a cheap check — it can be delegated to a lowest-tier model as a
+mechanical pass before or during review. Metadata errors in figures destroy
+reviewer trust disproportionate to their severity, because they signal that
+the author did not look at their own plots.
 
 ### 6.4 Iteration and Escalation
 

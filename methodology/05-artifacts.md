@@ -90,9 +90,57 @@ must be supported by a figure or table:
   correlation matrices, GoF summaries
 - **Limits/measurements:** Brazil band plots, observed vs expected comparisons
 
-Figures are referenced inline: `![description](figures/filename.pdf)`. All
-figures use consistent styling (mplhep or equivalent). Axis labels include
-units. Legends are readable.
+Figures are referenced inline: `![description](figures/filename.pdf)`.
+
+### Figure standards:
+
+All figures must follow these conventions. Consistency matters — a note with
+mixed styles, wrong labels, or unreadable legends signals carelessness and
+undermines trust in the physics.
+
+**Layout and sizing:**
+- Default figure size: 8×6 inches (single) or 16×6 inches (side-by-side
+  panels). Use a consistent aspect ratio throughout the note.
+- Ratio panels (data/MC, data/theory): share the x-axis with the main panel,
+  height ratio ~3:1 (main:ratio). Use `matplotlib.gridspec` or
+  `mplhep`'s built-in ratio panel support.
+- Multi-panel figures (e.g., cross-check grids): equal-sized sub-panels with
+  shared axes where appropriate.
+
+**Text and labels:**
+- **No titles on figures.** The figure caption (in the note) serves as the
+  title. `ax.set_title()` should not be called. This is standard in HEP
+  publications.
+- Axis labels must include units in square brackets: `$p_T$ [GeV]`,
+  `$\tau = 1 - T$`. Y-axis labels for normalized spectra:
+  `$(1/N)\, dN/d\tau$` or `Events / bin` with bin width noted if variable.
+- Tick labels: readable font size (≥12pt). No overlapping labels — rotate or
+  reduce density if needed.
+- Legends: placed inside the plot in a non-overlapping location, or outside
+  if space is tight. Readable font size. No legend frame/border.
+
+**Styling:**
+- Use `mplhep` (≥1.1) for styling. If a built-in style exists for the
+  experiment, use it. If not, construct a custom style using mplhep's
+  generic style primitives — e.g., start from `mplhep.style.CMS` and
+  override experiment name, logo, label positions, and fonts to match the
+  target experiment. mplhep ≥1.1 exposes the building blocks for this.
+  **Never use another experiment's style unmodified.**
+- Data points: black filled markers with error bars.
+- MC/theory: colored histograms (stepped) or lines. Use a colorblind-friendly
+  palette.
+- Systematic uncertainty bands: hatched or semi-transparent fill, visually
+  distinct from statistical error bars.
+- All text in figures (labels, legends, annotations) must be correct for the
+  analysis: verify √s, experiment name, luminosity, and dataset description.
+  **Wrong metadata in figures (e.g., wrong √s, wrong experiment name) is a
+  Category A review finding.**
+
+**Format:**
+- Save all figures as PDF (vector) for the note, with PNG fallbacks for
+  web/screen use if needed.
+- File names: descriptive, lowercase, no spaces:
+  `thrust_corrected_spectrum.pdf`, `systematics_breakdown.pdf`.
 
 The artifact + its `figures/` directory must be self-contained — a reader
 should be able to evaluate the analysis from these alone.

@@ -16,7 +16,7 @@ what works well in practice.
 | Fitting / limits | pyhf, cabinetry | cabinetry for convenience wrappers (ranking, pulls). pyhf directly for custom fits. |
 | MVA | xgboost, scikit-learn | BDTs via xgboost. scikit-learn for preprocessing, train/test split, metrics. |
 | Hyperparameter opt | optuna | Bayesian optimization. Pin `random_state=42` for reproducibility. |
-| Plotting | matplotlib, mplhep | mplhep with `mplhep.style.CMS` as default style sheet. Square/box aspect ratio. All figures as PDF. |
+| Plotting | matplotlib, mplhep (≥1.1) | Use a built-in `mplhep.style` if one exists for the experiment. If not, build a custom style using mplhep's generic style primitives (e.g., `mplhep.style.CMS` as a base, overriding experiment name, logo, fonts). mplhep ≥1.1 exposes the building blocks for constructing experiment styles programmatically. **Never use another experiment's style unmodified.** No figure titles — use captions. See Section 5 for full figure standards. All figures as PDF. |
 | Event processing | coffea | Standard workhorse for columnar analysis. Handles chunked I/O, accumulation, and scale-out. Use `PackedSelection` for cutflow management. Preferred over hand-rolled event loops. |
 | Scale-out | coffea + parsl/slurm | coffea with parsl or dask-jobqueue for slurm submission. This is the standard production path for large-scale processing. Local execution is fine for development and small datasets. |
 | Jet clustering | fastjet | Python bindings via `fastjet`. For e+e− (LEP): Durham algorithm (`ee_genkt_algorithm`, p=−1). For pp (LHC): anti-kt. Use e+e− algorithms for e+e− data — pp-era algorithms assume beam remnants. |
