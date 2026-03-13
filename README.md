@@ -29,7 +29,7 @@ spec/
     agents.md             Agent session definitions
     automation.md         Automation pseudocode
     integration.md        RAG, git, Claude Code mapping
-  orchestrator/         # Python implementation (Claude Agent SDK)
+  orchestrator/         # Python implementation (Claude Agent SDK) [SCAFFOLDING — not runnable yet]
     main.py               CLI entry point
     pipeline.py           Full phase 1-5 pipeline
     review.py             3-bot and 1-bot review loops
@@ -47,6 +47,11 @@ The split files under `methodology/` and `orchestration/` are the source of trut
 
 ## Quickstart
 
+> **Note:** The `orchestrator/` Python code is scaffolding written against the
+> Claude Agent SDK docs but not yet tested with a live install. The spec
+> (`methodology/` + `orchestration/`) is the primary content. The orchestrator
+> will be validated and hardened once we run it for real.
+
 ```bash
 # Install pixi if you don't have it
 curl -fsSL https://pixi.sh/install.sh | bash
@@ -60,7 +65,7 @@ export ANTHROPIC_API_KEY=your-key
 # Dry run — check config without launching agents
 pixi run slopspec --dry-run orchestrator/example_config.yaml
 
-# Run the pipeline
+# Run the pipeline (not yet tested end-to-end)
 pixi run slopspec orchestrator/example_config.yaml
 ```
 
