@@ -17,9 +17,11 @@ constraints (dataset, final state, energy range).
 
 ### 2.2 Experiment Context (Retrieval-Based)
 
-The agent has access to a retrieval system (e.g., RAG over a corpus of
+The agent has access to a retrieval system (SciTreeRAG over a corpus of
 collaboration publications, theses, and internal notes) for the relevant
-experiment(s). This replaces hand-curated configuration files.
+experiment(s), exposed as MCP tools. This replaces hand-curated configuration
+files. See `.mcp.json` for the server configuration and orchestration §RAG
+Integration for the tool reference.
 
 The agent queries this corpus to obtain:
 - Detector specifications (subsystem resolutions, angular coverage, material

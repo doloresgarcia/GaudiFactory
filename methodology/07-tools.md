@@ -129,8 +129,10 @@ in tails).
 
 ### 7.3 Retrieval
 
-The agent has access to a RAG system over the experiment's publication corpus
-for retrieving detector specifications, object definitions, prior analysis
-results, and other experiment-specific knowledge. See Section 2.2.
+The agent has access to a SciTreeRAG system over the experiment's publication
+corpus (~2,400 ALEPH and DELPHI papers) via MCP tools. The primary tool is
+`search_lep_corpus` for hybrid dense + BM25 retrieval; use
+`compare_measurements` when cross-checking between experiments. See Section 2.2
+for retrieval expectations and `.mcp.json` for server configuration.
 
 ---

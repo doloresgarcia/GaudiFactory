@@ -6,9 +6,19 @@ reproducibility.
 
 ## RAG Integration
 
-Available to all sessions as a tool call. Agents query as needed, cite
-sources in artifacts. Failed retrievals logged in experiment log (see
-methodology §2.2).
+The SciTreeRAG corpus (slopcorpus) is available to all agent sessions via MCP.
+The server lazy-loads its index on first tool call; subsequent calls within the
+same session are fast. See `.mcp.json` for the concrete server definition.
+
+**Usage expectations:**
+- All sessions have the MCP tools available — no per-session setup needed
+- Agents query as needed and cite sources in artifacts (paper ID + section)
+- Failed retrievals are logged in `retrieval_log.md` per phase (see
+  methodology §2.2)
+- Prefer `search_lep_corpus` with `mode="hybrid"` (default) for most queries
+- Use `compare_measurements` when the analysis needs to cross-check ALEPH vs
+  DELPHI results on the same observable
+- Use `get_paper` to drill into a specific reference found via search
 
 ## Mapping to Claude Code Agent Teams
 
@@ -44,13 +54,31 @@ For self-review phases, only Executor.
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "mcpServers": {
-    "scitreerag": {
-      "command": "...",
-      "args": ["--corpus", "path/to/experiment/corpus"]
+    "lep-corpus": {
+      "type": "stdio",
+      "command": "pixi",
+      "args": ["run", "--manifest-path", "/path/to/slopcorpus/pixi.toml",
+               "python", "mcp_servers/rag_server.py"],
+      "cwd": "/path/to/slopcorpus",
+      "env": { "RAG_MODEL": "small" }
     }
   }
 }
 ```
+
+The `lep-corpus` MCP server exposes four tools:
+
+| Tool | Purpose |
+|------|---------|
+| `search_lep_corpus(query, top_k, experiment, mode)` | Hybrid (dense + BM25) retrieval over ~2,400 ALEPH/DELPHI papers; returns ranked passages with metadata |
+| `get_paper(paper_id)` | Look up a specific paper by arXiv, INSPIRE, or CDS ID |
+| `list_corpus_papers(experiment, category, limit)` | Browse corpus with optional experiment/category filters |
+| `compare_measurements(topic, top_k_per_experiment)` | Side-by-side ALEPH vs DELPHI retrieval for cross-checking |
+
+Agents should prefer `search_lep_corpus` for general queries and
+`compare_measurements` when cross-checking results between experiments.
+Use `get_paper` to drill into a specific reference. All retrieved passages
+include source paper ID and similarity score — cite these in artifacts.
 
 ### Cost Estimates (with tiering)
 
