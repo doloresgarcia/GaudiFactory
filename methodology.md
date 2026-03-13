@@ -530,6 +530,13 @@ high. It prevents agents from re-trying failed approaches and gives humans
 visibility into the agent's decision-making without reading full session
 transcripts.
 
+**Context management:** The experiment log is a file on disk, not part of the
+agent's default input context. Agents read the log on demand — typically at the
+start of a session ("what has been tried so far?") and when deciding what to try
+next ("have we already explored this direction?"). The log is not loaded into
+every agent invocation's input; it is consulted as needed and appended to after
+meaningful work. This prevents the log from consuming context budget as it grows.
+
 ### 5.2 The Primary Artifact
 
 Every phase produces a primary artifact (markdown or LaTeX) that serves as the
@@ -917,6 +924,37 @@ For parallel execution:
   in Phases 2–3 can proceed in parallel as separate agent teams, merging in
   Phase 4.
 
+### 10.1 Sub-delegation Within a Phase
+
+Phase executors should sub-delegate compute-heavy or narrowly-scoped tasks to
+sub-agents rather than attempting everything in a single session. The executor
+acts as coordinator: it plans the work, delegates execution, and integrates
+results.
+
+Tasks well-suited for sub-delegation:
+- **MVA training** — hyperparameter search, overtraining validation, feature
+  importance. The sub-agent receives the training data specification and
+  returns the trained model + performance metrics.
+- **Systematic variation evaluation** — each systematic source (or group of
+  related sources) can be evaluated independently.
+- **Plot generation** — once the data is prepared, producing a batch of
+  standard plots is mechanical work suitable for a lower-tier model.
+- **Closure tests** — running fits or comparisons in validation regions.
+
+Sub-agents within a phase:
+- Run **sequentially by default** (to avoid conflicting file writes), unless
+  their outputs are guaranteed independent (separate directories).
+- Receive **explicit, bounded inputs** — the executor writes an input
+  specification, the sub-agent reads it and writes output files.
+- Share the phase's **experiment log** — sub-agents append to the same log.
+- Use **appropriate model tiers** — BDT training and plot generation can use
+  mid or low-tier models; the executor coordinating them uses the phase's
+  assigned tier.
+
+The executor should not sub-delegate *judgment* — decisions about which
+backgrounds to include, what selection approach to use, or whether closure
+tests pass are the executor's responsibility. Sub-agents handle execution.
+
 ---
 
 ## 11. Version Control and Coding Practices
@@ -1013,7 +1051,28 @@ expensive to debug later.
 is the product, not the code. The physics validation (closure tests, signal
 injection, post-fit diagnostics) IS the test suite for correctness.
 
-### 11.4 Pre-commit Configuration
+### 11.4 Code Reuse Across Analyses
+
+Analysis code written for one analysis is a valuable resource for subsequent
+analyses — not as a framework to import, but as working examples to consult.
+
+**Within an analysis:** Reusable patterns emerge naturally (data loading,
+standard plots, workspace building). When a pattern is used 3+ times, factor
+it into a shared utility in the analysis's `scripts/common/` directory. Do not
+anticipate reuse — wait until it happens.
+
+**Across analyses:** A **snippets library** (`snippets/`) provides tested,
+documented code patterns for common HEP operations. These are not a framework
+— they are copy-and-adapt starting points. The agent consults the snippets
+library when beginning a task and adapts relevant patterns to the current
+analysis. Prior analysis directories are also a resource: "consult
+`../prior_analysis/` for patterns that worked in a similar context."
+
+The snippets library grows organically. After completing an analysis, useful
+patterns are extracted and added. This is YAGNI in practice — code is
+generalized only after it has proven useful in a real analysis, not before.
+
+### 11.5 Pre-commit Configuration
 
 A minimal `.pre-commit-config.yaml`:
 
