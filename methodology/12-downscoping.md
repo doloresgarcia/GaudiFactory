@@ -86,7 +86,73 @@ A reviewer should NOT flag "you could have used a more complex method" as a
 Category A issue unless the simpler method is demonstrably inadequate for the
 stated physics goal. This is a Category B suggestion at most.
 
-### 12.5 Future Directions as a First-Class Output
+### 12.5 Redirect, Don't Stop
+
+A blocked resource is not a stop signal — it is a redirect signal. When one
+path is blocked, the agent must actively seek parallel work that remains
+unblocked. The question is never "what can't I do?" but **"what else can I
+do with what I have?"**
+
+Concretely:
+
+- **Measure everything the data supports.** If MC blocks unfolding, measure
+  detector-level distributions for every relevant observable — not just the
+  primary one. Event shapes, jet rates, multiplicity, substructure, heavy
+  flavor enrichment — all are computable from data alone and each tells you
+  something about the physics and the detector.
+- **Cross-check exhaustively.** Year-by-year stability, subdetector
+  comparisons, charged-only vs. full, different selection working points.
+  These validate the measurement and often reveal issues that only surface
+  when you look from multiple angles.
+- **Consult the literature for workarounds.** Published correction factors,
+  efficiency maps, and previous measurements can substitute for missing MC
+  in many cases. The RAG corpus exists precisely for this — use it. If ALEPH
+  published detector-level results, compare to them. If they published
+  correction factors, apply them.
+- **Build the infrastructure for when the blocker clears.** Write the
+  unfolding code with a placeholder response matrix. Wire up the systematic
+  variation machinery. Build the plotting and comparison scripts. When MC
+  arrives, the remaining work should be one session, not five.
+
+The pattern from real physics: collaborations collect data, analyze what they
+can, publish the result (even if it's "just" a limit or a detector-level
+measurement), and in doing so establish the methods, selections, and
+infrastructure that the next iteration builds on. The first result is rarely
+the final word — it's the foundation. The agent should operate the same way.
+
+**Anti-pattern to avoid:** "MC is unavailable → unfolding is blocked →
+analysis is complete at detector level → stop." This leaves most of the
+achievable physics on the table. The correct behavior is: "MC is unavailable
+→ unfolding is blocked → measure everything else, build unfolding
+infrastructure, extract maximum physics from detector-level data → document
+what unfolding will add when MC arrives."
+
+### 12.6 Infrastructure as a Deliverable
+
+Analysis infrastructure — the processing pipeline, plotting code, fit
+machinery, selection framework — is a first-class deliverable, not a means
+to an end. This is how physics actually works: a first analysis establishes
+methods and tooling that subsequent iterations refine. The code, the
+selections, the region definitions, the systematic framework — all of these
+have value beyond the current result.
+
+When the agent builds infrastructure, it should be built to last:
+
+- **Parameterize the blocked steps.** If unfolding needs a response matrix,
+  write the unfolding code that takes a matrix as input. Use a diagonal
+  matrix as a placeholder. When the real matrix arrives, it slots in.
+- **Make the pipeline re-runnable.** A follow-up session (or a human) should
+  be able to re-run the full analysis with one command after the blocker
+  clears. `pixi run analyze` should work end-to-end.
+- **Document the interface.** What does the next session need to provide?
+  "Place MC ROOT files in `data/mc/`, run `scripts/build_response_matrix.py`,
+  then `scripts/unfold.py`." Explicit, concrete, no ambiguity.
+
+The test for completeness is: **if the blocker clears tomorrow, can the next
+session finish the analysis in one sitting?** If yes, the infrastructure is
+a real deliverable. If no, the agent stopped too early.
+
+### 12.7 Future Directions as a First-Class Output
 
 The Phase 5 documentation artifact must include a **Future Directions** section
 that collects all downscoping decisions into a concrete roadmap:
@@ -95,9 +161,12 @@ that collects all downscoping decisions into a concrete roadmap:
 - What resources would be needed to un-descope it
 - What improvement is expected (quantitative where possible)
 - Rough priority ordering
+- What infrastructure is already in place to support each item
 
 This section is not an apology — it is a plan. Every analysis generates
 knowledge about what to do next. The next iteration of the analysis (or a
 follow-up analysis) consults this roadmap and picks up where this one left off.
+The combination of a published result + established infrastructure + concrete
+roadmap is the standard output of a physics analysis — not just the numbers.
 
 ---
