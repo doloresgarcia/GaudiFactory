@@ -585,6 +585,17 @@ Phases also produce data files, figures, and scripts in phase-specific
 subdirectories. Scripts are referenced from the artifact's code reference
 section for reproducibility.
 
+Additionally, any phase may produce these supplementary artifact types:
+
+- **`UPSTREAM_FEEDBACK.md`** — produced by an executor that discovers something
+  an earlier phase did not consider (e.g., an unexpected background shape, a
+  missing systematic). Non-blocking: the executor continues its own work. The
+  orchestrator routes the feedback to the next review gate for the upstream
+  phase. See Section 6.8 for the full mechanism.
+- **`REGRESSION_TICKET.md`** — produced by the Investigator role when a
+  regression trigger is confirmed. Contains root cause, affected phases,
+  unaffected phases, and fix scope. See Section 6.8.
+
 ---
 
 ## 6. Review Protocol
@@ -642,9 +653,11 @@ No separate agent invocation.
 
 ### 6.4 Iteration and Escalation
 
-For **3-bot reviews:** the cycle repeats until the arbiter issues PASS. No
-fixed iteration limit — the analysis must be right. If not converged after 3-4
-rounds, the arbiter should ESCALATE to human review.
+For **3-bot reviews:** the cycle repeats until the arbiter issues PASS. There
+is no hard iteration cap — correctness is the termination condition. In
+practice, the orchestrator emits warnings after 3 iterations as a signal that
+the issues may require human input. The arbiter should ESCALATE rather than
+continue indefinitely.
 
 For **1-bot reviews:** the executor addresses Category A items and re-submits.
 Up to 2 iterations before escalation.
@@ -674,15 +687,17 @@ The orchestrator assigns model tiers based on task type:
 | 3-bot reviewers + arbiter | Highest | Adversarial critique, catching subtle errors |
 | Phase 3 executor (selection iteration) | Mid (e.g., Sonnet) | Code writing, debugging, iterating fast |
 | Phase 2 executor (data exploration) | Mid | I/O plumbing, plotting, mechanical inventory |
-| Phase 4 executor (fits, systematics) | Mid-High | Needs to get statistical model right |
-| 1-bot reviewer | Mid-High | Single-reviewer phases still need physics judgment |
+| Phase 4 executor (fits, systematics) | Mid | Statistical modeling is well-scoped; mid tier iterates faster |
+| 1-bot reviewer | Mid | Single-reviewer phases; physics context carried by the artifact |
 | Plot regeneration, reformatting | Lowest (e.g., Haiku) | Mechanical tasks with clear specifications |
 | Smoke tests, linting | Lowest | Boilerplate with clear pass/fail |
 
 A **top-level configuration switch** controls whether tiering is active:
-- `model_tier: auto` — use the tiering above (default, cost-efficient)
 - `model_tier: uniform_high` — all sessions use the highest model (for
   benchmarking or when cost is not a constraint)
+- `model_tier: auto` — use the tiering above (default, cost-efficient):
+  Opus for strategy + reviewers + arbiter, Sonnet for executors + 1-bot
+  review, Haiku for plots/tests
 - `model_tier: uniform_mid` — all sessions use mid tier (budget mode)
 
 This switch exists at the orchestration level, not in the methodology spec,
@@ -692,11 +707,13 @@ so the same spec can be used for cost comparisons across configurations.
 
 To prevent runaway costs from pathological iteration:
 
-**Review iteration cap:** 3-bot review cycles are capped at **3 iterations**
-per phase. If the arbiter has not issued PASS after 3 cycles:
-- In interactive mode: pause and present the unresolved issues to the human
-- In batch mode: emit a warning, log the unresolved Category A items, and
-  proceed to the next phase with the issues documented as open
+**Review iteration warnings:** The orchestrator emits a warning after **3**
+review iterations and a strong warning after **5**. These are soft thresholds,
+not hard caps — correctness remains the termination condition. If the arbiter
+cannot reach PASS, it should ESCALATE rather than loop indefinitely. In
+interactive mode, the orchestrator surfaces the warning to the human for
+guidance. In batch mode, the warning is logged and the arbiter is prompted to
+consider ESCALATE.
 
 **Execution iteration budget:** Phases 2 and 3 (high iteration) should have a
 configurable execution budget (e.g., maximum N executor iterations or M tokens).
@@ -725,17 +742,65 @@ When this happens:
 1. The agent (or reviewer) documents the issue and identifies which earlier
    phase it originates from
 2. The issue is classified as a **regression trigger** in the review artifact
-3. The orchestrator re-runs the identified phase with the new information
-   injected as an additional input (e.g., "Phase 3 discovered that the WW
-   background dominates after selection — revise the strategy to address this")
-4. All downstream phases are invalidated and re-run from the regressed phase
+3. The orchestrator spawns an **Investigator** (see below) to assess the
+   impact before any re-execution begins
+4. Fixes are dispatched based on the Investigator's ticket
+
+#### The Investigator
+
+The Investigator is a dedicated agent role (Opus-tier) spawned when a
+regression trigger is flagged. It does *not* read all artifacts end-to-end.
+Instead it follows a structured, minimal-read process:
+
+1. **Read the trigger description** from the review artifact that flagged the
+   regression.
+2. **Read the origin phase artifact** to identify the specific wrong
+   conclusion(s).
+3. **Trace forward phase by phase:** for each downstream artifact, read only
+   the Summary and Method sections. If the artifact depends on the wrong
+   conclusion, read the full affected sections and add them to the impact list.
+   If it does not, mark the phase unaffected and stop tracing that branch.
+4. **Produce `REGRESSION_TICKET.md`** containing:
+   - Root cause and origin phase
+   - Affected phases with specific sections that must change
+   - Unaffected phases with reasoning for why they are safe
+   - Fix scope per affected phase (what the executor must redo)
+
+#### The fix cycle
+
+The orchestrator dispatches fixes automatically — no human gate for regression.
+
+- **Origin phase:** the executor re-runs with the previous artifact, the
+  regression ticket, and the experiment log as inputs. The arbiter reviews the
+  before/after to confirm the root cause is resolved.
+- **Affected downstream phases:** each receives the same treatment (previous
+  artifact + ticket + updated upstream artifact). Fixes proceed in phase order.
+- **Unaffected phases:** skipped entirely, per the Investigator's assessment.
+
+#### Timing
+
+Regression only triggers before Phase 4c (full unblinding). Once the human
+gate approves full unblinding, discovered issues become documented observations
+in the final note, not regression triggers. The analysis is past the point
+where re-running earlier phases is meaningful — the observed result exists.
+
+#### Upstream feedback (non-blocking)
+
+Any executor may proactively produce an `UPSTREAM_FEEDBACK.md` artifact when
+it encounters something an earlier phase did not consider — an unexpected
+background shape, a missing systematic, a data feature not mentioned upstream.
+This is *not* a regression trigger and does not block execution. The
+orchestrator routes it to the next review gate for the affected upstream phase.
+If the reviewers agree the issue is material, they may flag a regression
+trigger through the normal mechanism.
 
 Phase regression is expensive and should be rare. The strategy and exploration
 phases exist to prevent it. But when it happens, it is better to go back and
 fix the foundation than to build on a known-faulty premise.
 
 Regression is logged in a `regression_log.md` at the analysis root, tracking
-what triggered the regression, which phase was re-run, and what changed.
+what triggered the regression, the Investigator's ticket, which phases were
+re-run, and what changed.
 
 ---
 

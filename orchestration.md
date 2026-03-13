@@ -37,17 +37,22 @@ analysis_name/
   calibrations/                  # Shared sub-analyses
     btag/
       experiment_log.md
+      retrieval_log.md
       CALIBRATION_BTAG.md
       scripts/
       figures/
     jet_corrections/
       experiment_log.md
+      retrieval_log.md
       CALIBRATION_JEC.md
       scripts/
       figures/
 
   phase1_strategy/
     experiment_log.md            # Lab notebook for this phase
+    retrieval_log.md
+    UPSTREAM_FEEDBACK.md         # Feedback from downstream phases (if any)
+    REGRESSION_TICKET.md         # Regression investigation output (if triggered)
     exec/
       inputs.md
       session.log
@@ -69,6 +74,9 @@ analysis_name/
 
   phase2_exploration/
     experiment_log.md
+    retrieval_log.md
+    UPSTREAM_FEEDBACK.md
+    REGRESSION_TICKET.md
     exec/
       ...
     # Self-review only — no review_critical/ etc.
@@ -76,15 +84,21 @@ analysis_name/
   phase3_selection/              # Per-channel if multi-channel
     channel_nunu/
       experiment_log.md
+      retrieval_log.md
       sensitivity_log.md         # Tracks optimization attempts
+      UPSTREAM_FEEDBACK.md
+      REGRESSION_TICKET.md
       exec/
         ...
         SELECTION_NUNU.md
-      review_critical/           # 1-bot review only
+      review_critical/           # 1-bot review per channel
         ...
     channel_llbb/
       experiment_log.md
+      retrieval_log.md
       sensitivity_log.md
+      UPSTREAM_FEEDBACK.md
+      REGRESSION_TICKET.md
       exec/
         ...
         SELECTION_LLBB.md
@@ -95,6 +109,9 @@ analysis_name/
   phase4_inference/
     4a_expected/
       experiment_log.md
+      retrieval_log.md
+      UPSTREAM_FEEDBACK.md
+      REGRESSION_TICKET.md
       exec/
         ...
         INFERENCE_EXPECTED.md
@@ -106,6 +123,9 @@ analysis_name/
         ...
     4b_partial/
       experiment_log.md
+      retrieval_log.md
+      UPSTREAM_FEEDBACK.md
+      REGRESSION_TICKET.md
       exec/
         ...
         INFERENCE_PARTIAL.md
@@ -118,6 +138,9 @@ analysis_name/
       arbiter/
         ...
     4c_observed/                 # Only created after human approval
+      retrieval_log.md
+      UPSTREAM_FEEDBACK.md
+      REGRESSION_TICKET.md
       exec/
         ...
         INFERENCE_OBSERVED.md
@@ -125,6 +148,9 @@ analysis_name/
         ...
 
   phase5_documentation/
+    retrieval_log.md
+    UPSTREAM_FEEDBACK.md
+    REGRESSION_TICKET.md
     exec/
       ...
       ANALYSIS_NOTE.md
@@ -173,31 +199,39 @@ Phase 5:  Executor → [Critical + Constructive] → Arbiter  (3-bot)
 ## Model Tiering
 
 The orchestrator assigns model tiers based on task type. Controlled by a
-top-level switch:
+top-level switch with two effective tiers — opus (high reasoning) and
+sonnet (fast execution):
 
 ```yaml
 # analysis_config.yaml (or equivalent)
 model_tier: auto  # auto | uniform_high | uniform_mid
 
+# uniform_high: everything opus (max effort, for benchmarking)
+# uniform_mid:  everything sonnet (budget mode)
+# auto:         opus for strategy/reviewers/arbiter, sonnet for execution/1-bot-review
+
 # When model_tier: auto, the orchestrator uses:
 tiers:
   executor_strategy: opus      # Phase 1 — physics reasoning
-  executor_exploration: sonnet  # Phase 2 — I/O plumbing
-  executor_selection: sonnet    # Phase 3 — code iteration
-  executor_inference: sonnet    # Phase 4 — fits, systematics
-  reviewer_3bot: opus           # All 3-bot reviews
-  reviewer_1bot: sonnet         # Single critical reviewer
-  arbiter: opus                 # All arbiters
-  calibration: sonnet           # Shared sub-analyses
-  plot_generation: haiku        # Mechanical plot tasks
-  smoke_tests: haiku            # Test execution
+  executor_default: sonnet     # Phases 2-4 — code iteration, I/O plumbing, fits
+  reviewer_3bot: opus          # All 3-bot reviews (critical, constructive, arbiter)
+  reviewer_1bot: sonnet        # Single critical reviewer
+  arbiter: opus                # All arbiters
+  investigator: opus           # Regression investigation
+  calibration: sonnet          # Shared sub-analyses
+  plot_generation: haiku       # Mechanical plot tasks
+  smoke_tests: haiku           # Test execution
 ```
 
 ## Cost Controls
 
-**Review cap:** 3-bot cycles capped at 3 iterations per phase.
-- Interactive mode: pause, present unresolved issues to human
-- Batch mode: warn, log issues, proceed with issues documented as open
+**Review iteration warnings:** Review cycles emit warnings to flag runaway
+iteration, but the arbiter's ESCALATE mechanism is the actual termination
+condition.
+
+- After 3 iterations: orchestrator logs a warning
+- After 5 iterations: orchestrator logs a strong warning and notifies human
+- Termination: arbiter issues ESCALATE, which pauses for human review
 
 **Execution budget:** Configurable per-phase (tokens or iterations).
 When approached, the agent produces best-effort artifact with open issues.
@@ -207,7 +241,8 @@ review if threshold exceeded.
 
 ```yaml
 cost_controls:
-  review_iteration_cap: 3
+  review_warn_threshold: 3       # Warn after this many iterations
+  review_strong_warn_threshold: 5 # Strongly warn; rely on ESCALATE to terminate
   phase2_max_iterations: 20
   phase3_max_iterations: 30
   total_budget_warn: 500000  # tokens, or dollar amount
@@ -310,35 +345,150 @@ End with: PASS / ITERATE (list Category A items) / ESCALATE (document why).
 ## Automation
 
 ```bash
-# Review tier functions
+# --- Regression detection and upstream feedback ---
+
+run_regression_check() {
+  # Checks arbiter/reviewer output for regression triggers and dispatches fixes.
+  dir=$1
+  review_artifact=$(find_latest_review_artifact "$dir")
+
+  if grep -q "regression trigger" "$review_artifact"; then
+    origin_phase=$(extract_regression_origin "$review_artifact")
+    echo "REGRESSION detected in $dir — origin: $origin_phase"
+
+    # Log to top-level regression log
+    echo "$(date): $dir -> $origin_phase" >> regression_log.md
+
+    # Spawn investigator agent (opus-tier) with structured instructions
+    run_agent --model opus --output "$origin_phase/REGRESSION_TICKET.md" \
+      "Investigate regression trigger from $dir. Read the trigger in $review_artifact. \
+       Trace impact through artifacts selectively (do not re-read everything). \
+       Produce REGRESSION_TICKET.md with: root cause, affected phases, proposed fix."
+
+    # Dispatch fixes to the origin phase
+    run_agent --model $exec_model --output "$origin_phase/exec" \
+      "Fix regression described in $origin_phase/REGRESSION_TICKET.md"
+
+    # Re-review at the original tier for that phase
+    tier=$(get_review_tier "$origin_phase")
+    if [ "$tier" = "3bot" ]; then
+      run_3bot_review "$origin_phase"
+    else
+      run_1bot_review "$origin_phase"
+    fi
+
+    # Re-run all downstream phases from the regressed phase
+    rerun_downstream_from "$origin_phase"
+    return 1  # signal that regression was found
+  fi
+  return 0
+}
+
+check_upstream_feedback() {
+  # After each phase, check for UPSTREAM_FEEDBACK.md and route to next review.
+  dir=$1
+  feedback_file="$dir/UPSTREAM_FEEDBACK.md"
+  if [ -f "$feedback_file" ]; then
+    echo "Upstream feedback found in $dir — routing to next review"
+    # The feedback file is already in the directory; reviewers will see it
+    # via their inputs.md which includes all files in the phase directory.
+    return 0
+  fi
+  return 1
+}
+
+# --- Review tier functions ---
+
 run_3bot_review() {
-  dir=$1; max_iter=${2:-3}
-  for i in $(seq 1 $max_iter); do
+  dir=$1; iter_warn=${2:-3}; strong_warn=${3:-5}
+  i=0
+  while true; do
+    i=$((i + 1))
+    if [ $i -gt $iter_warn ]; then
+      echo "WARNING: review iteration $i for $dir (warn threshold: $iter_warn)"
+    fi
+    if [ $i -gt $strong_warn ]; then
+      echo "STRONG WARNING: review iteration $i for $dir — consider ESCALATE"
+    fi
     run_agent --model opus --output "$dir/review_critical" "critical review" &
     run_agent --model opus --output "$dir/review_constructive" "constructive review" &
     wait
     run_agent --model opus --output "$dir/arbiter" "arbitrate"
     decision=$(extract_decision "$dir/arbiter")
     case $decision in
-      PASS) return 0 ;;
-      ITERATE) run_agent --model $exec_model --output "$dir/exec" "iterate v$((i+1))" ;;
-      ESCALATE) present_for_human_review "$dir"; wait_for_human_input ;;
+      PASS)
+        run_regression_check "$dir"
+        check_upstream_feedback "$dir"
+        return 0
+        ;;
+      ITERATE)
+        # Back up original inputs before first overwrite
+        if [ $i -eq 1 ] && [ -f "$dir/exec/inputs.md" ]; then
+          cp "$dir/exec/inputs.md" "$dir/exec/inputs.md.orig"
+        fi
+        # Write inputs for executor re-run that includes arbiter assessment
+        cat > "$dir/exec/inputs.md" <<INPUTS
+# Iteration $((i+1)) Inputs
+
+## Arbiter Assessment (iteration $i)
+$(cat "$dir/arbiter/"*_ARBITER.md)
+
+## Category A Issues to Address
+$(extract_category_a "$dir/arbiter")
+
+## Original inputs
+$(cat "$dir/exec/inputs.md.orig" 2>/dev/null || echo "See upstream artifacts.")
+INPUTS
+        run_agent --model $exec_model --output "$dir/exec" "iterate v$((i+1))"
+        ;;
+      ESCALATE)
+        present_for_human_review "$dir"
+        wait_for_human_input
+        ;;
     esac
   done
-  echo "WARNING: review cap reached for $dir"
-  handle_review_cap "$dir"  # pause or warn based on config
 }
 
 run_1bot_review() {
-  dir=$1; max_iter=${2:-2}
-  for i in $(seq 1 $max_iter); do
+  dir=$1; iter_warn=${2:-3}; strong_warn=${3:-5}
+  i=0
+  while true; do
+    i=$((i + 1))
+    if [ $i -gt $iter_warn ]; then
+      echo "WARNING: review iteration $i for $dir (warn threshold: $iter_warn)"
+    fi
+    if [ $i -gt $strong_warn ]; then
+      echo "STRONG WARNING: review iteration $i for $dir — consider escalation"
+    fi
     run_agent --model sonnet --output "$dir/review_critical" "critical review"
-    if ! review_has_category_a "$dir/review_critical"; then return 0; fi
+    if ! review_has_category_a "$dir/review_critical"; then
+      run_regression_check "$dir"
+      check_upstream_feedback "$dir"
+      return 0
+    fi
+    # Back up original inputs before first overwrite
+    if [ $i -eq 1 ] && [ -f "$dir/exec/inputs.md" ]; then
+      cp "$dir/exec/inputs.md" "$dir/exec/inputs.md.orig"
+    fi
+    # Write inputs for executor re-run that includes critical review
+    cat > "$dir/exec/inputs.md" <<INPUTS
+# Iteration $((i+1)) Inputs
+
+## Critical Review (iteration $i)
+$(cat "$dir/review_critical/"*_CRITICAL_REVIEW.md)
+
+## Category A Issues to Address
+$(extract_category_a_from_review "$dir/review_critical")
+
+## Original inputs
+$(cat "$dir/exec/inputs.md.orig" 2>/dev/null || echo "See upstream artifacts.")
+INPUTS
     run_agent --model $exec_model --output "$dir/exec" "iterate v$((i+1))"
   done
 }
 
-# Main pipeline
+# --- Main pipeline ---
+
 run_agent --model opus --output "phase1_strategy/exec" "execute phase 1"
 run_3bot_review "phase1_strategy"
 git merge phase1_strategy
@@ -352,8 +502,11 @@ for channel in nunu llbb; do
   run_agent --model sonnet --output "phase3_selection/channel_$channel/exec" "execute phase 3 ($channel)" &
 done
 wait
+# Per-channel 1-bot reviews before consolidation
+for channel in nunu llbb; do
+  run_1bot_review "phase3_selection/channel_$channel"
+done
 run_agent --model sonnet --output "phase3_selection/exec" "consolidate channels"
-run_1bot_review "phase3_selection"
 git merge phase3_selection
 
 # Shared calibrations (can run in parallel with phases 2-3)
@@ -361,19 +514,30 @@ for cal in btag jet_corrections; do
   run_agent --model sonnet --output "calibrations/$cal" "calibration: $cal" &
 done
 
+# Wait for calibrations to complete before Phase 4a — calibration artifacts
+# (b-tagging scale factors, JEC) are required inputs for inference.
+wait
+
 # Phase 4a — agent gate
 run_agent --model sonnet --output "phase4_inference/4a_expected/exec" "execute phase 4a"
 run_3bot_review "phase4_inference/4a_expected"
+if [ $? -ne 0 ]; then
+  echo "ERROR: Phase 4a review did not pass. Cannot proceed to partial unblinding."
+  exit 1
+fi
+git merge phase4a_expected
 
 # Phase 4b — 3-bot review then human gate
 run_agent --model sonnet --output "phase4_inference/4b_partial/exec" "partial unblinding"
 run_3bot_review "phase4_inference/4b_partial"
 present_for_human_review "phase4_inference/4b_partial"
 wait_for_human_decision  # APPROVE / REQUEST CHANGES / HALT
+git merge phase4b_partial
 
 # Phase 4c + 5 after human approval
 run_agent --model sonnet --output "phase4_inference/4c_observed/exec" "full unblinding"
 run_1bot_review "phase4_inference/4c_observed"
+git merge phase4c_observed
 
 run_agent --model sonnet --output "phase5_documentation/exec" "execute phase 5"
 run_3bot_review "phase5_documentation"
@@ -436,21 +600,23 @@ For self-review phases, only Executor.
 
 ### Cost Estimates (with tiering)
 
-| Phase | Sessions (no iteration) | Model mix | Relative cost |
-|-------|------------------------|-----------|---------------|
-| Phase 1 | 4 (exec + 3-bot) | 1 opus + 3 opus | ████████ |
+| Phase | Sessions (no iteration) | Model mix (auto mode) | Relative cost |
+|-------|------------------------|-----------------------|---------------|
+| Phase 1 | 4 (exec + 3-bot) | 1 opus exec + 3 opus review | ████████ |
 | Phase 2 | 1 (exec, self-review) | 1 sonnet | █ |
-| Phase 3 | 3-4 (exec per channel + 1-bot) | 2-3 sonnet | ██ |
+| Phase 3 | 4-6 (exec per channel + 1-bot per channel + consolidate) | sonnet | ██ |
 | Calibrations | 2-3 | sonnet | █ |
-| Phase 4a | 4 | 1 sonnet + 3 opus | ███████ |
-| Phase 4b | 4 | 1 sonnet + 3 opus | ███████ |
-| Phase 4c | 2 | 1 sonnet + 1 sonnet | █ |
-| Phase 5 | 4 | 1 sonnet + 3 opus | ███████ |
-| **Total** | **~24-26** | | |
+| Phase 4a | 4 | 1 sonnet exec + 3 opus review | ███████ |
+| Phase 4b | 4 | 1 sonnet exec + 3 opus review | ███████ |
+| Phase 4c | 2 | sonnet | █ |
+| Phase 5 | 4 | 1 sonnet exec + 3 opus review | ███████ |
+| **Total** | **~26-30** | | |
 
-With tiering, ~60% of cost is in the opus review sessions (Phases 1, 4a, 4b, 5).
-Each iteration adds 4 sessions (re-execute + re-review). The `uniform_high`
-switch runs everything on opus for benchmarking quality differences.
+With `auto` tiering, opus is used for strategy execution (Phase 1) and all
+3-bot review sessions (critical, constructive, arbiter). Sonnet handles all
+other execution and 1-bot reviews. The `uniform_high` switch runs everything
+on opus for benchmarking quality differences. The `uniform_mid` switch runs
+everything on sonnet for budget-constrained analyses.
 
 ## Adapting to Other Agent Systems
 
