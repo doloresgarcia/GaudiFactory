@@ -34,8 +34,8 @@ analysis_name/
   prompt.md
   regression_log.md              # Tracks any phase regressions (if triggered)
 
-  calibrations/                  # Shared sub-analyses
-    btag/
+  calibrations/                  # Shared sub-analyses (may scale to near-full
+    btag/                        #   sub-analysis structure if complexity warrants)
       experiment_log.md
       retrieval_log.md
       CALIBRATION_BTAG.md
@@ -53,33 +53,37 @@ analysis_name/
     retrieval_log.md
     UPSTREAM_FEEDBACK.md         # Feedback from downstream phases (if any)
     REGRESSION_TICKET.md         # Regression investigation output (if triggered)
+    scripts/                     # Phase-level codebase (can grow to thousands of lines)
+    figures/
     exec/
       inputs.md
       session.log
       plan.md
       STRATEGY.md
-      scripts/
-    review_critical/
-      inputs.md
-      session.log
-      STRATEGY_CRITICAL_REVIEW.md
-    review_constructive/
-      inputs.md
-      session.log
-      STRATEGY_CONSTRUCTIVE_REVIEW.md
-    arbiter/
-      inputs.md
-      session.log
-      STRATEGY_ARBITER.md
+    review/
+      critical/
+        inputs.md
+        session.log
+        STRATEGY_CRITICAL_REVIEW.md
+      constructive/
+        inputs.md
+        session.log
+        STRATEGY_CONSTRUCTIVE_REVIEW.md
+      arbiter/
+        inputs.md
+        session.log
+        STRATEGY_ARBITER.md
 
   phase2_exploration/
     experiment_log.md
     retrieval_log.md
     UPSTREAM_FEEDBACK.md
     REGRESSION_TICKET.md
+    scripts/
+    figures/
     exec/
       ...
-    # Self-review only — no review_critical/ etc.
+    # Self-review only — no review/ directory
 
   phase3_selection/              # Per-channel if multi-channel
     channel_nunu/
@@ -88,22 +92,28 @@ analysis_name/
       sensitivity_log.md         # Tracks optimization attempts
       UPSTREAM_FEEDBACK.md
       REGRESSION_TICKET.md
+      scripts/                   # Per-channel codebase
+      figures/
       exec/
         ...
         SELECTION_NUNU.md
-      review_critical/           # 1-bot review per channel
-        ...
+      review/
+        critical/                # 1-bot review per channel
+          ...
     channel_llbb/
       experiment_log.md
       retrieval_log.md
       sensitivity_log.md
       UPSTREAM_FEEDBACK.md
       REGRESSION_TICKET.md
+      scripts/
+      figures/
       exec/
         ...
         SELECTION_LLBB.md
-      review_critical/
-        ...
+      review/
+        critical/
+          ...
     SELECTION_COMBINED.md        # Consolidation artifact
 
   phase4_inference/
@@ -112,40 +122,49 @@ analysis_name/
       retrieval_log.md
       UPSTREAM_FEEDBACK.md
       REGRESSION_TICKET.md
+      scripts/
+      figures/
       exec/
         ...
         INFERENCE_EXPECTED.md
-      review_critical/           # 3-bot review (agent gate)
-        ...
-      review_constructive/
-        ...
-      arbiter/
-        ...
+      review/
+        critical/               # 3-bot review (agent gate)
+          ...
+        constructive/
+          ...
+        arbiter/
+          ...
     4b_partial/
       experiment_log.md
       retrieval_log.md
       UPSTREAM_FEEDBACK.md
       REGRESSION_TICKET.md
+      scripts/
+      figures/
       exec/
         ...
         INFERENCE_PARTIAL.md
         ANALYSIS_NOTE_DRAFT.md
         UNBLINDING_CHECKLIST.md
-      review_critical/           # 3-bot review before human
-        ...
-      review_constructive/
-        ...
-      arbiter/
-        ...
+      review/
+        critical/               # 3-bot review before human
+          ...
+        constructive/
+          ...
+        arbiter/
+          ...
     4c_observed/                 # Only created after human approval
       retrieval_log.md
       UPSTREAM_FEEDBACK.md
       REGRESSION_TICKET.md
+      scripts/
+      figures/
       exec/
         ...
         INFERENCE_OBSERVED.md
-      review_critical/           # 1-bot review
-        ...
+      review/
+        critical/               # 1-bot review
+          ...
 
   phase5_documentation/
     retrieval_log.md
@@ -154,12 +173,13 @@ analysis_name/
     exec/
       ...
       ANALYSIS_NOTE.md
-    review_critical/             # 3-bot review
-      ...
-    review_constructive/
-      ...
-    arbiter/
-      ...
+    review/
+      critical/                 # 3-bot review
+        ...
+      constructive/
+        ...
+      arbiter/
+        ...
 ```
 
 ## Git Integration
@@ -271,8 +291,8 @@ was discovered and why the original output was insufficient.
 **Reads:** methodology spec, physics prompt, upstream artifacts, experiment
 log (if exists), experiment corpus (via RAG)
 
-**Writes:** `plan.md`, primary artifact, `scripts/`, `figures/`, appends to
-`experiment_log.md`
+**Writes:** `plan.md`, primary artifact (in `exec/`), `scripts/` and `figures/`
+(at phase level), appends to `experiment_log.md`
 
 **Instruction core:**
 ```
@@ -280,7 +300,7 @@ Execute Phase N of this HEP analysis. Read the methodology spec and upstream
 artifacts listed in inputs.md. Query the retrieval corpus as needed.
 
 Before writing code, produce plan.md. As you work:
-- Write analysis code to scripts/, figures to figures/
+- Write analysis code to ../scripts/, figures to ../figures/ (phase level)
 - Commit frequently with conventional commit messages
 - Append to experiment_log.md: what you tried, what worked, what didn't
 - Produce your primary artifact as {ARTIFACT_NAME}.md
@@ -410,11 +430,11 @@ run_3bot_review() {
     if [ $i -gt $strong_warn ]; then
       echo "STRONG WARNING: review iteration $i for $dir — consider ESCALATE"
     fi
-    run_agent --model opus --output "$dir/review_critical" "critical review" &
-    run_agent --model opus --output "$dir/review_constructive" "constructive review" &
+    run_agent --model opus --output "$dir/review/critical" "critical review" &
+    run_agent --model opus --output "$dir/review/constructive" "constructive review" &
     wait
-    run_agent --model opus --output "$dir/arbiter" "arbitrate"
-    decision=$(extract_decision "$dir/arbiter")
+    run_agent --model opus --output "$dir/review/arbiter" "arbitrate"
+    decision=$(extract_decision "$dir/review/arbiter")
     case $decision in
       PASS)
         run_regression_check "$dir"
@@ -431,10 +451,10 @@ run_3bot_review() {
 # Iteration $((i+1)) Inputs
 
 ## Arbiter Assessment (iteration $i)
-$(cat "$dir/arbiter/"*_ARBITER.md)
+$(cat "$dir/review/arbiter/"*_ARBITER.md)
 
 ## Category A Issues to Address
-$(extract_category_a "$dir/arbiter")
+$(extract_category_a "$dir/review/arbiter")
 
 ## Original inputs
 $(cat "$dir/exec/inputs.md.orig" 2>/dev/null || echo "See upstream artifacts.")
@@ -460,8 +480,8 @@ run_1bot_review() {
     if [ $i -gt $strong_warn ]; then
       echo "STRONG WARNING: review iteration $i for $dir — consider escalation"
     fi
-    run_agent --model sonnet --output "$dir/review_critical" "critical review"
-    if ! review_has_category_a "$dir/review_critical"; then
+    run_agent --model sonnet --output "$dir/review/critical" "critical review"
+    if ! review_has_category_a "$dir/review/critical"; then
       run_regression_check "$dir"
       check_upstream_feedback "$dir"
       return 0
@@ -475,10 +495,10 @@ run_1bot_review() {
 # Iteration $((i+1)) Inputs
 
 ## Critical Review (iteration $i)
-$(cat "$dir/review_critical/"*_CRITICAL_REVIEW.md)
+$(cat "$dir/review/critical/"*_CRITICAL_REVIEW.md)
 
 ## Category A Issues to Address
-$(extract_category_a_from_review "$dir/review_critical")
+$(extract_category_a_from_review "$dir/review/critical")
 
 ## Original inputs
 $(cat "$dir/exec/inputs.md.orig" 2>/dev/null || echo "See upstream artifacts.")
