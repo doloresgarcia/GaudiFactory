@@ -5,7 +5,7 @@
 # To add a dependency: add it below, then `pixi install` from this directory.
 
 [workspace]
-name = "{name}"
+name = "alpha_s"
 version = "0.1.0"
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64"]
