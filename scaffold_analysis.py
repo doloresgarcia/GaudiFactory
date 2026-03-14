@@ -142,14 +142,16 @@ You are exploring the data and MC samples.
 # Phase 3: Selection and Modeling
 
 {preamble}
-You are developing the event selection and correction model.
+You are implementing the analysis approach defined in the Phase 1 strategy.
+Read the strategy first — it determines what this phase must deliver.
 
 ## Required deliverables
 
 - Final object definitions
 - Event selection with optimization
-- Background estimation and closure tests
 - Cutflow table with data and MC yields
+- For searches: background estimation, control/validation regions, closure tests
+- For measurements: correction chain (response matrix, unfolding, closure tests)
 
 {technique_block_phase3}
 ## Review

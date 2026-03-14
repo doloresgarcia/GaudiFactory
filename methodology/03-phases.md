@@ -119,10 +119,15 @@ This discovery process is documented in the artifact.
 
 ---
 
-### Phase 3: Selection and Background Modeling
+### Phase 3: Selection and Modeling
 
-**Goal:** Define the complete analysis selection, design control and validation
-regions, estimate backgrounds, and validate the background model.
+**Goal:** Implement the analysis approach defined in the Phase 1 strategy.
+For searches: define the selection, design control and validation regions,
+estimate backgrounds, and validate the background model. For measurements:
+define the selection and build the validated correction chain (response
+matrix, unfolding, closure tests). The strategy determines which track
+applies and what specific deliverables Phase 3 must produce — Phase 3
+executes the plan, it does not redesign it.
 
 **Inputs:** Strategy, exploration report, data/MC samples.
 
@@ -145,13 +150,13 @@ regions, estimate backgrounds, and validate the background model.
   while preserving signal efficiency." A cut without a motivating plot is an
   unjustified cut.
 
-*Regions:*
+*Regions (search analyses):*
 - Define control regions enriched in each major background. Document purity and
   the kinematic relationship to the signal region.
 - Define validation regions kinematically between control and signal regions for
   closure testing. These must be statistically independent of both CR and SR.
 
-*Background estimation:*
+*Background estimation (search analyses):*
 - Estimate background yields in SR using the chosen method per background
   (simulation-scaled-from-CR, data-driven, or pure simulation with justification)
 - Perform closure tests in validation regions: compare predicted yields
@@ -160,6 +165,40 @@ regions, estimate backgrounds, and validate the background model.
   statistical fluctuations (p-value > 0.05 under the relevant test statistic,
   typically chi2). A test that fails at p < 0.05 is Category A — investigate
   and iterate on the region design or estimation method before proceeding.
+
+*Correction infrastructure (measurement analyses):*
+
+For measurements, Phase 3 builds the correction chain rather than a
+background model. The primary deliverable is a working, validated correction
+pipeline — not yet the final measurement (systematic evaluation is Phase 4a).
+
+- Produce data/MC comparisons for **all** kinematic variables entering the
+  observable, resolved by reconstructed object category. Observable-level
+  agreement can mask compensating category-level mismodeling. These plots are
+  required evidence that the MC response model is adequate — missing
+  category-level validation is Category A for unfolded measurements.
+- Construct the response matrix from MC (matched reco/gen events). Report
+  matrix properties: dimensions, diagonal fraction, condition number,
+  efficiency as a function of the particle-level observable.
+- Implement the correction/unfolding chain end-to-end on MC. Run closure
+  tests: unfold MC truth through the response and verify recovery within
+  statistical precision. Run stress tests: unfold a reweighted truth through
+  the nominal response and verify recovery of the reweighted shape.
+- Closure test failure (chi2 p-value < 0.05) is Category A — the correction
+  chain must close before proceeding.
+- Prototype the full chain on data to verify it runs without errors. The
+  corrected spectrum at this stage is a working result, not the final
+  measurement.
+- Prepare inputs for Phase 4a systematic evaluation: nominal response matrix,
+  selection machinery that can be re-run with varied cuts, alternative MC
+  samples if available.
+
+If backgrounds are present (e.g., non-hadronic contamination in an event
+shape measurement), estimate and subtract them. But the primary Phase 3
+deliverable for measurements is the validated correction chain, not a
+background model. Control regions and validation regions (as described for
+searches above) are typically not needed for inclusive measurements where the
+signal is the process being measured.
 
 **Workflow pattern.** Phase 3 is iteration-heavy. Follow this progression:
 
@@ -172,12 +211,6 @@ regions, estimate backgrounds, and validate the background model.
 3. **Inspect & validate.** Systematically review all produced plots — data/MC
    agreement per variable, cutflow yields, closure tests. This is where
    modeling issues must be caught before they propagate to Phase 4.
-
-For measurements, Phase 3 also prepares the inputs that Phase 4a will need
-for systematic evaluation: the nominal response matrix, the selection
-machinery that can be re-run with varied cuts, and any reweighted MC
-samples. The systematic *plan* comes from Phase 1 (and conventions); Phase 3
-builds the *infrastructure*; Phase 4a evaluates the *impact*.
 
 **Output artifact:** `SELECTION.md` — selection definition, cutflow, MVA
 details if applicable, region definitions with purity, background estimates with
@@ -216,8 +249,10 @@ reviewers that reasonable alternatives were explored. "We tried X, Y, and Z;
 Y performed best because [reason]; further improvements are limited by
 [factor]" is a valid and professional conclusion.
 
-**Review:** See Section 6. Selection review focuses on background modeling
-fidelity. Closure test failures are always Category A.
+**Review:** See Section 6. For searches, selection review focuses on
+background modeling fidelity. For measurements, it focuses on correction
+chain closure and data/MC validation. Closure test failures are always
+Category A.
 
 ---
 
@@ -296,9 +331,9 @@ signal injection test outcomes.
   matrix. If no theory prediction is available, justify why and compare to
   published measurements instead.
 
-**Review:** Rigorous multi-reviewer process (Section 4.2: critical reviewer,
-constructive reviewer, arbiter). This cycle gates partial unblinding — it
-repeats until the arbiter issues PASS.
+**Review:** 3-bot review (Section 6.2). For searches, this gates partial
+unblinding. For measurements, this gates the human review before Phase 5.
+The cycle repeats until the arbiter issues PASS.
 
 #### Phase 4b: Partial Unblinding (10% Data)
 
@@ -440,7 +475,7 @@ found a gap.
 10. **Conclusions** — Summary of the result, its precision, the dominant
     limitations, and the physics interpretation.
 
-11. **Future directions** — Concrete roadmap per Section 12.7.
+11. **Future directions** — Concrete roadmap per Section 12.6.
 
 12. **Appendices** — Supporting material that would interrupt the main flow:
     full systematic tables per bin, auxiliary distributions, extended cutflow

@@ -60,13 +60,17 @@ Use these — not alternatives. Non-negotiable.
 | Task | Use | NOT |
 |------|-----|-----|
 | ROOT file I/O | `uproot` | PyROOT, ROOT C++ macros |
-| Array operations | `awkward-array`, `numpy` | Event loops, pandas |
+| Array operations | `awkward-array`, `numpy` | pandas (for HEP event data) |
 | Histogramming | `hist`, `boost-histogram` | ROOT TH1, numpy.histogram (for filling) |
 | Plotting | `matplotlib` + `mplhep` | ROOT TCanvas, plotly |
 | Statistical model | `pyhf` (binned), `zfit` (unbinned) | RooFit, RooStats, custom likelihood code |
 | Jet clustering | `fastjet` (Python) | manual clustering |
-| Event processing | `coffea` (columnar) | Event-by-event loops |
 | Logging | `logging` + `rich` | `print()` — never use bare print |
+
+**Optional but preferred:** `coffea` (`NanoEvents` for schema-driven array
+access, `PackedSelection` for cutflow management) when the event structure
+benefits from it. Not required for every analysis — uproot + awkward directly
+is fine for simpler cases.
 
 ## Scale-out rules
 
@@ -106,7 +110,7 @@ Use these — not alternatives. Non-negotiable.
 ## Conventions
 
 Before starting work on a technique (unfolding, template fits, etc.), read
-the applicable file in `conventions/`. This is mandatory at two checkpoints:
+the applicable file in `conventions/`. This is mandatory at three checkpoints:
 
 1. **Phase 1 (Strategy):** Read conventions before writing the systematic
    plan. Verify your plan covers the standard sources listed there.
@@ -114,6 +118,8 @@ the applicable file in `conventions/`. This is mandatory at two checkpoints:
    systematics. Check that every required source is implemented, not just
    planned. Produce a completeness table comparing your sources against
    conventions AND reference analyses from Phase 1.
+3. **Phase 5 (Documentation):** Final conventions check — verify that
+   everything required by conventions is present in the analysis note.
 
 If a convention requires something you plan to omit, justify the omission
 explicitly — do not silently skip it.
