@@ -105,8 +105,10 @@ You are developing the analysis strategy for a **{analysis_type}** analysis.
 
 2. **Conventions check.** Read the applicable conventions:
 {conventions_block}
-   Verify your planned systematic program covers the standard sources
-   listed there. If you plan to omit a standard source, justify why.
+   Enumerate every required systematic source listed there. For each one,
+   state in the strategy: "Will implement" or "Not applicable because [reason]."
+   This enumeration is binding — Phase 4a reviews against it. Silent
+   omissions are Category A findings.
 
 ## Review
 

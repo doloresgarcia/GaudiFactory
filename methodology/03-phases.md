@@ -45,7 +45,12 @@ could approve.
 - Specify the blinding variable and signal region boundaries (see Section 4)
 - Outline the background estimation strategy per background and identify
   control regions needed
-- List anticipated systematic uncertainty categories (experimental, theoretical)
+- List anticipated systematic uncertainty categories (experimental, theoretical).
+  **Before finalizing the systematic plan,** read the applicable `conventions/`
+  document and enumerate every required source. For each source, state whether
+  it will be implemented and, if not, why not. This enumeration becomes the
+  baseline that Phase 4a reviews against — sources omitted here without
+  justification are Category A findings downstream.
 - Identify which collision data and simulation samples are needed
 
 **For measurement analyses,** the agent must additionally:

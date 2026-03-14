@@ -64,9 +64,18 @@ sufficient. The reviewer must also check that the *right things* are being
 tested.
 
 **Concrete operating principle:** Before concluding the review, the reviewer
-must answer: "If a competing group published a measurement of the same
-quantity next month, what would they have that we don't?" If the answer is
-non-empty and unjustified, those are Category A findings.
+must explicitly answer these questions:
+
+1. Are all systematic sources listed in the applicable `conventions/`
+   document either implemented or explicitly justified as inapplicable?
+2. Have 2-3 published reference analyses been identified, and does this
+   analysis match or exceed their systematic coverage?
+3. If a competing group published a measurement of the same quantity next
+   month, what would they have that we don't?
+
+If any answer is "no" or "non-empty" without justification, those are
+Category A findings. The arbiter must not issue PASS until all three are
+resolved.
 
 ### 6.4 Review Focus by Phase
 
@@ -98,22 +107,32 @@ The completeness check asks what is *missing*, not just whether what is
   Category A.
 
 **At Phase 4a:**
-- Re-check the conventions document against the *implemented* systematic
-  program, not just the planned one. Sources that were planned but dropped
-  during execution must be justified.
-- Produce or verify a **systematic completeness table** comparing this
-  analysis to the reference analyses identified in Phase 1:
 
-  ```
-  | Source           | This analysis | Ref 1 | Ref 2 | Status  |
-  |------------------|---------------|-------|-------|---------|
-  | Hadronization    | Pythia only   | P+H   | P+H+S | MISSING |
-  | ...              |               |       |       |         |
-  ```
+The executor must produce a **systematic completeness table** as a
+mandatory section of the Phase 4a artifact. This table has two parts:
 
-  Any row with status MISSING or PARTIAL is Category A unless explicitly
-  justified (e.g., resource unavailable — documented as a limitation, not
-  silently omitted).
+1. **Planned vs. implemented.** Every systematic source listed in the
+   Phase 1 strategy must appear with its implementation status. Any source
+   that was planned but dropped must have a justification. Silent omissions
+   are Category A.
+
+2. **Conventions and reference comparison.** Every source listed in the
+   applicable `conventions/` document and in the reference analyses from
+   Phase 1 must appear:
+
+   ```
+   | Source           | Conventions | Ref 1 | Ref 2 | This analysis | Status    |
+   |------------------|-------------|-------|-------|---------------|-----------|
+   | Hadronization    | Required    | P+H   | P+H+S | Pythia only   | MISSING   |
+   | Selection cuts   | Required    | yes   | yes   | yes           | OK        |
+   | Luminosity       | Normalized  | —     | —     | N/A (norm.)   | JUSTIFIED |
+   ```
+
+   The reviewer must verify this table **row by row**. Any row with status
+   MISSING or PARTIAL is Category A unless the justification column
+   explains why (e.g., "resource unavailable — documented as limitation
+   in §5 and Future Directions"). The arbiter does not PASS with
+   unresolved MISSING rows.
 
 - Cross-check the conventions document's "required validation checks"
   against the artifact. For unfolded measurements, this includes the

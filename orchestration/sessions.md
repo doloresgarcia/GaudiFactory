@@ -169,6 +169,7 @@ analysis_name/
       exec/
         ...
         INFERENCE_EXPECTED.md
+        ANALYSIS_NOTE_DRAFT.md   # For measurements (skip 4b/4c)
       review/
         critical/               # 3-bot review (agent gate)
           ...
@@ -176,7 +177,7 @@ analysis_name/
           ...
         arbiter/
           ...
-    4b_partial/
+    4b_partial/                  # Search flow only — skipped for measurements
       experiment_log.md
       retrieval_log.md
       UPSTREAM_FEEDBACK.md
