@@ -119,7 +119,34 @@ systematic uncertainty. The ratio panel shows data/MC."
   correlation matrices, GoF summaries
 - **Limits/measurements:** Brazil band plots, observed vs expected comparisons
 
-Figures are referenced inline: `![description](figures/filename.pdf)`.
+Figures are referenced using markdown image syntax with **detailed,
+self-contained captions**:
+
+```markdown
+![Corrected normalized thrust distribution $(1/N)\,dN/d\tau$ compared to
+Pythia 6.1 particle-level prediction. Error bars show statistical
+uncertainties; the shaded band shows the total systematic uncertainty.
+The ratio panel shows data divided by MC. The data is systematically
+below the MC in the fit range $0.05 \leq \tau \leq 0.30$, reflecting the
+known tendency of the Pythia 6.1 LEP tune to overpredict soft hadronic
+activity.](figures/final_result_with_unc.pdf)
+```
+
+**Caption requirements:**
+- State what is plotted (observable, axes, units)
+- Identify all curves/markers/bands in the figure
+- State the key conclusion the reader should draw
+- A reader should understand the figure from the caption alone, without
+  reading the surrounding text
+- Sparse captions like "Thrust distribution" or "Data/MC comparison" are
+  Category A review findings
+
+**Figure numbering and cross-referencing:** Pandoc automatically numbers
+figures in `\begin{figure}` environments when compiling to PDF. The
+markdown text body must reference figures by description (e.g., "as shown
+in the thrust distribution comparison (Figure X)") so that the compiled
+PDF has proper cross-references. In intermediate markdown artifacts, use
+descriptive references: "see the response matrix figure below."
 
 ### Figure standards:
 

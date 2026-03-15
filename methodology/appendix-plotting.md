@@ -65,9 +65,11 @@ plt.close(fig)
 
 - **Style:** Always `mh.style.use("CMS")` as the base. Experiment branding
   comes from `exp_label`, not the style.
-- **Font sizes.** The stylesheet is designed for a particular font size
-  and figure size combo. Only use mpl relative font sizes (e.g. `"small"`,
-  `"xx-small"`, `"large"`, etc.)
+- **Font sizes are LOCKED.** Do not pass `fontsize=` to ANY matplotlib call
+  (`set_xlabel`, `set_ylabel`, `set_title`, `tick_params`, `annotate`,
+  `text`). The CMS stylesheet sets all font sizes correctly for the 10x10
+  figure size. The ONLY exception is `ax.legend(fontsize="x-small")`. Any
+  script that sets a custom font size is a Category A review finding.
 - **Legend font size.** Always pass `fontsize="x-small"` to `ax.legend(...)`.
 - **Aspect.** Keep figures with square aspect. For 2D plots with colorbars,
   you MUST use one of these to prevent the colorbar from squashing the plot:
@@ -97,8 +99,14 @@ plt.close(fig)
   at save time instead — this handles clipping without breaking the layout.
 - **Close figures.** `plt.close(fig)` after saving to prevent memory leaks
   in long scripts.
-- **Figure sizes.** 10x10 base for single plots. Scale proportionally for
-  subplots. Ratio plots use `height_ratios=[3, 1]`.
+- **Figure size is LOCKED at `figsize=(10, 10)`.** Do not use any other
+  figure size. This is non-negotiable — the font sizes in the CMS stylesheet
+  are calibrated for this size. Using `figsize=(8, 6)` or `figsize=(12, 8)`
+  produces figures where text is too large or too small relative to the plot
+  elements. For ratio plots, use `figsize=(10, 10)` with
+  `height_ratios=[3, 1]`. For 2×2 subplots, use `figsize=(20, 20)`. The
+  rule is: 10 inches per subplot column, 10 inches per subplot row.
+  **Any script that uses a custom figsize is a Category A review finding.**
 - **PDF rendering size.** Figures are rendered at `0.5\textwidth` (half page
   width) in the compiled analysis note PDF. The 10x10 matplotlib figure size
   produces clean, readable plots at this rendered size. Do not make figures
