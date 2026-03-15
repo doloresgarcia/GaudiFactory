@@ -362,3 +362,59 @@ been validated by data/MC comparison plots of |p| and cos(θ).
 - `pixi.toml` — stress-test and fix-systematics tasks added
 
 **Both Category A issues resolved.**
+
+---
+
+## Phase 5: Documentation
+
+### 2026-03-15 — Final Analysis Note
+
+**Artifacts read (all):**
+- `phase1_strategy/exec/STRATEGY.md` — physics motivation, systematic plan, reference analyses
+- `phase2_exploration/exec/EXPLORATION.md` — sample inventory, data format, response matrix prototype
+- `phase3_selection/exec/SELECTION.md` — cutflow, response matrix properties, closure tests, data/MC validation
+- `phase4_inference/exec/INFERENCE_EXPECTED.md` — final systematics, covariance, alpha_s result
+- `phase4_inference/exec/ANALYSIS_NOTE_DRAFT.md` — Phase 4a draft note
+- `conventions/unfolding.md` — final conventions check
+- `phase4_inference/exec/results/thrust_distribution.csv` — numerical results
+- `phase4_inference/exec/results/alphas_result.csv` — alpha_s result
+- `phase4_inference/exec/results/covariance_total_fitrange.csv` — covariance matrix
+- `phase4_inference/exec/results/comparison_chi2.csv` — comparison chi2 values
+
+**Conventions check (final, per Phase 5 requirements):**
+- All required systematic sources from `conventions/unfolding.md` are implemented and described.
+- Hadronization model is PARTIAL (2% conservative floor); documented explicitly.
+- Per-bin systematic tables provided (Appendix A).
+- Full covariance matrix provided as table (Appendix B).
+- Response matrix properties provided (Appendix D).
+- IBU algorithm described with equations.
+- Normalization procedure documented (normalize AFTER unfolding).
+- All cross-checks quantitative with chi2/ndf values.
+
+**Analysis note structure:**
+- 12 numbered sections + 4 appendices
+- All quantitative results inline (Tables 8.1, 8.2)
+- Full covariance matrix in Appendix B
+- Per-bin systematic tables in Appendix A
+- All figure references use relative paths to phase3/phase4 figures
+- LaTeX math throughout
+- References numbered 1-10
+
+**Key results documented:**
+- 2,889,543 events selected (94.7% efficiency, data and MC agree < 0.1%)
+- Corrected thrust distribution: 13 bins in tau ∈ [0.05, 0.30]
+- Dominant systematic: BBB alternative method (21% max)
+- Unfolding validated: independent closure chi2/ndf = 0.924 (3 iterations)
+- Stress test: chi2/ndf < 0.001 (algorithmic correctness confirmed)
+- Prior sensitivity: < 0.24% (not prior-dominated)
+- chi2 vs Pythia 6.1: 61.0/13 = 4.7 (documented as known physics difference)
+- Indicative alpha_s(M_Z) = 0.1066 ± 0.0113 (LO extraction, indicative only)
+
+**Files produced:**
+- `phase5_documentation/exec/ANALYSIS_NOTE.md` — final publication-quality analysis note
+- `phase5_documentation/exec/results/thrust_distribution.csv` — copied from Phase 4
+- `phase5_documentation/exec/results/covariance_total_fitrange.csv` — copied from Phase 4
+- `phase5_documentation/exec/results/alphas_result.csv` — copied from Phase 4
+- `pixi.toml` — copy-results task added; all chain extended through Phase 5
+
+**Phase gate:** Phase 5 artifact complete. 3-bot review required.
