@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""Convert ANALYSIS_NOTE.md to PDF with embedded figures.
+"""Convert ANALYSIS_NOTE.md to PDF via pandoc 3.x + pdflatex.
 
-Strategy: collect all referenced figures into a local figures/ directory
-(symlinks), convert figure references to proper markdown ![](path) syntax,
-run pandoc -> tex, then pdflatex.
+Collects all referenced figures into a local figures/ directory (symlinks),
+converts inline figure references to markdown image syntax, then runs
+pandoc -> tex -> pdf.
 
-Usage: pixi run py phase5_documentation/exec/build_pdf.py
+Usage: pixi run build-pdf
 """
 import re
 import subprocess
-import shutil
 import logging
 from pathlib import Path
 from rich.logging import RichHandler
@@ -23,83 +22,65 @@ AN_MD = EXEC_DIR / "ANALYSIS_NOTE.md"
 FIG_DIR = EXEC_DIR / "figures"
 
 
-def collect_figures(md_text: str) -> dict[str, Path]:
-    """Find all figure paths in backtick references and map to local names."""
-    paths = re.findall(r'`(\.\.\/\.\.\/.+?\.pdf)`', md_text)
+def collect_and_link_figures(md_text: str) -> dict[str, Path]:
+    """Find all figure paths in backticks, symlink into figures/."""
+    paths = re.findall(r'`(\.\./\.\./[^`]+\.pdf)`', md_text)
+    FIG_DIR.mkdir(exist_ok=True)
+    for f in FIG_DIR.iterdir():
+        if f.is_symlink():
+            f.unlink()
+
     mapping = {}
     for rel_path in paths:
         src = (EXEC_DIR / rel_path).resolve()
-        local_name = src.name
-        # Handle name collisions by prepending phase
-        if local_name in mapping and mapping[local_name] != src:
-            parts = rel_path.split('/')
-            phase = parts[2] if len(parts) > 2 else "unknown"
-            local_name = f"{phase}_{local_name}"
-        mapping[local_name] = src
+        name = src.name
+        if name in mapping and mapping[name] != src:
+            phase = rel_path.split('/')[2]
+            name = f"{phase}_{name}"
+        if src.exists():
+            dst = FIG_DIR / name
+            if not dst.exists():
+                dst.symlink_to(src)
+            mapping[rel_path] = f"figures/{name}"
+        else:
+            log.warning("MISSING: %s", src)
+            mapping[rel_path] = rel_path
     return mapping
 
 
-def prepare_figures(mapping: dict[str, Path]) -> int:
-    """Symlink or copy figures into local figures/ directory."""
-    FIG_DIR.mkdir(exist_ok=True)
-    # Clean old symlinks
-    for f in FIG_DIR.iterdir():
-        f.unlink()
+def convert_to_images(md_text: str, mapping: dict[str, str]) -> str:
+    """Convert **Figure:** `path` — caption to ![caption](local_path)."""
 
-    ok = 0
-    for local_name, src in mapping.items():
-        dst = FIG_DIR / local_name
-        if src.exists():
-            dst.symlink_to(src)
-            ok += 1
-        else:
-            log.warning("MISSING: %s", src)
-    return ok
+    def replace_fig_block(m):
+        block = m.group(0)
+        paths = re.findall(r'`(\.\./\.\./[^`]+\.pdf)`', block)
+        if not paths:
+            return block
 
+        # Extract caption: text after the last path reference
+        caption = ""
+        last_path_end = block.rfind('.pdf`')
+        if last_path_end != -1:
+            rest = block[last_path_end + 5:].strip()
+            rest = re.sub(r'^[.,;]?\s*', '', rest)
+            rest = re.sub(r'^[—–-]\s*', '', rest)
+            caption = rest.strip().rstrip('.')
 
-def convert_references(md_text: str, mapping: dict[str, Path]) -> str:
-    """Convert backtick figure references to markdown image syntax with local paths."""
-    # Build reverse mapping: original relative path -> local figure name
-    path_to_local = {}
-    for local_name, src in mapping.items():
-        # Find the original relative paths that map to this source
-        for rel_path in re.findall(r'`(\.\.\/\.\.\/.+?\.pdf)`', md_text):
-            if (EXEC_DIR / rel_path).resolve() == src:
-                path_to_local[rel_path] = local_name
+        parts = []
+        for p in paths:
+            local = mapping.get(p, p)
+            parts.append(f"\n![{caption}]({local})\n")
+        return "\n".join(parts)
 
-    # Replace **Figure:** `path` — caption patterns with ![caption](figures/name)
-    # First: single figure lines
-    def replace_fig_line(m):
-        full = m.group(0)
-        paths_in_line = re.findall(r'`(\.\.\/\.\.\/.+?\.pdf)`', full)
-        if not paths_in_line:
-            return full
-
-        # Extract caption: everything after the last backtick-path
-        caption_match = re.search(r'\.pdf`[.,]?\s*(?:[—–-]\s*)?(.+?)$', full)
-        caption = caption_match.group(1).strip().rstrip('.') if caption_match else ""
-
-        result_parts = []
-        for p in paths_in_line:
-            local = path_to_local.get(p, Path(p).name)
-            result_parts.append(f"\n![{caption}](figures/{local})\n")
-
-        return "\n".join(result_parts)
-
-    # Match lines starting with **Figure(s):**
     md_text = re.sub(
-        r'\*\*Figures?:\*\*.*?(?:\n(?![\n#*\-|]).*)*',
-        replace_fig_line,
+        r'\*\*Figures?:\*\*.*?(?:\n(?![\n#*\-|1-9]).*)*',
+        replace_fig_block,
         md_text
     )
 
-    # Also catch any remaining standalone backtick figure references
-    def replace_standalone(m):
-        rel_path = m.group(1)
-        local = path_to_local.get(rel_path, Path(rel_path).name)
-        return f"![](figures/{local})"
-
-    md_text = re.sub(r'`(\.\.\/\.\.\/.+?\.pdf)`', replace_standalone, md_text)
+    # Catch any remaining standalone backtick figure references
+    for orig, local in mapping.items():
+        md_text = md_text.replace(f'`{orig}`', f'\n![](  {local})\n')
 
     return md_text
 
@@ -108,71 +89,49 @@ def main():
     log.info("Reading %s", AN_MD)
     md_text = AN_MD.read_text()
 
-    # Collect and prepare figures
-    mapping = collect_figures(md_text)
-    log.info("Found %d unique figures", len(mapping))
-    n_ok = prepare_figures(mapping)
-    log.info("Linked %d/%d figures into %s", n_ok, len(mapping), FIG_DIR)
+    mapping = collect_and_link_figures(md_text)
+    log.info("Linked %d figures", len(mapping))
 
-    # Convert references to markdown image syntax
-    md_converted = convert_references(md_text, mapping)
-
-    # Count images
+    md_converted = convert_to_images(md_text, mapping)
     n_imgs = len(re.findall(r'!\[', md_converted))
     log.info("Converted %d image references", n_imgs)
 
-    # Write intermediate file
     converted_md = EXEC_DIR / "ANALYSIS_NOTE_for_pdf.md"
     converted_md.write_text(md_converted)
 
-    # Run pandoc
-    log.info("Running pandoc...")
+    # Run pandoc 3.x
     tex_file = EXEC_DIR / "ANALYSIS_NOTE.tex"
+    pdf_file = EXEC_DIR / "ANALYSIS_NOTE.pdf"
+
+    log.info("Running pandoc 3.x -> PDF...")
     cmd = [
         "pandoc", str(converted_md),
-        "-o", str(tex_file),
-        "--standalone",
+        "-o", str(pdf_file),
+        "--pdf-engine=pdflatex",
         "-V", "geometry:margin=1in",
         "-V", "documentclass:article",
         "-V", "fontsize:11pt",
         "--number-sections",
         "--toc",
+        "--toc-depth=3",
     ]
-    r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(EXEC_DIR))
+    r = subprocess.run(cmd, capture_output=True, text=True, cwd=str(EXEC_DIR), timeout=120)
+
     if r.returncode != 0:
-        log.error("pandoc failed: %s", r.stderr)
-        return
-
-    # Post-process LaTeX: ensure figures are properly sized
-    tex = tex_file.read_text()
-    tex = tex.replace(
-        r"\includegraphics{",
-        r"\includegraphics[width=0.85\textwidth,keepaspectratio]{"
-    )
-    tex_file.write_text(tex)
-    log.info("Wrote %s", tex_file)
-
-    # Compile
-    pdf_file = EXEC_DIR / "ANALYSIS_NOTE.pdf"
-    for pass_num in (1, 2):
-        log.info("pdflatex pass %d...", pass_num)
-        r = subprocess.run(
-            ["pdflatex", "-interaction=nonstopmode", "ANALYSIS_NOTE.tex"],
-            capture_output=True, text=True, cwd=str(EXEC_DIR), timeout=120,
-        )
-        errors = [l for l in r.stdout.split('\n') if l.startswith('!')]
-        if errors:
-            for e in errors[:5]:
-                log.warning("  %s", e)
+        log.error("pandoc failed:\n%s", r.stderr[-2000:] if len(r.stderr) > 2000 else r.stderr)
+        # Try without --toc in case that's the issue
+        cmd_notoc = [c for c in cmd if c != "--toc" and c != "--toc-depth=3"]
+        log.info("Retrying without TOC...")
+        r = subprocess.run(cmd_notoc, capture_output=True, text=True, cwd=str(EXEC_DIR), timeout=120)
+        if r.returncode != 0:
+            log.error("pandoc failed again:\n%s", r.stderr[-2000:])
+            return
 
     if pdf_file.exists():
-        import os
-        pages_line = [l for l in r.stdout.split('\n') if 'Output written' in l]
-        log.info("SUCCESS: %s (%.0f KB) %s",
-                 pdf_file, pdf_file.stat().st_size / 1024,
-                 pages_line[0] if pages_line else "")
+        size_kb = pdf_file.stat().st_size / 1024
+        log.info("SUCCESS: %s (%.0f KB)", pdf_file, size_kb)
     else:
-        log.error("PDF not produced!")
+        log.error("PDF not produced")
 
 
 if __name__ == "__main__":
