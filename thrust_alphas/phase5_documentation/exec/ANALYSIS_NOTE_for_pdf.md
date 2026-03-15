@@ -262,7 +262,7 @@ events with good track and cluster coverage. The cut removes 2.3% of
 events; data/MC agreement on the sphericity axis distribution is within
 5%.
 
-**Figure:** `../../phase3_selection/figures/datamc_missp.pdf` — data/MC
+**Figure:** ![](figures/datamc_missp.pdf) — data/MC
 comparison of the missing momentum distribution. The distribution peaks
 near zero and falls steeply; data/MC ratio is flat at ~1.0 across
 the distribution, with maximum deviation 4.1%.
@@ -326,7 +326,7 @@ consistent with the particle-level definition (Section 1.3).
 
 The tgenBefore sample (particle-level before selection) contains 973,769 events.
 
-**Figure:** `../../phase3_selection/figures/cutflow_by_year.pdf` — per-year
+**Figure:** ![](figures/cutflow_by_year.pdf) — per-year
 event yields after each cut level, showing the uniformity of selection
 efficiency across the 1992–1995 data-taking period (all years consistent at
 $94.7 \pm 0.1%$).
@@ -375,9 +375,9 @@ and are non-negligible. Category 3 is negligible (0.04%).
 - TPC hit count: 28.6% maximum deviation (MC uses simplified TPC model).
 - Missing momentum: 4.1% — excellent agreement.
 
-**Figures:** `../../phase3_selection/figures/datamc_chg_pt.pdf`,
-`../../phase3_selection/figures/datamc_chg_costheta.pdf`, `../../phase3_selection/figures/datamc_chg_pmag.pdf`, `../../phase3_selection/figures/datamc_chg_ntpc.pdf`,
-`../../phase3_selection/figures/datamc_chg_d0.pdf`, `../../phase3_selection/figures/datamc_chg_z0.pdf`, `../../phase3_selection/figures/datamc_missp.pdf`.
+**Figures:** ![](figures/datamc_chg_pt.pdf),
+![](figures/datamc_chg_costheta.pdf), ![](figures/datamc_chg_pmag.pdf), ![](figures/datamc_chg_ntpc.pdf),
+![](figures/datamc_chg_d0.pdf), ![](figures/datamc_chg_z0.pdf), ![](figures/datamc_missp.pdf).
 
 **$\texttt{pwflag} = 4$ neutral clusters (25.2% of momentum):**
 - Cluster $|p|$: 5.8% maximum deviation — good shape agreement.
@@ -388,7 +388,7 @@ and are non-negligible. Category 3 is negligible (0.04%).
   distribution is well-modeled (5.8%), which is the variable directly
   relevant to the thrust calculation.
 
-**Figures:** `../../phase3_selection/figures/datamc_e_neutral.pdf`.
+**Figures:** ![](figures/datamc_e_neutral.pdf).
 
 **$\texttt{pwflag} = 1, 2, 5$ secondary categories (14.2% combined):**
 - All three categories show data/MC agreement within 20% in the
@@ -397,9 +397,9 @@ and are non-negligible. Category 3 is negligible (0.04%).
   and 2 by the track momentum smearing systematic; pwflag=5 by the
   calorimeter energy scale systematic.
 
-**Figures:** `../../phase3_selection/figures/datamc_pwflag1_pmag.pdf`,
-`../../phase3_selection/figures/datamc_pwflag2_pmag.pdf`, `../../phase3_selection/figures/datamc_pwflag5_pmag.pdf`,
-`../../phase3_selection/figures/pwflag_momentum_fractions.pdf`.
+**Figures:** ![](figures/datamc_pwflag1_pmag.pdf),
+![](figures/datamc_pwflag2_pmag.pdf), ![](figures/datamc_pwflag5_pmag.pdf),
+![](figures/pwflag_momentum_fractions.pdf).
 
 **Assessment:** The MC model is adequate for the thrust measurement.
 Identified discrepancies — neutral cluster multiplicity (67%), track
@@ -497,16 +497,16 @@ the fit range, consistent with the ~78.6% generator-level selection
 efficiency. The efficiency is slightly higher for low-$\tau$ (more 2-jet-like)
 events, which are better reconstructed in the barrel region.
 
-**Figure:** `../../phase3_selection/figures/response_matrix.pdf` — normalized
+**Figure:** ![](figures/response_matrix.pdf) — normalized
 response matrix showing detector-level vs. particle-level $\tau$. The matrix
 is concentrated near the diagonal with a negative bias (reco $\tau$ systematically
 lower than gen $\tau$ due to tracking efficiency).
 
-**Figure:** `../../phase3_selection/figures/response_diagonal_frac.pdf` —
+**Figure:** ![](figures/response_diagonal_frac.pdf) —
 diagonal fraction per bin. Clearly shows the decrease from 89% at small $\tau$
 to ~30% in the fit range.
 
-**Figure:** `../../phase3_selection/figures/response_efficiency.pdf` —
+**Figure:** ![](figures/response_efficiency.pdf) —
 reconstruction efficiency $\varepsilon(\tau_\text{gen})$.
 
 ### 4.4 Detector Smearing Properties
@@ -554,7 +554,7 @@ and the smearing correction. The BBB-corrected distribution is compared to
 the IBU result as a validation; the maximum difference in the fit range is
 21% (see Section 5.6 and Section 6.2).
 
-**Figure:** `../../phase3_selection/figures/bbb_corrections.pdf` — BBB
+**Figure:** ![](figures/bbb_corrections.pdf) — BBB
 correction factors $C_\text{BBB}(\tau)$ as a function of $\tau$, showing the
 rising correction with increasing $\tau$.
 
@@ -590,7 +590,7 @@ from iteration 2 to 3 is 5%, which is at the plateau threshold, while
 further iterations show $< 1%$ change. Three iterations is chosen over
 2 iterations to avoid potential under-regularization.
 
-**Figure:** `../../phase3_selection/figures/closure_chi2_vs_iter.pdf` —
+**Figure:** ![](figures/closure_chi2_vs_iter.pdf) —
 $\chi^2/\text{ndf}$ as a function of iteration count for both closure and
 stress tests, showing the plateau behavior starting at iteration 3.
 
@@ -794,7 +794,7 @@ A genuine alternative-method systematic using SVD or TUnfold is identified
 as a Future Direction (Section 11, item 7), alongside the NLO+NLL $\alpha_s$
 extraction.
 
-**Figure:** `../../phase4_inference/figures/syst_dominant.pdf` — dominant
+**Figure:** ![](figures/syst_dominant.pdf) — dominant
 systematic shifts per bin (track momentum smearing and hadronization).
 
 ### 5.7 Hadronization Model
@@ -972,7 +972,7 @@ dominant track smearing (2.2%) and hadronization (2.0%) systematics.
 combined dataset is consistent with a stable detector throughout the
 1992–1995 running period.
 
-**Figure:** `../../phase2_exploration/figures/tau_year_consistency.pdf` —
+**Figure:** ![](figures/tau_year_consistency.pdf) —
 normalized $\tau$ distributions for each year overlaid with the combined
 result. The ratio panels show year/combined ratios flat to $< 2%$.
 
@@ -1008,7 +1008,7 @@ The BBB comparison is **not** included in the systematic error budget. Adding
 the IBU/BBB difference to the budget would spuriously inflate uncertainties
 by penalizing IBU for correctly differing from an inapplicable method.
 
-**Figure:** `../../phase3_selection/figures/prototype_method_comparison.pdf` —
+**Figure:** ![](figures/prototype_method_comparison.pdf) —
 ratio of flat-prior IBU to MC-prior IBU, and comparison of IBU to BBB, across
 all 25 bins. The IBU prior dependence ($< 2%$) is much smaller than the
 IBU vs. BBB difference (up to 21%).
@@ -1050,11 +1050,11 @@ slight over-regularization, consistent with 3 iterations being slightly more
 than necessary for full convergence — but the result at 2 iterations (0.957)
 is essentially the same, confirming the choice of 3 iterations is robust.
 
-**Figure:** `../../phase4_inference/figures/indep_closure_test.pdf` —
+**Figure:** ![](figures/indep_closure_test.pdf) —
 comparison of unfolded Half-B result to Half-B particle-level truth, with
 ratio panel. Residuals are within $\pm 2%$ in the fit range.
 
-**Figure:** `../../phase4_inference/figures/indep_closure_chi2_vs_iter.pdf` —
+**Figure:** ![](figures/indep_closure_chi2_vs_iter.pdf) —
 $\chi^2/\text{ndf}$ vs. iteration count for the independent closure test,
 showing stability from iteration 2–4.
 
@@ -1113,7 +1113,7 @@ recovers any smooth perturbation to the true spectrum from the MC prior.
 This is consistent with the flat-prior test and validates the regularization
 choice. The test passes at $\chi^2/\text{ndf} = 0.00031$.
 
-**Figure:** `../../phase3_selection/figures/closure_chi2_vs_iter.pdf` —
+**Figure:** ![](figures/closure_chi2_vs_iter.pdf) —
 $\chi^2/\text{ndf}$ vs. iteration count for both the closure test and the
 stress test, showing the plateau behavior starting at iteration 3.
 
@@ -1184,10 +1184,10 @@ driven primarily by the track momentum smearing and hadronization systematics
 correlation structure is no longer near-rank-1 and more accurately reflects
 the genuine correlations between unfolded bins.
 
-**Figure:** `../../phase4_inference/figures/cov_correlation_updated.pdf` —
+**Figure:** ![](figures/cov_correlation_updated.pdf) —
 correlation matrix heat map (BBB excluded).
 
-**Figure:** `../../phase4_inference/figures/cov_uncertainty_breakdown_updated.pdf` —
+**Figure:** ![](figures/cov_uncertainty_breakdown_updated.pdf) —
 total uncertainty per bin decomposed by source (statistical, track smear,
 hadronization, etc.).
 
@@ -1242,14 +1242,14 @@ are from 500 Poisson bootstrap replicas; systematic uncertainties are from
 the quadrature sum of all sources listed in Table 5.1 (BBB excluded).
 Machine-readable data are in `results/thrust_distribution.csv`.
 
-**Figure:** `../../phase4_inference/figures/final_result_with_unc.pdf` —
+**Figure:** ![](figures/final_result_with_unc.pdf) —
 the unfolded thrust distribution with total uncertainty bands overlaid.
 
-**Figure:** `../../phase4_inference/figures/final_result_fitrange.pdf` —
+**Figure:** ![](figures/final_result_fitrange.pdf) —
 the unfolded distribution in the fit range $\tau \in [0.05, 0.30]$, zoomed
 in for clarity.
 
-**Figure:** `../../phase4_inference/figures/final_result_unc_breakdown.pdf` —
+**Figure:** ![](figures/final_result_unc_breakdown.pdf) —
 the unfolded distribution with statistical-only and total uncertainty bands
 shown separately, illustrating the dominance of systematic uncertainties.
 
@@ -1291,11 +1291,11 @@ difference between the measured thrust distribution and the Pythia 6.1
 LEP-era tune. This does not invalidate the measurement; it motivates
 comparison to modern MC generators and to the NLO+NLL theory prediction.
 
-**Figure:** `../../phase4_inference/figures/compare_references.pdf` —
+**Figure:** ![](figures/compare_references.pdf) —
 data compared to Pythia 6.1 particle-level and approximate reference
 measurements.
 
-**Figure:** `../../phase4_inference/figures/compare_ratio.pdf` — ratio of
+**Figure:** ![](figures/compare_ratio.pdf) — ratio of
 data to Pythia 6.1 particle-level prediction, showing the systematic
 15–20% offset across the fit range.
 
@@ -1348,11 +1348,11 @@ is not a valid methodology for a precision measurement. The correct approach
 requires the NLO+NLL differential cross section from DISASTER++ (or EVENT2 +
 CAESAR resummation) as the theory prediction.
 
-**Figure:** `../../phase4_inference/figures/alphas_chi2_profile.pdf` — $\chi^2$
+**Figure:** ![](figures/alphas_chi2_profile.pdf) — $\chi^2$
 profile as a function of $r$ (scale factor), showing the flat profile that
 confirms the degeneracy of the LO approach.
 
-**Figure:** `../../phase4_inference/figures/alphas_data_vs_theory.pdf` —
+**Figure:** ![](figures/alphas_data_vs_theory.pdf) —
 data compared to the best-fit theory prediction at $r = 0.896$, with the
 fit range indicated.
 

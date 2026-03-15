@@ -101,15 +101,15 @@ uncertainties are track momentum smearing (2.2\%) and the hadronization
 model floor (2.0\%), with all other sources below 1.5\% per bin. The
 bin-by-bin (BBB) correction is computed as a cross-check but excluded
 from the systematic budget because BBB is known to fail when the
-response matrix diagonal fraction is below \$\sim\$70\% (this analysis:
-25--50\%); this difference is a validation that IBU is the correct
-method, not a systematic uncertainty. The normalized measurement is
-insensitive to luminosity and trigger efficiency, which cancel in the
+response matrix diagonal fraction is below \textasciitilde{}70\% (this
+analysis: 25--50\%); this difference is a validation that IBU is the
+correct method, not a systematic uncertainty. The normalized measurement
+is insensitive to luminosity and trigger efficiency, which cancel in the
 ratio. The corrected distribution is compared to the Pythia 6.1
 particle-level prediction, with \(\chi^2/\text{ndf} = 207.0/13 = 15.9\);
-the data is systematically \$\sim\$15--20\% below the MC prediction,
-consistent with the known tendency of the Pythia 6.1 LEP tune to
-overpredict soft hadronic activity. An indicative \(\alpha_s\)
+the data is systematically \textasciitilde{}15--20\% below the MC
+prediction, consistent with the known tendency of the Pythia 6.1 LEP
+tune to overpredict soft hadronic activity. An indicative \(\alpha_s\)
 extraction using leading-order QCD shape predictions demonstrates the
 methodology but does not constitute a precision measurement; this
 requires NLO+NLL differential cross-section calculations.
@@ -334,7 +334,7 @@ LEP1MC1994 & 40 files (\texttt{-001} to \texttt{-040}) & Pythia 6.1 &
 
 After applying \(\texttt{passesAll}\): \textbf{731,006 reconstructed
 events} are selected. The generator-level selection efficiency is:
-\[\varepsilon_{\text{gen}} = 771{,}597 / 973{,}769 = 79.2\%\] (from file
+\[\varepsilon_{\text{gen}} = 771{,}597 / 973{,}769 = 79.2%\] (from file
 001: 19,158 reco / 24,360 gen = 78.6\%). This efficiency is consistent
 with the published ALEPH hadronic selection efficiency of 94--95\%
 applied at the file level to a sample already filtered by the
@@ -390,7 +390,7 @@ Charged energy\strut
 \end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
 \(E_\text{ch} > 15\) GeV (sum of charged pion-mass momenta)\strut
 \end{minipage} & \begin{minipage}[t]{0.28\columnwidth}\raggedright
-\$\sim\$100.0\%\strut
+\textasciitilde{}100.0\%\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.12\columnwidth}\raggedright
 Minimum charged tracks\strut
@@ -399,7 +399,7 @@ Minimum charged tracks\strut
 \end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
 \(\geq 5\) good charged tracks\strut
 \end{minipage} & \begin{minipage}[t]{0.28\columnwidth}\raggedright
-\$\sim\$100.0\%\strut
+\textasciitilde{}100.0\%\strut
 \end{minipage}\tabularnewline
 \bottomrule
 \end{longtable}
@@ -495,10 +495,11 @@ events with good track and cluster coverage. The cut removes 2.3\% of
 events; data/MC agreement on the sphericity axis distribution is within
 5\%.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/datamc_missp.pdf}comparison
-of the missing momentum distribution. The distribution peaks near zero
-and falls steeply; data/MC ratio is flat at \$\sim\$1.0 across the
-distribution, with maximum deviation 4.1\%.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_missp.pdf} --- data/MC
+comparison of the missing momentum distribution. The distribution peaks
+near zero and falls steeply; data/MC ratio is flat at
+\textasciitilde{}1.0 across the distribution, with maximum deviation
+4.1\%.
 
 \textbf{Missing momentum cut (\(|\vec{p}_\text{miss}| < 20\) GeV):}
 Events with large missing momentum arise from \(Z \to \tau^+\tau^-\)
@@ -506,8 +507,8 @@ decays (where neutrinos from \(\tau\) decay carry away significant
 momentum) or from cosmic ray interactions. The cut removes an additional
 2.5\% of events after the sphericity cut. The 20 GeV threshold is chosen
 to be large compared to the resolution on missing momentum
-reconstruction (typically \$\sim\$3--5 GeV for hadronic events) while
-efficiently rejecting the \(\tau^+\tau^-\) tail.
+reconstruction (typically \textasciitilde{}3--5 GeV for hadronic events)
+while efficiently rejecting the \(\tau^+\tau^-\) tail.
 
 \textbf{ISR rejection:} Hard initial-state radiation (ISR) events are
 excluded because the measurement targets the hadronic system from \(Z\)
@@ -593,10 +594,10 @@ No hard ISR & 731,029 & 94.7\%\tabularnewline
 The tgenBefore sample (particle-level before selection) contains 973,769
 events.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/cutflow_by_year.pdf}event
-yields after each cut level, showing the uniformity of selection
-efficiency across the 1992--1995 data-taking period (all years
-consistent at \(94.7 \pm 0.1\%\)).
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/cutflow_by_year.pdf} ---
+per-year event yields after each cut level, showing the uniformity of
+selection efficiency across the 1992--1995 data-taking period (all years
+consistent at \(94.7 \pm 0.1%\)).
 
 \textbf{Table 3.5: Year-by-year data yields.}
 
@@ -657,29 +658,25 @@ high-momentum tail \(|p| > 10\) GeV). - TPC hit count: 28.6\% maximum
 deviation (MC uses simplified TPC model). - Missing momentum: 4.1\% ---
 excellent agreement.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/datamc_chg_pt.pdf}
+\textbf{Figures:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_chg_pt.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_chg_costheta.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_chg_pmag.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_chg_ntpc.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_chg_d0.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_chg_z0.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_missp.pdf}.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_chg_costheta.pdf}
+\textbf{\(\texttt{pwflag} = 4\) neutral clusters (25.2\% of momentum):}
+- Cluster \(|p|\): 5.8\% maximum deviation --- good shape agreement. -
+\(\cos\theta\): 7.4\% maximum deviation --- good agreement. - Cluster
+multiplicity: 67.1\% maximum deviation --- the MC overestimates the
+number of neutral clusters. This is a known limitation of Pythia 6.1 in
+modeling calorimeter cluster counting. Crucially, the cluster energy
+distribution is well-modeled (5.8\%), which is the variable directly
+relevant to the thrust calculation.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_chg_pmag.pdf}
+\textbf{Figures:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_e_neutral.pdf}.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_chg_ntpc.pdf}
-
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_chg_d0.pdf}
-
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_chg_z0.pdf}
-
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_missp.pdf} \textbf{\(\texttt{pwflag} = 4\)
-neutral clusters (25.2\% of momentum):} - Cluster \(|p|\): 5.8\% maximum
-deviation --- good shape agreement. - \(\cos\theta\): 7.4\% maximum
-deviation --- good agreement. - Cluster multiplicity: 67.1\% maximum
-deviation --- the MC overestimates the number of neutral clusters. This
-is a known limitation of Pythia 6.1 in modeling calorimeter cluster
-counting. Crucially, the cluster energy distribution is well-modeled
-(5.8\%), which is the variable directly relevant to the thrust
-calculation.
-
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/datamc_e_neutral.pdf}
 \textbf{\(\texttt{pwflag} = 1, 2, 5\) secondary categories (14.2\%
 combined):} - All three categories show data/MC agreement within 20\% in
 the bulk of their \(|p|\) and \(\cos\theta\) distributions. - These
@@ -687,21 +684,19 @@ categories are covered by the existing systematic program: pwflag=1 and
 2 by the track momentum smearing systematic; pwflag=5 by the calorimeter
 energy scale systematic.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/datamc_pwflag1_pmag.pdf}
+\textbf{Figures:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_pwflag1_pmag.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_pwflag2_pmag.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/datamc_pwflag5_pmag.pdf},
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/pwflag_momentum_fractions.pdf}.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_pwflag2_pmag.pdf}
-
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{datamc_pwflag5_pmag.pdf}
-
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{pwflag_momentum_fractions.pdf} \textbf{Assessment:} The
-MC model is adequate for the thrust measurement. Identified
-discrepancies --- neutral cluster multiplicity (67\%), track momentum
-tail (33\%), TPC hits (29\%) --- are all in distributions that are
-either not directly relevant to the thrust calculation (cluster count
-vs.~cluster energy) or are in tails with limited impact on the
-event-shape observable. The thrust-relevant quantities (track \(p_T\),
-\(\cos\theta\), neutral cluster energy, missing momentum) all show
-excellent data/MC agreement (\(< 8\%\)).
+\textbf{Assessment:} The MC model is adequate for the thrust
+measurement. Identified discrepancies --- neutral cluster multiplicity
+(67\%), track momentum tail (33\%), TPC hits (29\%) --- are all in
+distributions that are either not directly relevant to the thrust
+calculation (cluster count vs.~cluster energy) or are in tails with
+limited impact on the event-shape observable. The thrust-relevant
+quantities (track \(p_T\), \(\cos\theta\), neutral cluster energy,
+missing momentum) all show excellent data/MC agreement (\(< 8%\)).
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -796,7 +791,7 @@ region.}
 \([0.20, 0.30]\) & 29--32\% & IBU essential\tabularnewline
 \([0.30, 0.40]\) & 23--29\% & Low statistics, larger
 corrections\tabularnewline
-\([0.40, 0.50]\) & \$\sim\$0\% & Below noise floor ---
+\([0.40, 0.50]\) & \textasciitilde{}0\% & Below noise floor ---
 excluded\tabularnewline
 \bottomrule
 \end{longtable}
@@ -807,21 +802,27 @@ IBU is the appropriate choice.
 
 \textbf{Reconstruction efficiency:}
 \(\varepsilon(\tau_\text{gen}) \approx 0.75\)--\(0.80\) across the fit
-range, consistent with the
-\$\sim\(78.6\% generator-level selection efficiency. The efficiency is slightly higher for low-\)\tau\$
+range, consistent with the \textasciitilde{}78.6\% generator-level
+selection efficiency. The efficiency is slightly higher for low-\(\tau\)
 (more 2-jet-like) events, which are better reconstructed in the barrel
 region.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/response_matrix.pdf}response
-matrix showing detector-level vs.~particle-level \(\tau\). The matrix is
-concentrated near the diagonal with a negative bias (reco \(\tau\)
-systematically lower than gen \(\tau\) due to tracking efficiency).
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/response_matrix.pdf} ---
+normalized response matrix showing detector-level vs.~particle-level
+\(\tau\). The matrix is concentrated near the diagonal with a negative
+bias (reco \(\tau\) systematically lower than gen \(\tau\) due to
+tracking efficiency).
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/response_diagonal_frac.pdf}to
-\$\sim\$30\% in the fit range.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/response_diagonal_frac.pdf}
+--- diagonal fraction per bin. Clearly shows the decrease from 89\% at
+small \(\tau\) to \textasciitilde{}30\% in the fit range.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/response_efficiency.pdf}
-\#\#\# 4.4 Detector Smearing Properties
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/response_efficiency.pdf} ---
+reconstruction efficiency \(\varepsilon(\tau_\text{gen})\).
+
+\hypertarget{detector-smearing-properties}{%
+\subsubsection{4.4 Detector Smearing
+Properties}\label{detector-smearing-properties}}
 
 From matching detector-level to generator-level \(\tau\) for the full MC
 sample:
@@ -884,9 +885,9 @@ The BBB-corrected distribution is compared to the IBU result as a
 validation; the maximum difference in the fit range is 21\% (see Section
 5.6 and Section 6.2).
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/bbb_corrections.pdf}correction
-factors \(C_\text{BBB}(\tau)\) as a function of \(\tau\), showing the
-rising correction with increasing \(\tau\).
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/bbb_corrections.pdf} --- BBB
+correction factors \(C_\text{BBB}(\tau)\) as a function of \(\tau\),
+showing the rising correction with increasing \(\tau\).
 
 \hypertarget{regularization-choice}{%
 \subsubsection{4.6 Regularization Choice}\label{regularization-choice}}
@@ -955,7 +956,7 @@ Independent \(\chi^2/\text{ndf}\) (Phase 4a)\strut
 \begin{minipage}[t]{0.11\columnwidth}\raggedright
 5--10\strut
 \end{minipage} & \begin{minipage}[t]{0.37\columnwidth}\raggedright
-\$\sim\$2.62 / 13\strut
+\textasciitilde{}2.62 / 13\strut
 \end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\raggedright
 ---\strut
 \end{minipage}\tabularnewline
@@ -970,12 +971,13 @@ iterations --- excellent closure.
 
 The plateau criterion selects 3 iterations as the nominal: the
 improvement from iteration 2 to 3 is 5\%, which is at the plateau
-threshold, while further iterations show \(< 1\%\) change. Three
+threshold, while further iterations show \(< 1%\) change. Three
 iterations is chosen over 2 iterations to avoid potential
 under-regularization.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/closure_chi2_vs_iter.pdf}stress
-tests, showing the plateau behavior starting at iteration 3.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/closure_chi2_vs_iter.pdf} ---
+\(\chi^2/\text{ndf}\) as a function of iteration count for both closure
+and stress tests, showing the plateau behavior starting at iteration 3.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -1027,8 +1029,10 @@ Regularization & 0.23\% & Unfolding & Fully correlated\tabularnewline
 Selection (TPC hits) & 0.17\% & Detector & Fully
 correlated\tabularnewline
 Heavy flavor & 0.14\% & Theory & Fully correlated\tabularnewline
-Selection (MissP) & \$\sim\$0\% & Selection & ---\tabularnewline
-Selection efficiency & \$\sim\$0\% & Selection & ---\tabularnewline
+Selection (MissP) & \textasciitilde{}0\% & Selection &
+---\tabularnewline
+Selection efficiency & \textasciitilde{}0\% & Selection &
+---\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -1036,10 +1040,10 @@ Selection efficiency & \$\sim\$0\% & Selection & ---\tabularnewline
 comparison is computed as a cross-check (Section 6.2) but is
 \textbf{excluded from this table and from the covariance matrix}. The
 response matrix diagonal fraction is 25--50\% in the fit range, well
-below the \$\sim\$70\% threshold required for BBB to be reliable.
-Including the IBU/BBB difference (21\%) in the error budget would
-therefore measure the difference between a correct method (IBU) and a
-known-incorrect method (BBB), not a genuine uncertainty in the IBU
+below the \textasciitilde{}70\% threshold required for BBB to be
+reliable. Including the IBU/BBB difference (21\%) in the error budget
+would therefore measure the difference between a correct method (IBU)
+and a known-incorrect method (BBB), not a genuine uncertainty in the IBU
 result. See Section 5.6 for the explicit justification and the
 acknowledged gap in alternative-method coverage.
 
@@ -1050,17 +1054,16 @@ Smearing}\label{track-momentum-smearing}}
 \textbf{Source and motivation:} The ALEPH TPC measures track momenta via
 the curvature of charged tracks in the 1.5 T axial magnetic field. The
 momentum resolution is
-\(\sigma(p)/p \approx 0.6\%\,\cdot\,p\,[\text{GeV}]\) for isolated
+\(\sigma(p)/p \approx 0.6%\,\cdot\,p\,[\text{GeV}]\) for isolated
 tracks, dominated by multiple scattering at low momenta and measurement
 precision at high momenta. Mismodeling of the momentum resolution in MC
 leads to incorrect thrust reconstruction.
 
 \textbf{Evaluation method:} All track momenta in the MC are smeared by
-an additional Gaussian with width \(\sigma = 2\%\,\cdot\,|p|\)
-(systematic variations: \(\pm 2\%\)). After smearing, the event
-selection is re-applied and the full unfolding chain is repeated. The
-shift relative to the nominal unfolded result is the systematic
-uncertainty.
+an additional Gaussian with width \(\sigma = 2%\,\cdot\,|p|\)
+(systematic variations: \(\pm 2%\)). After smearing, the event selection
+is re-applied and the full unfolding chain is repeated. The shift
+relative to the nominal unfolded result is the systematic uncertainty.
 
 The 2\% smearing level is chosen to conservatively cover the observed
 data/MC discrepancy in the track momentum spectrum at intermediate
@@ -1085,15 +1088,15 @@ The maximum shift is 0.17\%.
 
 \textbf{Missing momentum variation:} The missing momentum cut
 (\(|\vec{p}_\text{miss}| < 20\) GeV) is tightened to 15 GeV. The shift
-is negligible (\$\sim\$0\%), because the cut is far from the bulk of the
-\(|\vec{p}_\text{miss}|\) distribution in hadronic events, and the
-data/MC agreement in the missing momentum distribution is excellent
-(4.1\%).
+is negligible (\textasciitilde{}0\%), because the cut is far from the
+bulk of the \(|\vec{p}_\text{miss}|\) distribution in hadronic events,
+and the data/MC agreement in the missing momentum distribution is
+excellent (4.1\%).
 
-\textbf{Selection efficiency:} A global \(\pm 0.3\%\) variation in
-selection efficiency produces negligible shift (\$\sim\$0\%) in the
-normalized shape distribution, as expected: an overall efficiency change
-does not alter the normalized shape.
+\textbf{Selection efficiency:} A global \(\pm 0.3%\) variation in
+selection efficiency produces negligible shift (\textasciitilde{}0\%) in
+the normalized shape distribution, as expected: an overall efficiency
+change does not alter the normalized shape.
 
 \textbf{Note on charged energy cut:} The pre-applied
 \(E_\text{ch} > 15\) GeV cut cannot be loosened (Section 3.1). Only
@@ -1110,7 +1113,7 @@ Contamination}\label{background-contamination}}
 decays in the selected sample is \(Z \to \tau^+\tau^-\) events where
 both taus decay hadronically. Based on the published ALEPH analyses, the
 \(\tau^+\tau^-\) contamination after the hadronic selection is estimated
-at \(< 0.3\%\). Two-photon events and \(\gamma\gamma\) processes are
+at \(< 0.3%\). Two-photon events and \(\gamma\gamma\) processes are
 negligible at \(\sqrt{s} = M_Z\).
 
 \(\tau^+\tau^-\) events have characteristically lower track
@@ -1120,9 +1123,9 @@ than hadronic \(Z\) decays. They are preferentially clustered at small
 thrust distribution upward near the 2-jet peak.
 
 \textbf{Evaluation method:} The background fraction is varied by
-\(\pm 50\%\) (from 0.3\% to 0.45\% or 0.15\%) and the corresponding
+\(\pm 50%\) (from 0.3\% to 0.45\% or 0.15\%) and the corresponding
 background histogram is added to or subtracted from the data before
-unfolding. The conservative \(\pm 50\%\) variation reflects both the
+unfolding. The conservative \(\pm 50%\) variation reflects both the
 uncertainty in the background estimation and the fact that the
 background level is small.
 
@@ -1181,8 +1184,8 @@ the systematic budget} for the following reason:
 
 \textbf{Why BBB is excluded:} BBB correction is known to produce
 unreliable results when the response matrix diagonal fraction is
-substantially below \$\sim\$70\%. In this analysis, the diagonal
-fraction ranges from 53\% at \(\tau \approx 0.05\) to 29\% at
+substantially below \textasciitilde{}70\%. In this analysis, the
+diagonal fraction ranges from 53\% at \(\tau \approx 0.05\) to 29\% at
 \(\tau \approx 0.27\) (Table D.2). Using the IBU/BBB difference as a
 systematic would measure the difference between a correct method (IBU)
 and a known-incorrect method (BBB), not a genuine uncertainty in the
@@ -1212,7 +1215,7 @@ the following grounds:
   substantially from an inappropriate method, as expected, validating
   that IBU correctly handles the bin migrations.
 \item
-  The flat-prior sensitivity (\(< 0.24\%\), Section 5.5) confirms the
+  The flat-prior sensitivity (\(< 0.24%\), Section 5.5) confirms the
   result is not prior-dominated.
 \end{enumerate}
 
@@ -1220,8 +1223,9 @@ A genuine alternative-method systematic using SVD or TUnfold is
 identified as a Future Direction (Section 11, item 7), alongside the
 NLO+NLL \(\alpha_s\) extraction.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/syst_dominant.pdf}systematic
-shifts per bin (track momentum smearing and hadronization).
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/syst_dominant.pdf} ---
+dominant systematic shifts per bin (track momentum smearing and
+hadronization).
 
 \hypertarget{hadronization-model}{%
 \subsubsection{5.7 Hadronization Model}\label{hadronization-model}}
@@ -1243,7 +1247,7 @@ fragmentation-model differences and their interaction with the detector
 response. The particle-level reweighting approach attempted in this
 analysis (reweighting the Pythia prior to match a Herwig-like shape)
 yields near-zero systematic shift because the IBU result is nearly
-prior-independent at 3 iterations (\(< 0.3\%\) prior sensitivity). This
+prior-independent at 3 iterations (\(< 0.3%\) prior sensitivity). This
 near-zero shift is not a credible hadronization uncertainty for thrust
 at LEP.
 
@@ -1297,14 +1301,14 @@ approximately 22\%, and the \(b\)-quark fragmentation function is not
 perfectly modeled in Pythia 6.1.
 
 \textbf{Evaluation method:} The \(b\bar{b}\) fraction is varied by
-\(\pm 5\%\), reweighting events by their generator-level quark content.
+\(\pm 5%\), reweighting events by their generator-level quark content.
 Because the \(\texttt{bFlag}\) variable is set to \(-999\) for all MC
 events in the archived sample (not filled), the \(b\)-quark information
 is extracted from the generator-level particle content in the
 \(\texttt{tgen}\) tree.
 
 \textbf{Impact:} Maximum shift of 0.14\%, small because: (a) the
-\(b\)-fraction variation of \(\pm 5\%\) is modest relative to the 22\%
+\(b\)-fraction variation of \(\pm 5%\) is modest relative to the 22\%
 nominal fraction; (b) the thrust distribution for \(b\bar{b}\) events
 differs from light-quark events primarily at small \(\tau\) (the
 \(b\)-quark produces a harder, more pencil-like 2-jet configuration),
@@ -1341,7 +1345,7 @@ this motivates a calorimeter variation). Neutral objects contribute
 35.6\% of total event momentum.
 
 \textbf{Evaluation method:} All neutral cluster (pwflag=4 and pwflag=5)
-energies are scaled by \(\pm 5\%\). The full unfolding chain is repeated
+energies are scaled by \(\pm 5%\). The full unfolding chain is repeated
 and the shift is recorded.
 
 \textbf{Impact:} Maximum shift of 1.23\%. This is a modest contribution,
@@ -1401,7 +1405,7 @@ PASS\strut
 \begin{minipage}[t]{0.10\columnwidth}\raggedright
 Tracking resolution\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
-\(\pm 2\%\) momentum smear\strut
+\(\pm 2%\) momentum smear\strut
 \end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\raggedright
 Required\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright
@@ -1414,7 +1418,7 @@ PASS\strut
 \begin{minipage}[t]{0.10\columnwidth}\raggedright
 Calorimeter response\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
-\(\pm 5\%\) energy scale\strut
+\(\pm 5%\) energy scale\strut
 \end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\raggedright
 Required\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright
@@ -1427,7 +1431,7 @@ PASS\strut
 \begin{minipage}[t]{0.10\columnwidth}\raggedright
 Selection efficiency\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
-\(\pm 0.3\%\) global eff.\strut
+\(\pm 0.3%\) global eff.\strut
 \end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\raggedright
 Required\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright
@@ -1440,7 +1444,7 @@ PASS\strut
 \begin{minipage}[t]{0.10\columnwidth}\raggedright
 Background subtraction\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
-\(\pm 50\%\) on 0.3\%\strut
+\(\pm 50%\) on 0.3\%\strut
 \end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\raggedright
 Required\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright
@@ -1518,7 +1522,7 @@ PASS\strut
 \begin{minipage}[t]{0.10\columnwidth}\raggedright
 Heavy flavor\strut
 \end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\raggedright
-\(\pm 5\%\) \(b\)-fraction\strut
+\(\pm 5%\) \(b\)-fraction\strut
 \end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\raggedright
 Recommended\strut
 \end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\raggedright
@@ -1569,10 +1573,10 @@ here; documented as a known limitation.
 ***PARTIAL: BBB correction factors are computed (Section 4.5) and the
 IBU/BBB comparison is documented as a cross-check (Section 6.2).
 However, BBB is excluded from the error budget because the response
-matrix diagonal fraction (25--50\%) is far below the \$\sim\$70\%
-threshold required for BBB reliability. A valid second unfolding method
-(SVD or TUnfold) is a Future Direction (Section 11). The explicit
-justification for this gap is given in Section 5.6.
+matrix diagonal fraction (25--50\%) is far below the
+\textasciitilde{}70\% threshold required for BBB reliability. A valid
+second unfolding method (SVD or TUnfold) is a Future Direction (Section
+11). The explicit justification for this gap is given in Section 5.6.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -1592,23 +1596,26 @@ using the same response matrix (derived from all 40 MC files). The
 corrected thrust distributions from each year are compared.
 
 \textbf{Result:} The ratio of each year's normalized \(\tau\)
-distribution to the combined distribution is flat to within \$\sim\$2\%
-across the range \(\tau = 0.02\)--\(0.35\). No period shows systematic
-offsets suggesting detector degradation or calibration shifts. The
-year-by-year efficiency is uniformly 94.7\% across all periods.
+distribution to the combined distribution is flat to within
+\textasciitilde{}2\% across the range \(\tau = 0.02\)--\(0.35\). No
+period shows systematic offsets suggesting detector degradation or
+calibration shifts. The year-by-year efficiency is uniformly 94.7\%
+across all periods.
 
 \textbf{Quantitative:} The \(\chi^2\) between any pair of year-specific
 distributions (computed using statistical uncertainties only) is
 consistent with \(\chi^2/\text{ndf} \approx 1\). The year-by-year
-systematic is estimated at \(< 2\%\), comparable to the dominant track
+systematic is estimated at \(< 2%\), comparable to the dominant track
 smearing (2.2\%) and hadronization (2.0\%) systematics.
 
 \textbf{Conclusion:} No evidence for year-to-year detector
 instabilities. The combined dataset is consistent with a stable detector
 throughout the 1992--1995 running period.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase2_exploration/figures/tau_year_consistency.pdf}result.
-The ratio panels show year/combined ratios flat to \(< 2\%\).
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/tau_year_consistency.pdf} ---
+normalized \(\tau\) distributions for each year overlaid with the
+combined result. The ratio panels show year/combined ratios flat to
+\(< 2%\).
 
 \hypertarget{ibu-vs.bin-by-bin-comparison-cross-check}{%
 \subsubsection{6.2 IBU vs.~Bin-by-Bin Comparison
@@ -1629,25 +1636,27 @@ BBB-corrected distribution is compared to the IBU unfolded distribution.
 IBU/BBB ratio: 1.21 (at \(\tau \sim 0.06\)) - The BBB systematically
 overestimates the distribution in the low-\(\tau\) region where
 migrations from higher-\(\tau\) bins are most significant. - Outside the
-fit range, the difference grows to \(> 50\%\) at \(\tau > 0.35\) where
+fit range, the difference grows to \(> 50%\) at \(\tau > 0.35\) where
 the BBB correction diverges (near-zero MC reco denominator).
 
 \textbf{Interpretation:} The large difference between IBU and BBB is the
 \textbf{expected} behavior given the response matrix properties: 1. Bin
-migrations are substantial (\$\sim\$20\% in the fit range), making BBB
-unreliable as a correction method. 2. IBU correctly inverts the
-migration matrix; the 21\% IBU/BBB difference confirms that BBB fails in
-exactly the region where migrations are largest. 3. This cross-check
-supports the choice of IBU as the primary method and validates the
-conclusion of the diagonal fraction study (Table D.2).
+migrations are substantial (\textasciitilde{}20\% in the fit range),
+making BBB unreliable as a correction method. 2. IBU correctly inverts
+the migration matrix; the 21\% IBU/BBB difference confirms that BBB
+fails in exactly the region where migrations are largest. 3. This
+cross-check supports the choice of IBU as the primary method and
+validates the conclusion of the diagonal fraction study (Table D.2).
 
 The BBB comparison is \textbf{not} included in the systematic error
 budget. Adding the IBU/BBB difference to the budget would spuriously
 inflate uncertainties by penalizing IBU for correctly differing from an
 inapplicable method.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/prototype_method_comparison.pdf}all
-25 bins. The IBU prior dependence (\(< 2\%\)) is much smaller than the
+\textbf{Figure:}
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/prototype_method_comparison.pdf} --- ratio of
+flat-prior IBU to MC-prior IBU, and comparison of IBU to BBB, across all
+25 bins. The IBU prior dependence (\(< 2%\)) is much smaller than the
 IBU vs.~BBB difference (up to 21\%).
 
 \hypertarget{closure-test-with-independent-mc-halves}{%
@@ -1698,11 +1707,14 @@ consistent with 3 iterations being slightly more than necessary for full
 convergence --- but the result at 2 iterations (0.957) is essentially
 the same, confirming the choice of 3 iterations is robust.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/indep_closure_test.pdf}ratio
-panel. Residuals are within \(\pm 2\%\) in the fit range.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/indep_closure_test.pdf} ---
+comparison of unfolded Half-B result to Half-B particle-level truth,
+with ratio panel. Residuals are within \(\pm 2%\) in the fit range.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/indep_closure_chi2_vs_iter.pdf}showing
-stability from iteration 2--4.
+\textbf{Figure:}
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/indep_closure_chi2_vs_iter.pdf} ---
+\(\chi^2/\text{ndf}\) vs.~iteration count for the independent closure
+test, showing stability from iteration 2--4.
 
 \hypertarget{ibu-stress-test}{%
 \subsubsection{6.4 IBU Stress Test}\label{ibu-stress-test}}
@@ -1766,8 +1778,7 @@ artifact. It reflects two properties of the analysis:
 The \(\chi^2\) values are computed per bin relative to the spread of the
 MC statistical fluctuations (\(\sim 1000\)-event statistics in the
 pseudo-data); the small values are consistent with the known
-prior-independence (\(< 0.3\%\)) and the iteration plateau (Section
-4.6).
+prior-independence (\(< 0.3%\)) and the iteration plateau (Section 4.6).
 
 \textbf{Conclusion:} The stress test confirms that IBU with 3 iterations
 correctly recovers any smooth perturbation to the true spectrum from the
@@ -1775,8 +1786,9 @@ MC prior. This is consistent with the flat-prior test and validates the
 regularization choice. The test passes at
 \(\chi^2/\text{ndf} = 0.00031\).
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase3_selection/figures/closure_chi2_vs_iter.pdf}stress
-test, showing the plateau behavior starting at iteration 3.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/closure_chi2_vs_iter.pdf} ---
+\(\chi^2/\text{ndf}\) vs.~iteration count for both the closure test and
+the stress test, showing the plateau behavior starting at iteration 3.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -1862,9 +1874,13 @@ correlated across bins). Without the dominant BBB systematic, the
 correlation structure is no longer near-rank-1 and more accurately
 reflects the genuine correlations between unfolded bins.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/cov_correlation_updated.pdf}
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/cov_uncertainty_breakdown_updated.pdf}hadronization,
-etc.).
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/cov_correlation_updated.pdf}
+--- correlation matrix heat map (BBB excluded).
+
+\textbf{Figure:}
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/cov_uncertainty_breakdown_updated.pdf} ---
+total uncertainty per bin decomposed by source (statistical, track
+smear, hadronization, etc.).
 
 \hypertarget{alpha_s-extraction-method}{%
 \subsubsection{\texorpdfstring{7.5 \(\alpha_s\) Extraction
@@ -2127,12 +2143,18 @@ uncertainties are from the quadrature sum of all sources listed in Table
 5.1 (BBB excluded). Machine-readable data are in
 \texttt{results/thrust\_distribution.csv}.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/final_result_with_unc.pdf}
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/final_result_fitrange.pdf}in
-for clarity.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/final_result_with_unc.pdf} ---
+the unfolded thrust distribution with total uncertainty bands overlaid.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/final_result_unc_breakdown.pdf}shown
-separately, illustrating the dominance of systematic uncertainties.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/final_result_fitrange.pdf} ---
+the unfolded distribution in the fit range \(\tau \in [0.05, 0.30]\),
+zoomed in for clarity.
+
+\textbf{Figure:}
+\includegraphics[width=0.85\textwidth,keepaspectratio]{figures/final_result_unc_breakdown.pdf} --- the
+unfolded distribution with statistical-only and total uncertainty bands
+shown separately, illustrating the dominance of systematic
+uncertainties.
 
 \hypertarget{datamc-comparison}{%
 \subsubsection{8.2 Data/MC Comparison}\label{datamc-comparison}}
@@ -2144,14 +2166,15 @@ prediction using the full covariance matrix:
 \textbf{Result:} \(\chi^2/\text{ndf} = 207.0/13 = 15.9\), \(p\)-value =
 \(5.0 \times 10^{-37}\).
 
-The large \(\chi^2/\text{ndf}\) reflects the systematic \$\sim\$15--20\%
-offset between the data and Pythia 6.1 across the entire fit range.
-Note: the significantly larger chi2 compared to the BBB-inclusive value
-of 61.0/13 is expected and correct --- with BBB in the budget, the
-covariance matrix was inflated by a near-rank-1 contribution that
-artificially suppressed the chi2. The value of 207.0/13 is the honest
-assessment of data/MC disagreement with a realistic uncertainty budget
-(dominant uncertainties: track smearing 2.2\%, hadronization 2.0\%).
+The large \(\chi^2/\text{ndf}\) reflects the systematic
+\textasciitilde{}15--20\% offset between the data and Pythia 6.1 across
+the entire fit range. Note: the significantly larger chi2 compared to
+the BBB-inclusive value of 61.0/13 is expected and correct --- with BBB
+in the budget, the covariance matrix was inflated by a near-rank-1
+contribution that artificially suppressed the chi2. The value of
+207.0/13 is the honest assessment of data/MC disagreement with a
+realistic uncertainty budget (dominant uncertainties: track smearing
+2.2\%, hadronization 2.0\%).
 
 Investigation confirms this is a genuine physics difference, not a
 measurement artifact:
@@ -2185,11 +2208,13 @@ the Pythia 6.1 LEP-era tune. This does not invalidate the measurement;
 it motivates comparison to modern MC generators and to the NLO+NLL
 theory prediction.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/compare_references.pdf}measurements.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/compare_references.pdf} ---
+data compared to Pythia 6.1 particle-level and approximate reference
+measurements.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/compare_ratio.pdf}data
-to Pythia 6.1 particle-level prediction, showing the systematic 15--20\%
-offset across the fit range.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/compare_ratio.pdf} --- ratio
+of data to Pythia 6.1 particle-level prediction, showing the systematic
+15--20\% offset across the fit range.
 
 \hypertarget{alpha_sm_z-methodological-demonstration}{%
 \subsubsection{\texorpdfstring{8.3 \(\alpha_s(M_Z)\) Methodological
@@ -2259,12 +2284,13 @@ The correct approach requires the NLO+NLL differential cross section
 from DISASTER++ (or EVENT2 + CAESAR resummation) as the theory
 prediction.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/alphas_chi2_profile.pdf}profile
-as a function of \(r\) (scale factor), showing the flat profile that
-confirms the degeneracy of the LO approach.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/alphas_chi2_profile.pdf} ---
+\(\chi^2\) profile as a function of \(r\) (scale factor), showing the
+flat profile that confirms the degeneracy of the LO approach.
 
-\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{../../phase4_inference/figures/alphas_data_vs_theory.pdf}fit
-range indicated.
+\textbf{Figure:} \includegraphics[width=0.85\textwidth,keepaspectratio]{figures/alphas_data_vs_theory.pdf} ---
+data compared to the best-fit theory prediction at \(r = 0.896\), with
+the fit range indicated.
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -2375,7 +2401,7 @@ consistent with digitization errors in the reference values; a
 comparison using official HEPData tables would be required for a
 definitive assessment. The tension is driven primarily by the
 low-\(\tau\) bins (\(\tau < 0.12\)) where the two distributions differ
-by \(\sim 5\)--\(10\%\), consistent with the known data-taking and
+by \(\sim 5\)--\(10%\), consistent with the known data-taking and
 selection differences between this analysis and ALEPH 2004.
 
 \hypertarget{comparison-to-alpha_s-world-combination}{%
@@ -2394,8 +2420,8 @@ PDG 2022 world average & 0.1180 & \(\pm 0.0009\) &
 \(1.0\sigma\)\tabularnewline
 LEP combination (hep-ex/0411006) & 0.1202 & \(\pm 0.0048\) (theo) &
 \(1.1\sigma\)\tabularnewline
-ALEPH 2004 (thrust, NLO+NLL) & \$\sim\$0.1200 & \(\pm 0.0048\) (theo) &
-\(1.1\sigma\)\tabularnewline
+ALEPH 2004 (thrust, NLO+NLL) & \textasciitilde{}0.1200 & \(\pm 0.0048\)
+(theo) & \(1.1\sigma\)\tabularnewline
 \textbf{This analysis {[}indicative LO, degenerate{]}} & \textbf{0.1066}
 & \textbf{\(\pm 0.0052\) (approx.)} & ---\tabularnewline
 \bottomrule
@@ -2421,11 +2447,11 @@ using the archived ALEPH dataset. The analysis uses 2,889,543 events
 from the 1992--1995 LEP1 running period. After correcting for detector
 effects with iterative Bayesian unfolding (3 iterations), the corrected
 distribution is provided with per-bin statistical uncertainties of
-\$\sim\$0.1--0.5\% and systematic uncertainties of 2.2--3.5\% (dominated
-by track momentum smearing at 2.2\% and hadronization model at 2.0\%).
-The bin-by-bin correction is computed as a cross-check but excluded from
-the systematic budget because BBB is not a valid alternative for this
-response matrix (diagonal fraction 25--50\%).
+\textasciitilde{}0.1--0.5\% and systematic uncertainties of 2.2--3.5\%
+(dominated by track momentum smearing at 2.2\% and hadronization model
+at 2.0\%). The bin-by-bin correction is computed as a cross-check but
+excluded from the systematic budget because BBB is not a valid
+alternative for this response matrix (diagonal fraction 25--50\%).
 
 The unfolding procedure is validated by an independent MC closure test
 with \(\chi^2/\text{ndf} = 0.924\), demonstrating accurate
@@ -2433,7 +2459,7 @@ reconstruction of the particle-level distribution. The stress test
 (Section 6.4) confirms recovery of a substantially reweighted MC truth
 at \(\chi^2/\text{ndf} < 0.001\), consistent with the
 near-prior-independence at 3 iterations. The result is not
-prior-dominated (\(< 0.24\%\) flat-prior sensitivity).
+prior-dominated (\(< 0.24%\) flat-prior sensitivity).
 
 The corrected distribution is compared to Pythia 6.1 particle-level
 prediction, yielding \(\chi^2/\text{ndf} = 207.0/13 = 15.9\). This large
@@ -2899,7 +2925,7 @@ TPC\strut
 Note: ``Hadr. floor'' is the 2\% per-bin conservative floor. BBB shifts
 (formerly 0.07--1.1 absolute) are listed in Section 6.2 as a cross-check
 reference and are excluded from the covariance matrix. Statistical
-uncertainties are \(\leq 0.5\%\) of the central value (up to 0.0075 for
+uncertainties are \(\leq 0.5%\) of the central value (up to 0.0075 for
 the first bin).
 
 \textbf{Table A.2: Per-bin relative systematic shifts (\% of central
@@ -3413,7 +3439,7 @@ Bin \(\tau \in\) & Diagonal fraction\tabularnewline
 \([0.26, 0.28]\) & 29\%\tabularnewline
 \([0.28, 0.30]\) & 29\%\tabularnewline
 \([0.30, 0.40]\) & 23--29\%\tabularnewline
-\([0.40, 0.50]\) & \$\sim\$0\%\tabularnewline
+\([0.40, 0.50]\) & \textasciitilde{}0\%\tabularnewline
 \bottomrule
 \end{longtable}
 

@@ -1,0 +1,68 @@
+\contentsline {section}{\numberline {1}Precision Measurement of the Thrust Distribution and \(\alpha _s\) Extraction in \(e^+e^-\) Collisions at \(\sqrt {s} = 91.2\) GeV Using Archived ALEPH Data}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Abstract}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}1. Introduction}{3}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}1.1 Physics Motivation}{3}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}1.2 Observable Definition}{3}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.3}1.3 Particle-Level Definition}{4}{subsubsection.1.2.3}
+\contentsline {subsubsection}{\numberline {1.2.4}1.4 Perturbative QCD Predictions}{4}{subsubsection.1.2.4}
+\contentsline {subsubsection}{\numberline {1.2.5}1.5 Prior Measurements}{4}{subsubsection.1.2.5}
+\contentsline {subsection}{\numberline {1.3}2. Data Samples}{5}{subsection.1.3}
+\contentsline {subsubsection}{\numberline {1.3.1}2.1 Data}{5}{subsubsection.1.3.1}
+\contentsline {subsubsection}{\numberline {1.3.2}2.2 Monte Carlo Simulation}{5}{subsubsection.1.3.2}
+\contentsline {subsection}{\numberline {1.4}3. Event Selection}{6}{subsection.1.4}
+\contentsline {subsubsection}{\numberline {1.4.1}3.1 Pre-Applied Cuts}{6}{subsubsection.1.4.1}
+\contentsline {subsubsection}{\numberline {1.4.2}3.2 Additional Event-Level Cuts}{7}{subsubsection.1.4.2}
+\contentsline {subsubsection}{\numberline {1.4.3}3.3 Object Selection}{8}{subsubsection.1.4.3}
+\contentsline {subsubsection}{\numberline {1.4.4}3.4 Cutflow Table}{9}{subsubsection.1.4.4}
+\contentsline {subsubsection}{\numberline {1.4.5}3.5 Data/MC Validation per Object Category}{10}{subsubsection.1.4.5}
+\contentsline {subsection}{\numberline {1.5}4. Corrections and Unfolding}{18}{subsection.1.5}
+\contentsline {subsubsection}{\numberline {1.5.1}4.1 IBU Algorithm}{18}{subsubsection.1.5.1}
+\contentsline {subsubsection}{\numberline {1.5.2}4.2 Normalization Procedure}{19}{subsubsection.1.5.2}
+\contentsline {subsubsection}{\numberline {1.5.3}4.3 Response Matrix}{19}{subsubsection.1.5.3}
+\contentsline {subsubsection}{\numberline {1.5.4}4.4 Detector Smearing Properties}{21}{subsubsection.1.5.4}
+\contentsline {subsubsection}{\numberline {1.5.5}4.5 Bin-by-Bin Correction Cross-Check}{22}{subsubsection.1.5.5}
+\contentsline {subsubsection}{\numberline {1.5.6}4.6 Regularization Choice}{23}{subsubsection.1.5.6}
+\contentsline {subsection}{\numberline {1.6}5. Systematic Uncertainties}{24}{subsection.1.6}
+\contentsline {subsubsection}{\numberline {1.6.1}5.1 Track Momentum Smearing}{25}{subsubsection.1.6.1}
+\contentsline {subsubsection}{\numberline {1.6.2}5.2 Selection Cut Variations}{25}{subsubsection.1.6.2}
+\contentsline {subsubsection}{\numberline {1.6.3}5.3 Background Contamination}{26}{subsubsection.1.6.3}
+\contentsline {subsubsection}{\numberline {1.6.4}5.4 Regularization Dependence}{26}{subsubsection.1.6.4}
+\contentsline {subsubsection}{\numberline {1.6.5}5.5 Prior Dependence}{26}{subsubsection.1.6.5}
+\contentsline {subsubsection}{\numberline {1.6.6}5.6 Alternative Unfolding Method (BBB) --- Excluded from Budget}{27}{subsubsection.1.6.6}
+\contentsline {subsubsection}{\numberline {1.6.7}5.7 Hadronization Model}{28}{subsubsection.1.6.7}
+\contentsline {subsubsection}{\numberline {1.6.8}5.8 ISR Treatment}{29}{subsubsection.1.6.8}
+\contentsline {subsubsection}{\numberline {1.6.9}5.9 Heavy Flavor (\(b\)-quark)}{29}{subsubsection.1.6.9}
+\contentsline {subsubsection}{\numberline {1.6.10}5.10 MC Statistics}{29}{subsubsection.1.6.10}
+\contentsline {subsubsection}{\numberline {1.6.11}5.11 Calorimeter Energy Scale}{30}{subsubsection.1.6.11}
+\contentsline {subsubsection}{\numberline {1.6.12}5.12 Systematic Completeness Verification}{30}{subsubsection.1.6.12}
+\contentsline {subsection}{\numberline {1.7}6. Cross-Checks}{31}{subsection.1.7}
+\contentsline {subsubsection}{\numberline {1.7.1}6.1 Year-by-Year Consistency}{31}{subsubsection.1.7.1}
+\contentsline {subsubsection}{\numberline {1.7.2}6.2 IBU vs.\nobreakspace {}Bin-by-Bin Comparison (Cross-Check)}{32}{subsubsection.1.7.2}
+\contentsline {subsubsection}{\numberline {1.7.3}6.3 Closure Test with Independent MC Halves}{33}{subsubsection.1.7.3}
+\contentsline {subsubsection}{\numberline {1.7.4}6.4 IBU Stress Test}{35}{subsubsection.1.7.4}
+\contentsline {subsection}{\numberline {1.8}7. Statistical Method}{37}{subsection.1.8}
+\contentsline {subsubsection}{\numberline {1.8.1}7.1 IBU Description}{37}{subsubsection.1.8.1}
+\contentsline {subsubsection}{\numberline {1.8.2}7.2 Statistical Covariance Construction}{37}{subsubsection.1.8.2}
+\contentsline {subsubsection}{\numberline {1.8.3}7.3 Total Covariance Construction}{37}{subsubsection.1.8.3}
+\contentsline {subsubsection}{\numberline {1.8.4}7.4 Covariance Matrix Validation}{37}{subsubsection.1.8.4}
+\contentsline {subsubsection}{\numberline {1.8.5}7.5 \(\alpha _s\) Extraction Method}{39}{subsubsection.1.8.5}
+\contentsline {subsection}{\numberline {1.9}8. Results}{40}{subsection.1.9}
+\contentsline {subsubsection}{\numberline {1.9.1}8.1 Corrected Thrust Distribution}{40}{subsubsection.1.9.1}
+\contentsline {subsubsection}{\numberline {1.9.2}8.2 Data/MC Comparison}{43}{subsubsection.1.9.2}
+\contentsline {subsubsection}{\numberline {1.9.3}8.3 \(\alpha _s(M_Z)\) Methodological Demonstration}{45}{subsubsection.1.9.3}
+\contentsline {subsection}{\numberline {1.10}9. Comparison to Prior Results and Theory}{47}{subsection.1.10}
+\contentsline {subsubsection}{\numberline {1.10.1}9.1 Comparison to Pythia 6.1 Particle Level}{47}{subsubsection.1.10.1}
+\contentsline {subsubsection}{\numberline {1.10.2}9.2 Comparison to Published ALEPH Results}{47}{subsubsection.1.10.2}
+\contentsline {subsubsection}{\numberline {1.10.3}9.3 Comparison to \(\alpha _s\) World Combination}{48}{subsubsection.1.10.3}
+\contentsline {subsection}{\numberline {1.11}10. Conclusions}{49}{subsection.1.11}
+\contentsline {subsubsection}{\numberline {1.11.1}10.1 Summary of Results}{49}{subsubsection.1.11.1}
+\contentsline {subsubsection}{\numberline {1.11.2}10.2 Dominant Limitations}{49}{subsubsection.1.11.2}
+\contentsline {subsubsection}{\numberline {1.11.3}10.3 Physics Interpretation}{50}{subsubsection.1.11.3}
+\contentsline {subsection}{\numberline {1.12}11. Future Directions}{50}{subsection.1.12}
+\contentsline {subsection}{\numberline {1.13}12. Appendices}{51}{subsection.1.13}
+\contentsline {subsubsection}{\numberline {1.13.1}Appendix A: Full Per-Bin Systematic Tables}{51}{subsubsection.1.13.1}
+\contentsline {subsubsection}{\numberline {1.13.2}Appendix B: Covariance and Correlation Matrices}{52}{subsubsection.1.13.2}
+\contentsline {subsubsection}{\numberline {1.13.3}Appendix C: Extended Cutflow Tables}{53}{subsubsection.1.13.3}
+\contentsline {subsubsection}{\numberline {1.13.4}Appendix D: Response Matrix Properties}{53}{subsubsection.1.13.4}
+\contentsline {subsection}{\numberline {1.14}References}{54}{subsection.1.14}
+\contentsline {subsection}{\numberline {1.15}Machine-Readable Results}{55}{subsection.1.15}
