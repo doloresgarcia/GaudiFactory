@@ -62,13 +62,31 @@ where input data lives (the isolation hook needs this to allow data access).
 
 ## Running an analysis
 
+**From a new Claude Code instance** (recommended for long analyses):
 ```bash
 cd analyses/foo
 pixi install
 claude    # starts the orchestrator agent
 ```
 
-The analysis-root CLAUDE.md contains everything the agent needs:
-tool requirements, coding rules, scale-out rules, plotting conventions,
-phase gates, review protocol, phase regression, feasibility evaluation,
-orchestrator execution model, and pixi reference.
+**From this top-level session** (for quick runs or when you want to
+orchestrate directly):
+```bash
+pixi run scaffold analyses/foo --type measurement
+# Set data path:
+echo "data_dir=/path/to/data" > analyses/foo/.analysis_config
+cd analyses/foo
+pixi install
+```
+Then orchestrate from here — read the analysis CLAUDE.md, spawn subagents
+into the analysis directory. The analysis-root CLAUDE.md contains the full
+orchestrator protocol.
+
+## Dev workflow (from repo root)
+
+When working on the spec itself (not running an analysis):
+- Edit templates in `src/templates/`
+- Edit methodology in `src/methodology/`
+- Test scaffolder: `pixi run scaffold /tmp/test --type measurement`
+- The isolation hook only activates inside analysis dirs (where
+  `.analysis_config` exists). At repo root, all file access is allowed.
