@@ -1,15 +1,33 @@
 # Phase 1: Strategy
 
-> **End goal.** This analysis produces a publication-quality analysis note
-> for journal submission. Every phase contributes to that goal. Work should
-> meet the standard of external scrutiny — a journal referee, a collaboration
-> review committee, or a competing group doing the same measurement.
+> Read `methodology/03-phases.md` → "Phase 1" for full requirements.
 
 You are developing the analysis strategy for a **{{analysis_type}}** analysis.
 
 **Start in plan mode.** Before writing any code or prose, produce a plan:
 what literature you will query, what samples you expect, what the artifact
 structure will be. Execute after the plan is set.
+
+## Output artifact
+
+`exec/STRATEGY.md` — analysis strategy with physics motivation, sample
+inventory, selection approach, systematic plan, and technique selection.
+
+## Methodology references
+
+- Phase requirements: `methodology/03-phases.md` → Phase 1
+- Review protocol: `methodology/06-review.md` → §6.2 (4-bot), §6.4
+- Artifacts: `methodology/05-artifacts.md`
+
+## RAG queries (mandatory)
+
+Before writing the strategy, query the experiment corpus (via MCP tools):
+1. `search_lep_corpus`: prior measurements of the same or similar observables
+2. `search_lep_corpus`: standard systematic sources for this analysis technique
+3. `compare_measurements`: cross-experiment results if applicable
+4. `get_paper`: drill into each reference analysis identified
+
+Cite all retrieved sources in the artifact (paper ID + section).
 
 ## Required deliverables
 
@@ -21,16 +39,6 @@ structure will be. Execute after the plan is set.
 - **Technique selection** — determine the analysis technique (unfolding,
   template fit, etc.) and justify the choice. This determines which
   technique-specific requirements apply in later phases.
-
-## RAG queries (mandatory)
-
-Before writing the strategy, query the experiment corpus (via MCP tools):
-1. `search_lep_corpus`: prior measurements of the same or similar observables
-2. `search_lep_corpus`: standard systematic sources for this analysis technique
-3. `compare_measurements`: cross-experiment results if applicable
-4. `get_paper`: drill into each reference analysis identified
-
-Cite all retrieved sources in the artifact (paper ID + section).
 
 ## Completeness requirements
 
@@ -46,28 +54,5 @@ Cite all retrieved sources in the artifact (paper ID + section).
 
 ## Review
 
-This phase gets **4-bot review**. Four reviewer agents (first three in parallel):
-1. Physics reviewer — reviews as a senior collaboration member; receives only
-   the physics prompt and artifact (no methodology or conventions)
-2. Critical reviewer — finds everything wrong or missing
-3. Constructive reviewer — identifies what would make this stronger
-4. Arbiter — reads all reviews, issues PASS / ITERATE / ESCALATE
-
-The arbiter should ITERATE unless the strategy is genuinely complete. A
-strategy that omits systematic sources, lacks reference analyses, or has
-unjustified technique choices should not PASS.
-
-The reviewers will check:
-- Is the approach motivated by the literature?
-- Does the systematic plan cover standard sources (per conventions)?
-- Are reference analyses identified with systematics tabulated?
-- Are backgrounds complete and classified?
-- Is the selection approach justified?
-- Is the technique choice justified?
-
-Findings are classified as:
-- **(A) Must resolve** — blocks advancement
-- **(B) Must fix before PASS** — weakens the analysis, must be resolved
-- **(C) Suggestion** — style, clarity. Applied before commit, not re-reviewed
-
-Write review findings to `review/REVIEW_NOTES.md`.
+**4-bot review** — see `methodology/06-review.md` for protocol.
+Write findings to `review/REVIEW_NOTES.md`.
