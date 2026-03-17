@@ -1,15 +1,14 @@
 ## Agent Prompt Templates
 
 This file contains the **literal prompt templates** for each agent role.
-The methodology (`06-review.md`, `03a-orchestration.md`) defines the review
-protocol and orchestrator architecture; this file provides the copy-pasteable
-prompts the orchestrator sends to each subagent.
+The review protocol (`06-review.md`) and orchestrator architecture
+(`03a-orchestration.md`) define the methodology; this file provides the
+copy-pasteable prompts the orchestrator sends to each subagent.
 
-Context assembly follows methodology §3a.4.2 (three layers: bird's-eye
-framing, relevant methodology sections, upstream artifacts). The phase
-CLAUDE.md files (from `../templates/`) are what agents read at runtime;
-these prompts define how the *orchestrator* launches agents that will read
-those CLAUDE.md files.
+Context assembly follows §3a.4.2 (three layers: bird's-eye framing,
+relevant methodology sections, upstream artifacts). The phase CLAUDE.md
+files (from `../templates/`) are what agents read at runtime; these prompts
+define how the *orchestrator* launches agents that will read those files.
 
 ### Execution agent
 

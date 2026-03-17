@@ -71,7 +71,7 @@ orchestrating — it is executing, and its context will fill up.
 The orchestrator spawns subagents in two categories: **executors** and
 **reviewers**. Each receives curated context assembled per §3a.4.2 (three
 layers: bird's-eye framing, relevant methodology sections, upstream
-artifacts). See `orchestration/agents.md` for literal, copy-pasteable
+artifacts). See `appendix-prompts.md` for literal, copy-pasteable
 prompt templates for each role.
 
 **Executor subagents** receive the phase CLAUDE.md, upstream artifact paths,

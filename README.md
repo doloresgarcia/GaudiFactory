@@ -124,8 +124,7 @@ compiles the analysis note via pandoc.
 ```
 reslop/
   src/                        Spec infrastructure
-    methodology/              Methodology spec (human reference)
-    orchestration/            Session management (human reference)
+    methodology/              Full spec: phases, review, orchestration, appendices
     conventions/              Domain knowledge (symlinked into analyses)
     templates/                CLAUDE.md and pixi.toml templates
     scaffold_analysis.py      Scaffolder

@@ -1,8 +1,8 @@
 ## Automation
 
-> See `agents.md` for the literal prompt templates used in `run_agent` calls.
-> See `sessions.md` for the directory layout this script populates.
-> See `../methodology/03a-orchestration.md` for the architectural rationale.
+> See `appendix-prompts.md` for the literal prompt templates used in `run_agent` calls.
+> See `appendix-sessions.md` for the directory layout this script populates.
+> See `03a-orchestration.md` for the architectural rationale.
 
 The following pseudocode illustrates the orchestration logic. It is not a
 runnable script — helper functions like `find_latest_artifact`, `extract_decision`,

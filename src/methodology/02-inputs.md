@@ -21,7 +21,8 @@ The agent **may** have access to a retrieval system (SciTreeRAG over a corpus
 of collaboration publications, theses, and internal notes) for the relevant
 experiment(s), exposed as MCP tools. When available, this replaces
 hand-curated configuration files. See `.mcp.json` for the server
-configuration and orchestration §RAG Integration for the tool reference.
+configuration and `appendix-integration.md` §RAG Integration for the tool
+reference.
 
 **When RAG is not available:** The agent proceeds using its training
 knowledge and any documentation provided in the analysis directory (e.g.,
