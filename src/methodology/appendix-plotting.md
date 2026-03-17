@@ -83,8 +83,8 @@ plt.close(fig)
   square aspect.
 - **No titles.** Never `ax.set_title()`. Captions go in the analysis note.
   Instead additional info can go into `ax.legend(title="...")`. And when
-  truly necessary it can go into `mh.utils.add_text(text, ax=ax)`.
-- **No raw `ax.text()` or `ax.annotate()`.** Use `mh.utils.add_text(text,
+  truly necessary it can go into `mh.label.add_text(text, ax=ax)`.
+- **No raw `ax.text()` or `ax.annotate()`.** Use `mh.label.add_text(text,
   ax=ax)` for all text annotations — it respects mplhep styling and
   positioning. This includes panel labels like `(a)`, `(b)` in grids.
 - **Axis labels with units.** Always `ax.set_xlabel(...)` and
@@ -210,7 +210,7 @@ Sparse captions — anything under two full sentences — are Category A.
 
 Group related figures into grids rather than presenting them as separate
 figures. Use letter labels (`(a)`, `(b)`, etc.) with
-`mh.utils.add_text("(a)", ax=ax)` in each panel.
+`mh.label.add_text("(a)", ax=ax)` in each panel.
 Write a single caption describing all sub-panels. This keeps the note
 compact and makes comparisons easier for the reader.
 

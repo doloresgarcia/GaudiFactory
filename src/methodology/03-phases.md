@@ -184,9 +184,29 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
 
 ### Phase 5: Documentation
 
-**Goal:** Final analysis note.
+**Goal:** Final analysis note — publication-quality, self-contained, 50-100 pages.
 
-Phase 5 updates results in the 4b draft AN, polishes prose, renders PDF.
+Phase 5 has two distinct sub-tasks that should be handled by **separate
+subagents** (the AN is context-intensive and must not compete for context
+with figure generation or data processing):
+
+1. **Figures subagent.** Produces any remaining AN-specific figures not
+   already generated in Phases 2-4 (e.g., per-cut distributions, per-
+   systematic impact plots). Reads data files, runs plotting scripts,
+   saves to `phase5_documentation/exec/figures/`. This is a code-writing
+   agent.
+
+2. **AN writing subagent.** Reads ALL phase artifacts (strategy, exploration,
+   selection, inference) and the figures directory. Writes the complete AN
+   text to `phase5_documentation/exec/ANALYSIS_NOTE.md`. This agent does
+   NOT read data files or write code — it reads artifacts and writes prose.
+   It must produce a document that meets the completeness test: a physicist
+   unfamiliar with the analysis can reproduce every number from the AN alone.
+
+The AN writing subagent runs AFTER the figures subagent completes (it needs
+the figure paths). The orchestrator should spawn figures first, then AN
+writing, then `pixi run build-pdf`, then the 5-bot review.
+
 See `analysis-note.md` for full AN specification.
 
 **Artifact:** `ANALYSIS_NOTE.md` + compiled PDF + `results/` directory.

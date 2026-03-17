@@ -7,6 +7,41 @@
 
 You are producing the final analysis note for a **{{analysis_type}}** analysis.
 
+## Phase 5 has two separate sub-tasks
+
+These should be handled by **separate subagents**:
+
+### Sub-task 1: Figures (code-writing subagent)
+
+Produce any AN-specific figures not already generated in Phases 2-4.
+Read data/MC files, write plotting scripts, save to
+`phase5_documentation/exec/figures/`. Also symlink existing phase figures:
+
+```bash
+ln -sf ../../../phase2_exploration/figures/*.pdf phase5_documentation/exec/figures/
+ln -sf ../../../phase3_selection/figures/*.pdf phase5_documentation/exec/figures/
+ln -sf ../../../phase4_inference/figures/*.pdf phase5_documentation/exec/figures/
+```
+
+The AN typically needs ~30+ figures. Phases 2-4 produce some, but the AN
+usually needs additional per-variable distribution plots, per-cut before/after
+comparisons, and per-systematic impact figures.
+
+### Sub-task 2: AN writing (prose-writing subagent)
+
+**This subagent does NOT read data files or write code.** It reads:
+- All phase artifacts (STRATEGY.md, EXPLORATION.md, SELECTION.md,
+  INFERENCE_EXPECTED.md, INFERENCE_OBSERVED.md)
+- The figures directory (to reference figure paths)
+- The conventions files (for completeness checks)
+- The experiment log
+
+And writes: `exec/ANALYSIS_NOTE.md` — the complete analysis note.
+
+**The gold standard:** a physicist who has never seen the analysis should
+be able to reproduce every number from the AN alone. Under 30 rendered
+pages is Category A.
+
 **Start in plan mode.** Before writing any prose, produce a plan: the AN
 section structure, which figures go where, which results tables are needed.
 Execute after the plan is set.
@@ -18,9 +53,9 @@ markdown.
 
 ## Methodology references
 
-- Phase requirements: `methodology/03-phases.md` → Phase 5
+- AN specification: `methodology/analysis-note.md`
 - Review protocol: `methodology/06-review.md` → §6.2 (5-bot), §6.4
-- Plotting: `methodology/appendix-plotting.md`
+- Plotting / captions: `methodology/appendix-plotting.md`
 - Checklist: `methodology/appendix-checklist.md`
 
 ## Pre-review gate
@@ -35,7 +70,7 @@ If either fails, fix it before requesting review.
 
 The AN must be **pandoc-compatible markdown** (see root CLAUDE.md for syntax).
 See `methodology/analysis-note.md` for the full AN specification including
-all 11 required sections, depth calibration, completeness test, and
+all 12 required sections, depth calibration, completeness test, and
 bibliography requirements.
 
 **Cross-references and citations (quick reference):**
@@ -47,41 +82,31 @@ bibliography requirements.
 
 ## Key requirements
 
-These are the critical items for the analysis note. See
-`methodology/analysis-note.md` for full details.
-
-- **The AN is the complete record — not an executive summary or a
-  journal-length paper.** Every detail needed to reproduce the analysis
-  from scratch must be in the note. If a reviewer has to read the code to
-  understand a choice, the AN has a gap.
-- **Depth calibration.** ~50-100 rendered pages for a typical analysis.
-  Under 30 pages means detail is missing.
-- **Per-systematic subsections.** Each systematic source gets its own
-  subsection: description, method, impact figure, per-bin table.
-- **Cross-checks with their results.** Each cross-check appears as a
-  subsection within the relevant results section (not in a standalone
-  "Cross-checks" section). If large (>2 pages), move to appendix.
-- **Completeness test.** A physicist unfamiliar with the analysis should be
-  able to read the AN alone and reproduce every number.
-- **Machine-readable results.** `results/` directory with CSV/JSON for
-  spectra, uncertainties, and covariance matrices.
-
-## Figure setup
-
-Symlink phase figures into `phase5_documentation/exec/figures/` so that
-`![caption](figures/name.pdf)` references resolve correctly when pandoc
-compiles the PDF. The `build_pdf.py` script collects figures automatically;
-if setting up manually:
-```bash
-mkdir -p phase5_documentation/exec/figures
-ln -sf ../../phase*/figures/*.pdf phase5_documentation/exec/figures/
-```
+- **The AN is the complete record — not an executive summary.** Every detail
+  needed to reproduce the analysis must be present.
+- **Depth calibration.** ~50-100 rendered pages. Under 30 = Category A.
+  Rule of thumb: every cut needs a distribution plot, every systematic needs
+  an impact figure, every cross-check needs a comparison plot.
+- **Per-systematic subsections.** Each source gets its own subsection:
+  description, method, impact figure, per-bin table.
+- **Figure captions.** Follow `<Plot name>. <2-5 sentence description.>`
+  Anything under two sentences is Category A.
+- **Table formatting.** No monospace overflow. Short labels, consistent
+  numeric precision. Test with `build-pdf`.
+- **Derived quantity viability.** Don't quote results with >3σ pulls from
+  well-measured values without quantitative explanation (§6.8). Document
+  as "not reliably extractable" when appropriate.
+- **Completeness test.** A physicist unfamiliar with the analysis can
+  reproduce every number from the AN alone.
+- **Machine-readable results.** `results/` directory with JSON for spectra,
+  uncertainties, and covariance matrices.
 
 ## Building the PDF
 
 Run `pixi run build-pdf` from the analysis root. This converts
-`ANALYSIS_NOTE.md` to PDF via pandoc with xelatex, numbered sections,
-TOC, and half-page-width figures.
+`ANALYSIS_NOTE.md` to PDF via pandoc with tectonic, numbered sections,
+TOC, and `0.45\linewidth` figure width (single panels). Override with
+`width=100%` attribute for full-width figures.
 
 **Never use an LLM to convert markdown to LaTeX.** Pandoc handles this.
 
