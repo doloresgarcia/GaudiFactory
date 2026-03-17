@@ -84,10 +84,9 @@ plt.close(fig)
 - **No titles.** Never `ax.set_title()`. Captions go in the analysis note.
   Instead additional info can go into `ax.legend(title="...")`. And when
   truly necessary it can go into `mh.utils.add_text(text, ax=ax)`.
-- **No raw `ax.text()` for annotations.** Use `mh.utils.add_text(text,
-  ax=ax)` instead — it respects mplhep styling and positioning. Raw
-  `ax.text()` or `ax.annotate()` should only be used for panel labels
-  like `(a)`, `(b)` in subfigure grids.
+- **No raw `ax.text()` or `ax.annotate()`.** Use `mh.utils.add_text(text,
+  ax=ax)` for all text annotations — it respects mplhep styling and
+  positioning. This includes panel labels like `(a)`, `(b)` in grids.
 - **Axis labels with units.** Always `ax.set_xlabel(...)` and
   `ax.set_ylabel(...)` with units in brackets, e.g. `r"$p_T$ [GeV]"`.
   Do not increase axis label font size beyond the stylesheet default — no
@@ -161,8 +160,8 @@ conclusion. Sparse captions are Category A.
 ### Subfigures and figure grouping
 
 Group related figures into grids rather than presenting them as separate
-figures. Use letter labels (`(a)`, `(b)`, etc.) with `ax.text(0.05, 0.95,
-"(a)", transform=ax.transAxes, fontsize="small", va="top")` in each panel.
+figures. Use letter labels (`(a)`, `(b)`, etc.) with
+`mh.utils.add_text("(a)", ax=ax)` in each panel.
 Write a single caption describing all sub-panels. This keeps the note
 compact and makes comparisons easier for the reader.
 
