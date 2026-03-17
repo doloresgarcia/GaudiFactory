@@ -1,6 +1,6 @@
 <!-- Spec developer note: agent prompt templates live in
      src/methodology/appendix-prompts.md. Context assembly rules are in
-     src/methodology/03a-orchestration.md §3a.4.2. -->
+     src/methodology/03a-orchestration.md §3a.4. -->
 
 # Analysis: {{name}}
 
@@ -65,6 +65,13 @@ All three sub-phases (4a → 4b → 4c) are required for both analysis types.
 - **4b:** 10% data validation. Compare to expected. Write full AN draft.
   Review + PDF render. Human gate after 4b review passes.
 - **4c:** Full data. Compare to **both** 10% and expected. Update AN with full results.
+
+**Systematic variation sizing:** Every systematic variation must be
+motivated by a measurement or published uncertainty. "±50% on the
+background" is Category A unless 50% IS the measured uncertainty. Use
+the actual uncertainty from the background estimation method (sideband
+fit uncertainty, MC normalization uncertainty, data-driven closure).
+Arbitrary conservative inflations mask the analysis's true sensitivity.
 
 **Context splitting:** Phase 4b and Phase 5 are context-intensive (AN writing
 alongside statistical analysis). When context pressure is high, split into
@@ -180,7 +187,7 @@ phase begins. No exceptions.
 | 2 | `phase2_exploration/exec/EXPLORATION.md` | Self |
 | 3 | `phase3_selection/exec/SELECTION.md` | 1-bot |
 | 4a | `phase4_inference/exec/INFERENCE_EXPECTED.md` | 4-bot |
-| 4b | `phase4_inference/exec/INFERENCE_PARTIAL.md` + `ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
+| 4b | `phase4_inference/exec/INFERENCE_PARTIAL.md` + `phase4_inference/exec/ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
 | 4c | `phase4_inference/exec/INFERENCE_OBSERVED.md` | 1-bot |
 | 5 | `phase5_documentation/exec/ANALYSIS_NOTE.md` | 5-bot (4 + rendering) |
 
@@ -217,16 +224,30 @@ The arbiter must not PASS with unresolved A or B items.
 
 **Iteration limits:** 4/5-bot: warn at 3, strong warn at 5, hard cap at 10. 1-bot: warn at 2, escalate after 3. All subagents use `model: "opus"`.
 
+**Validation target rule (§6.8):** Any result with a pull > 3σ from a
+well-measured reference value (PDG, published measurement) is **Category A**
+unless the reviewer verifies: (1) a quantitative explanation for the
+deviation, (2) a demonstrated magnitude match (calculation/toy/fit variant),
+and (3) no simpler explanation (bugs, sign errors). A narrative list of
+"possible causes" does not satisfy this rule. Applies at Phases 4a–5.
+
 ---
 
 ## Phase Regression
 
 When a reviewer at Phase N finds a **physics issue** traceable to Phase M < N,
-this triggers regression. See `methodology/06-review.md` §6.8 for the full protocol.
+this triggers regression. See `methodology/06-review.md` §6.7 for the full protocol.
 
 **Regression trigger:** Spawn an Investigator to trace impact →
 `REGRESSION_TICKET.md` → fix origin phase → re-run affected downstream →
 resume review.
+
+**Concrete triggers (must not be rationalized away):**
+- Data/MC disagreement on observable or MVA inputs
+- Closure test failure (p < 0.05)
+- Operating point instability
+- Unexplained dominant systematic
+- Result > 3σ from a well-measured reference value (§6.8)
 
 **Not regression (local fix):** Axis labels, captions, current-phase code bugs
 → normal Category A fix-and-re-review cycle.
@@ -278,7 +299,15 @@ See `methodology/11-coding.md` for full coding practices.
 See `methodology/appendix-plotting.md` for full plotting standards. Essentials:
 
 - **Style:** `import mplhep as mh; mh.style.use("CMS")` (CMS style is the default mplhep preset — clean, widely used)
-- **Figure size:** `figsize=(10, 10)`. Subplots: `figsize=(10*ncols, 10*nrows)`.
+- **Experiment label:** `mh.label.exp_label(exp="<EXPERIMENT>", data=True, rlabel=r"$\sqrt{s} = X$ GeV", loc=0)` on every figure. **This is mandatory.**
+- **Figure size:** `figsize=(10, 10)` for all single-panel and ratio plots.
+- **No matplotlib grid plots.** Produce individual `(10, 10)` figures and
+  compose in the AN with LaTeX subfigures. Exception: ratio plots and
+  tightly-coupled panels that share axes (`sharex=True`, `hspace=0`).
+- **Ratio plot spacing:** `fig.subplots_adjust(hspace=0)` is non-negotiable.
+  Any visible gap between main and ratio panels is Category A.
+- **AN rendering:** Single-panel figures render at `0.45\linewidth` (default).
+  Multi-panel figures composed in LaTeX render at `\linewidth`.
 - **No titles.** Never `ax.set_title()`. Captions go in the analysis note.
 - **No absolute font sizes.** The CMS stylesheet sets sizes. Use `'x-small'` for legends.
 - **Save as PDF + PNG.** `bbox_inches="tight"`, `dpi=200`, `transparent=True`. Close after saving.

@@ -54,9 +54,9 @@ Before concluding, the reviewer must answer:
 | Strategy | Backgrounds complete? Systematic plan covers conventions? 2-3 reference analyses tabulated? |
 | Exploration | Samples complete? Data quality OK? Distributions physical? |
 | Processing | Background model closes? Every cut motivated by plot? Cutflow monotonic? **MVA:** data/MC on classifier OK? Alternative architecture tried? |
-| 4a: Expected | Systematics complete vs. conventions + references? Signal injection/closure passes? Operating point stable (Category A if not)? MC coverage matches data periods? |
-| 4b: 10% | Draft AN publication-quality? Results consistent with expected? Diagnostics clean? |
-| 4c: Full data | Post-fit diagnostics healthy? Anomalies characterized? |
+| 4a: Expected | Systematics complete vs. conventions + references? Signal injection/closure passes? Operating point stable (Category A if not)? MC coverage matches data periods? Validation target check (§6.8). |
+| 4b: 10% | Draft AN publication-quality? Results consistent with expected? Diagnostics clean? Validation target check (§6.8). |
+| 4c: Full data | Post-fit diagnostics healthy? Anomalies characterized? **Validation target check:** every result compared to PDG/reference values — any pull > 3σ is Category A unless quantitatively explained (see §6.8). |
 | 5: Documentation | See §6.4.3. |
 
 #### 6.4.1 Completeness Review (Phases 1 and 4a)
@@ -108,6 +108,7 @@ problems. Concrete triggers (must not be rationalized away):
 - Operating point instability
 - Unexplained dominant systematic
 - MC used for periods without corresponding simulation
+- Result > 3σ from a well-measured reference value (see §6.8)
 
 **Procedure:**
 1. Document issue, identify origin phase
@@ -126,5 +127,47 @@ Phase 5 iteration, not regression.
 **Upstream feedback (non-blocking):** Any executor may produce
 `UPSTREAM_FEEDBACK.md` for issues an earlier phase missed. Routed to the
 next review gate.
+
+### 6.8 Validation Target Rule
+
+When the Phase 1 strategy defines validation targets (PDG values, published
+reference measurements), these create binding review obligations:
+
+**The rule:** Any extracted parameter with a pull > 3σ from a well-measured
+reference value is **Category A** (blocks advancement) unless the reviewer
+can verify **all three** of the following:
+
+1. **Quantitative explanation.** A specific, identified cause (not a
+   narrative list of possible factors) that accounts for the observed
+   deviation. "Luminosity strategy limitations" is not sufficient;
+   "the Tier 2 luminosity derivation biases Γ_Z low by X MeV because Y"
+   is.
+
+2. **Demonstrated magnitude.** A calculation, fit variant, or toy study
+   showing the identified cause produces a bias of the right size and
+   sign. A qualitative argument that "this could bias the result" does
+   not satisfy this requirement.
+
+3. **No simpler explanation.** The reviewer has checked for bugs, sign
+   errors, unit mistakes, and wrong input values before accepting a
+   physics explanation.
+
+**If the > 3σ pull cannot be quantitatively explained**, the reviewer must
+classify it as Category A and recommend one of:
+- Phase regression to investigate the upstream cause
+- A dedicated systematic study to bound the bias
+- Downscoping the affected parameter (document as not reliably extracted)
+
+**Rationale:** Accepting large discrepancies with well-known physics values
+erodes the credibility of the entire analysis. A 3σ pull may be a
+statistical fluctuation, but the burden of proof is on the analysis to
+demonstrate this — not on the reviewer to accept it. An analysis that
+reports N_ν = 2.88 ± 0.03 without rigorous investigation of the 3.9σ
+tension has a gap that a referee would immediately flag.
+
+**This rule applies to all review tiers** (1-bot, 4-bot, 5-bot) at Phases
+4a, 4b, 4c, and 5. It does not apply to Phase 1 (where targets are
+defined, not yet tested) or Phases 2–3 (where results are not yet
+extracted).
 
 ---

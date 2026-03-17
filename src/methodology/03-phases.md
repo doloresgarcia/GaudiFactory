@@ -86,7 +86,7 @@ the plan; it does not redesign it.
   acceptable only for preselection, single-variable, or tiny samples (<1000).
 - If MVA: train, validate, optimize. Train ≥1 alternative architecture.
   Try multiclass if >2 physics classes. Check data/MC on classifier output.
-  Sub-delegate training to sub-agent (§3a.5.1).
+  Sub-delegate training to sub-agent (§3a.5).
 - Every cut must be motivated by a plot. Cutflow must be monotonically
   non-increasing (Category A if violated).
 
@@ -124,7 +124,15 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
 
 **Goal:** Systematics, statistical model, expected results on Asimov only.
 
-- Evaluate experimental + theory systematics as rate/shape variations
+- Evaluate experimental + theory systematics as rate/shape variations.
+  **Variation sizing:** every systematic variation must be motivated by
+  a measurement, calibration, or published uncertainty — not an arbitrary
+  round number. "±50% on the background" is not acceptable unless 50% is
+  the measured uncertainty on the background estimate. If the background
+  is estimated from a sideband fit with 12% uncertainty, use ±12%. If
+  from MC with a 20% normalization uncertainty, use ±20%. Arbitrary
+  inflations ("conservative ±50%") mask the analysis's actual sensitivity
+  and are Category A at review.
 - Construct binned likelihood (Asimov data, systematic terms)
 - Validate: NP pulls small, fit converges, results sensible
 - Signal injection tests (searches) or closure tests (measurements)
@@ -159,6 +167,16 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
 - Compare to **both** 10% and expected. Flag >2σ disagreement with expected
   or disagreement with 10% beyond statistical scaling.
 - Investigate anomalies (large NP pulls, poor GoF)
+- **Derived quantity viability check.** Before quoting a derived quantity
+  (e.g., α_s from Γ_had, N_ν from Γ_inv), verify the extraction is
+  meaningful: does the primary measurement have sufficient precision to
+  constrain the derived quantity? If the propagated uncertainty exceeds
+  10× the world-average precision, or if intermediate steps produce
+  unphysical values (negative widths, imaginary couplings), the derived
+  quantity should be documented as "not reliably extractable from this
+  measurement" rather than quoted with an inflated uncertainty. Quoting
+  a result with a > 3σ pull from a well-measured value without a
+  quantitative explanation of the tension is not acceptable (§6.8).
 
 **Artifact:** `INFERENCE_OBSERVED.md`. **Review:** 1-bot (§6).
 

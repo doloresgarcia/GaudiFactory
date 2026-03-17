@@ -6,7 +6,13 @@ polishes and renders. Structure is written in 4b; later phases update results.
 
 The AN is the complete record — not a journal paper. Every detail needed to
 reproduce the analysis from scratch must be present. ~50-100 rendered pages
-for a typical measurement. Under 30 pages means detail is missing.
+for a typical measurement. **Under 30 pages means detail is missing** —
+this is a Category A finding at Phase 5 review. Common causes of thin ANs:
+missing per-cut distribution plots, missing per-systematic impact figures,
+missing cross-check result plots, summary tables without supporting figures.
+The rule of thumb: every selection cut needs a before/after distribution
+plot, every systematic needs an impact figure, every cross-check needs a
+comparison plot.
 
 ---
 
@@ -49,8 +55,26 @@ for a typical measurement. Under 30 pages means detail is missing.
 
 ### LaTeX compilation
 
-Markdown → PDF via **pandoc** (≥3.0) + pdflatex. The `build_pdf.py` script
-handles figure collection, `--number-sections --toc`, default figure width
-`0.5\textwidth`. Do not use an LLM for conversion.
+Markdown → PDF via **pandoc** (≥3.0) + tectonic (or xelatex). The
+`build-pdf` pixi task runs pandoc with
+`--number-sections --toc --filter pandoc-crossref --citeproc`, default
+figure width `0.45\linewidth`. Do not use an LLM for conversion.
+
+### Table formatting
+
+Pipe tables in markdown become `longtable` in LaTeX. To avoid overflow:
+
+- **Keep columns narrow.** Use abbreviations, symbols, and short headers.
+  Move long descriptions to footnotes or prose.
+- **Avoid monospace text in tables.** File paths, code identifiers, and
+  other long monospace strings will overflow. Use short labels and
+  reference a lookup table in an appendix if needed.
+- **Split wide tables.** If a table exceeds 6 columns, split into two
+  tables or rotate content (rows ↔ columns).
+- **Numeric precision.** Use consistent significant figures: 2-3 digits
+  for uncertainties, match precision for central values. Don't typeset
+  `91.17930000` when `91.179` suffices.
+- **Test with `build-pdf`.** Overfull hbox warnings in the TeX log indicate
+  table overflow. Fix before submitting for review.
 
 ---

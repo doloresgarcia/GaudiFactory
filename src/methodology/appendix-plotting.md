@@ -116,13 +116,31 @@ plt.close(fig)
   `height_ratios=[3, 1]`. For 2×2 subplots, use `figsize=(20, 20)`. The
   rule is: 10 inches per subplot column, 10 inches per subplot row.
   **Any script that uses a custom figsize is a Category A review finding.**
-- **PDF rendering size.** Single figures are rendered at `0.45\linewidth`
-  in the compiled analysis note PDF. Grid/multi-panel figures use
-  `\linewidth` (full width). The 10x10 matplotlib figure size produces
-  clean, readable plots at `0.45\linewidth`. The default in the pandoc
-  preamble is `0.45\linewidth`; override with pandoc-crossref attributes
-  when a figure genuinely needs full width (e.g., large correlation
-  matrices, multi-panel comparisons).
+- **PDF rendering size.** The pandoc preamble sets the default image width
+  to `0.45\linewidth`. This is correct for **single-panel** figures
+  (including ratio plots, which are one logical figure with a main+ratio
+  panel). The sizing rules:
+
+  | Plot type | matplotlib figsize | AN width | Example |
+  |-----------|-------------------|----------|---------|
+  | Single panel | `(10, 10)` | `0.45\linewidth` (default) | Distribution, spectrum |
+  | Ratio plot (main + ratio) | `(10, 10)` | `0.45\linewidth` (default) | Data/MC with ratio |
+  | Side-by-side comparison | **Don't** — compose in LaTeX | `\linewidth` | See below |
+  | 2×2, 3×2 grid | **Don't** — compose in LaTeX | `\linewidth` | See below |
+
+  **Prefer LaTeX subfigures over matplotlib grids.** Instead of producing
+  a 2×3 matplotlib figure, produce 6 individual `(10, 10)` figures and
+  compose them in the AN using pandoc-crossref subfigure syntax or
+  side-by-side image includes. This gives better control over layout,
+  captions, and cross-referencing, and avoids font-size scaling issues.
+
+  The one exception: **tightly-coupled panels that share axes** (ratio
+  plots, pull distributions below a fit) should be produced as a single
+  matplotlib figure because they require `sharex=True` and `hspace=0`.
+
+  To override the default width for a figure that genuinely needs full
+  width, use pandoc-crossref attributes in the markdown:
+  `![Caption](figures/name.pdf){#fig:name width=100%}`
 - **Ratio plot hspace.** `fig.subplots_adjust(hspace=0)` is non-negotiable
   for ratio plots. Any visible gap between the main panel and ratio panel
   is a Category A review finding.
