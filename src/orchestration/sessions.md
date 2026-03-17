@@ -74,16 +74,16 @@ analysis_name/
   regression_log.md              # Tracks any phase regressions (if triggered)
 
   calibrations/                  # Shared sub-analyses (may scale to near-full
-    btag/                        #   sub-analysis structure if complexity warrants)
-      experiment_log.md
+    calibration_1/               #   sub-analysis structure if complexity warrants)
+      experiment_log.md          #   e.g., btag, jet_corrections, trigger_eff
       retrieval_log.md
-      CALIBRATION_BTAG.md
+      CALIBRATION_1.md
       scripts/
       figures/
-    jet_corrections/
+    calibration_2/
       experiment_log.md
       retrieval_log.md
-      CALIBRATION_JEC.md
+      CALIBRATION_2.md
       scripts/
       figures/
 
@@ -128,7 +128,7 @@ analysis_name/
     # Self-review only — no review/ directory
 
   phase3_selection/              # Per-channel if multi-channel
-    channel_nunu/
+    channel_a/                   # Replace with analysis-specific names
       experiment_log.md
       retrieval_log.md
       sensitivity_log.md         # Tracks optimization attempts
@@ -138,11 +138,11 @@ analysis_name/
       figures/
       exec/
         ...
-        SELECTION_NUNU.md
+        SELECTION_CHANNEL_A.md
       review/
         critical/                # 1-bot review per channel
           ...
-    channel_llbb/
+    channel_b/
       experiment_log.md
       retrieval_log.md
       sensitivity_log.md
@@ -152,7 +152,7 @@ analysis_name/
       figures/
       exec/
         ...
-        SELECTION_LLBB.md
+        SELECTION_CHANNEL_B.md
       review/
         critical/
           ...

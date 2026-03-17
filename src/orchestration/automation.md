@@ -182,35 +182,42 @@ run_1bot_review() {
 }
 
 # --- Main pipeline ---
+#
+# *** EXAMPLE PATTERN ***
+# The channel names (channel_a, channel_b) and calibration names
+# (calibration_1, calibration_2) below are placeholders. Replace them
+# with your analysis-specific names. Single-channel analyses can drop
+# the for-loop entirely.
+#
 # Unified flow for both measurements and searches:
 #   4a → 4b → human gate → 4c → 5
 
 run_agent --name "$(pick_session_name)" \
   --output "phase1_strategy/exec" "execute phase 1"
 run_4bot_review "phase1_strategy" || exit 1
-git merge phase1_strategy
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase1): strategy"
 
 run_agent --name "$(pick_session_name)" \
   --output "phase2_exploration/exec" "execute phase 2"
 # Self-review only — no external review
-git merge phase2_exploration
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase2): exploration"
 
 # Phase 3 — per channel (parallel execution, sequential review)
-for channel in nunu llbb; do
+for channel in channel_a channel_b; do
   run_agent --name "$(pick_session_name)" \
     --output "phase3_selection/channel_$channel/exec" \
     "execute phase 3 ($channel)" &
 done
 wait
-for channel in nunu llbb; do
+for channel in channel_a channel_b; do
   run_1bot_review "phase3_selection/channel_$channel" || exit 1
 done
 run_agent --name "$(pick_session_name)" \
   --output "phase3_selection/exec" "consolidate channels"
-git merge phase3_selection
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase3): selection"
 
 # Shared calibrations (can run in parallel with phases 2-3)
-for cal in btag jet_corrections; do
+for cal in calibration_1 calibration_2; do
   run_agent --name "$(pick_session_name)" \
     --output "calibrations/$cal" "calibration: $cal" &
 done
@@ -225,7 +232,7 @@ run_4bot_review "phase4_inference/4a_expected" || {
   echo "Phase 4a review did not pass."
   exit 1
 }
-git merge phase4a_expected
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4a): expected results"
 
 # Unified flow: both measurements and searches use 4b + 4c
 run_agent --name "$(pick_session_name)" \
@@ -233,15 +240,15 @@ run_agent --name "$(pick_session_name)" \
 run_4bot_review "phase4_inference/4b_partial" || exit 1
 present_for_human_review "phase4_inference/4b_partial"
 wait_for_human_decision  # APPROVE / REQUEST CHANGES / HALT
-git merge phase4b_partial
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4b): partial validation"
 
 run_agent --name "$(pick_session_name)" \
   --output "phase4_inference/4c_observed/exec" "full data"
 run_1bot_review "phase4_inference/4c_observed" || exit 1
-git merge phase4c_observed
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4c): observed results"
 
 run_agent --name "$(pick_session_name)" \
   --output "phase5_documentation/exec" "execute phase 5"
 run_4bot_review "phase5_documentation" || exit 1
-git merge phase5_documentation
+git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase5): analysis note"
 ```

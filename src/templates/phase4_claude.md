@@ -43,35 +43,39 @@ Query the experiment corpus for:
 
 Cite sources in the artifact.
 
-## Completeness requirements (critical)
+## Key requirements
 
-**Systematic completeness table.** Compare your implemented sources
-against the reference analyses from Phase 1 and the conventions
-(read all applicable files in `conventions/`).
+These are the critical items for Phase 4. See
+`methodology/03-phases.md` → Phase 4 for full details.
 
-Format:
-```
-| Source | Conventions | Ref 1 | Ref 2 | This analysis | Status |
-```
-Any MISSING source without justification is a blocker. The reviewer
-will check this table row by row.
+- **Systematic completeness table.** Compare your implemented sources
+  against the reference analyses from Phase 1 and the applicable
+  `conventions/` files (see root CLAUDE.md → Conventions for which files
+  apply). Format: `| Source | Conventions | Ref 1 | Ref 2 | This | Status |`.
+  Any MISSING source without justification is a blocker.
+- **Statistical model construction.** Build a binned likelihood with all
+  samples, Asimov/pseudo-data, and systematic terms. Validate: nuisance
+  parameter pulls small, fit converges, results physically sensible.
+- **Fit validation.** Signal injection tests (searches) or closure tests
+  (measurements) to confirm the model recovers known inputs.
+- **Goodness-of-fit.** Report **both** chi2/ndf (quick assessment) **and**
+  toy-based p-value using the saturated model GoF statistic. chi2/ndf ~ 1
+  is good; >>1 indicates mismodeling; <<1 indicates overestimated
+  uncertainties.
+- **Expected results on Asimov/MC only.** Phase 4a results must come from
+  pseudo-data — never real data.
+- **Covariance matrix (measurements).** Full bin-to-bin covariance
+  (statistical + each systematic + total) in the artifact and as
+  machine-readable files.
+- **Theory comparison (measurements).** Compare to at least one theory
+  prediction or MC generator using the full covariance. If none available,
+  justify and compare to published measurements.
 
-## Extraction measurement requirements
-
-For extraction / counting measurements (double-tag, ratio, branching fraction):
-
-- **Independent closure test (Category A if fails).** Apply the full
-  extraction procedure to a statistically independent MC sample. Extract
-  the quantity and compare to MC truth. The pull must be < 2sigma.
-- **Parameter sensitivity table.** For each MC-derived input parameter,
-  compute |dResult/dParam| x sigma_param. Flag any contributing > 5x
-  the data statistical uncertainty.
-- **Operating point stability.** Scan the result vs. the primary operating
-  point over a range spanning at least 2x the optimized region. The
-  extracted quantity should be flat within uncertainties.
-- **Expected results from MC pseudo-data, not real data.** The Phase 4a
-  "expected result" must be computed on MC pseudo-data — never on actual
-  data counts.
+**For extraction measurements:** read `conventions/extraction.md` for
+additional required checks (independent closure test, parameter sensitivity
+table, operating point stability, per-subperiod consistency, 10% diagnostic
+sensitivity). These are technique-specific requirements defined in the
+conventions file — do not skip them.
 
 ## Review
 

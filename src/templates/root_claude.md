@@ -289,6 +289,19 @@ Read applicable files in `conventions/` at three mandatory checkpoints:
 
 If a convention requires something you plan to omit, justify explicitly.
 
+**Which conventions apply:**
+
+| Analysis technique | Read these files |
+|--------------------|-----------------|
+| Unfolded measurement (IBU, SVD, TUnfold, OmniFold, bin-by-bin) | `conventions/unfolding.md` |
+| Extraction measurement (double-tag, ratio, branching fraction, counting) | `conventions/extraction.md` |
+| Search / limit-setting | `conventions/search.md` |
+
+If unsure, the technique selection in Phase 1 determines which file applies.
+Read the "When this applies" section of each candidate file to confirm.
+Ignore `conventions/TEMPLATE.md` — it is a skeleton for spec developers
+creating new conventions files.
+
 ---
 
 ## Analysis Note Format

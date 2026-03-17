@@ -365,9 +365,8 @@ and compute expected results using Asimov data only.
 
 **For measurements:** "Expected results" means the result extracted from
 MC pseudo-data — not from real data. For extraction measurements (counting,
-ratios), generate pseudo-data counts from MC truth parameters
-(e.g., N_t = 2 × N_had × [ε_b × R_b + ε_nonb × (1-R_b)]). Optionally
-Poisson-fluctuate to assess statistical reach. Running the extraction on real
+ratios), see `conventions/extraction.md` for the pseudo-data generation
+protocol and required validation checks. Running the extraction on real
 data counts in Phase 4a defeats the purpose of the 4a → 4b → 4c staged
 validation — it makes 4a and 4c identical.
 
@@ -413,18 +412,11 @@ the draft analysis note.
 to the expected result from Phase 4a. Agreement validates the correction chain
 and systematic evaluation on real data before committing to the full dataset.
 
-**For extraction measurements:** The 10% test must include at least one
-diagnostic that is genuinely sensitive to data/MC differences — not just
-a comparison of the extracted quantity (which is dominated by correlated
-systematics and therefore insensitive to the subsample). Required
-diagnostics include:
-- Per-subperiod extraction (if multiple data-taking periods exist). A
-  χ²/ndof >> 1 across periods indicates time-dependent effects not
-  modeled by the MC.
-- Comparison of data-derived quantities (tag rates, double-tag fractions)
-  to MC predictions, independent of the final extraction.
-- If the method self-calibrates some parameters (e.g., efficiency), compare
-  the self-calibrated values between 10% and MC.
+**For extraction measurements:** The 10% test must include diagnostics
+genuinely sensitive to data/MC differences — not just the final extracted
+quantity (which is dominated by correlated systematics and insensitive to
+the subsample). See `conventions/extraction.md` → "Required validation
+checks" → item 5 for the specific diagnostics required.
 
 **Output artifact:** `INFERENCE_PARTIAL.md` — 10% observed results, post-fit
 diagnostics, comparison to expected, and assessment of analysis health.

@@ -17,37 +17,15 @@ or produces figures itself. It spawns subagents for execution and review,
 reads their summaries, makes phase-transition decisions, and commits. Each
 subagent reads upstream artifacts from disk — not from the parent's context.
 
-**The orchestrator loop for each phase:**
-
-```
-for each phase in [1, 2, 3, 4a, 4b, 4c, 5]:
-
-  1. EXECUTE — spawn a phase executor subagent with:
-     - The physics prompt
-     - The phase CLAUDE.md (read from disk, pass in prompt)
-     - Paths to upstream artifacts (the subagent reads them from disk)
-     - The experiment log path (subagent appends to it)
-     - The conventions document path (for phases that need it)
-     - Explicit instruction to write the phase artifact to disk
-
-  2. REVIEW — spawn a reviewer subagent with:
-     - Path to the phase artifact just written
-     - The review criteria for this phase (from Section 6.4)
-     - The conventions document path
-     - Instruction to write REVIEW_NOTES.md in the phase directory
-
-  3. CHECK — orchestrator reads the review findings (short).
-     If regression trigger found:
-       - Enter Phase Regression protocol (see Section 6.8)
-     If Category A issues exist:
-       - Spawn a fix agent with the artifact + findings
-       - Re-review after fix
-     If no Category A issues: proceed.
-
-  4. COMMIT — orchestrator commits the phase's work.
-
-  5. ADVANCE — proceed to next phase.
-```
+**The orchestrator loop** follows a repeating EXECUTE → REVIEW → CHECK →
+COMMIT → ADVANCE cycle for each phase. The canonical, detailed loop
+(including human gates, context splitting, and anti-patterns) lives in
+`templates/root_claude.md` — that is the authoritative reference agents
+read at runtime. The cycle structure is: spawn an executor subagent for the
+phase work, spawn reviewer subagent(s) at the appropriate tier, read review
+findings and resolve any Category A/B issues or regression triggers, commit,
+then advance. Phase 4 adds a human gate after 4b for both measurements and
+searches.
 
 **Why subagents solve context exhaustion:**
 - The Phase 2 executor agent processes 40 MC files, debugs ROOT branch
@@ -61,16 +39,11 @@ for each phase in [1, 2, 3, 4a, 4b, 4c, 5]:
   committed artifacts + experiment log on disk are a complete checkpoint.
   A new session can read them and resume from the last committed phase.
 
-**What the orchestrator does NOT do:**
-- Read full scripts or data files (subagents do this)
-- Debug code (subagents do this)
-- Produce figures (subagents do this)
-- Write analysis prose (subagents do this)
-
 The orchestrator reads: CLAUDE.md files, phase summaries returned by
 subagents, review findings, and the experiment log when deciding next steps.
 It writes: commit messages and (if needed) the physics prompt passed to
-subagents.
+subagents. See `templates/root_claude.md` for the full list of what the
+orchestrator does and does not do.
 
 **Fallback: self-review.** If agent spawning is unavailable or impractical,
 the orchestrator may perform review itself. In this case it must still:

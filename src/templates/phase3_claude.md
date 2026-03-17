@@ -66,6 +66,26 @@ process itself reveals which variables carry discriminating power.
 5. The trained model, hyperparameters, split seed, and validation plots are
    required artifacts.
 
+## Key requirements: sensitivity optimization
+
+If the initial selection does not meet the physics goal, systematically
+explore alternatives. Maintain a **sensitivity log** (`sensitivity_log.md`)
+tracking each approach, figure of merit, and limiting factor.
+
+Progress through qualitatively different strategies (not just parameter
+tuning). Not all apply to every analysis type — select those relevant:
+1. Optimize the current approach (tune cuts for S/sqrt(B) or equivalent)
+2. Try a more powerful discriminant (cut-based → BDT → GNN)
+3. Try different extraction strategies (shape fit vs. counting, different
+   discriminant variables) — primarily for searches and template fits
+4. Revisit region design (tighter SR, different background decomposition,
+   alternative efficiency binning)
+
+**Stop when:** sensitivity meets the goal, OR 3+ materially different
+approaches tried AND marginal improvement (<10% relative). Document all
+attempts — "we tried X, Y, Z; Y performed best because [reason]" is a
+valid conclusion. See `methodology/03-phases.md` → Phase 3 for full details.
+
 ## Review
 
 **1-bot review** — see `methodology/06-review.md` for protocol.

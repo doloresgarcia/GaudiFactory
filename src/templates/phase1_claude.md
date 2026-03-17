@@ -40,17 +40,33 @@ Cite all retrieved sources in the artifact (paper ID + section).
   template fit, etc.) and justify the choice. This determines which
   technique-specific requirements apply in later phases.
 
-## Completeness requirements
+## Key requirements
 
-1. **Reference analyses.** Identify 2-3 published analyses closest in
-   technique/observable. Tabulate their systematic programs. This table
-   is a binding input to later reviews.
+These are the critical actionable items for Phase 1. See
+`methodology/03-phases.md` → Phase 1 for full details.
 
-2. **Conventions check.** Read all applicable files in `conventions/`.
-   Enumerate every required systematic source listed there. For each one,
-   state in the strategy: "Will implement" or "Not applicable because [reason]."
-   This enumeration is binding — Phase 4a reviews against it. Silent
-   omissions are Category A findings.
+- **Corpus queries are mandatory.** Query the experiment corpus before
+  writing anything — prior measurements, standard systematics, reference
+  analyses. Cite all retrieved sources.
+- **Enumerate backgrounds.** Classify each as irreducible, reducible, or
+  instrumental. Estimate relative importance (order of magnitude is fine).
+- **Define discriminating variables.** Identify the variable(s) for final
+  statistical interpretation (invariant mass, BDT score, event shape, etc.).
+- **Systematic plan with conventions enumeration.** Read all applicable
+  `conventions/` files (see root CLAUDE.md → Conventions for which files
+  apply to your analysis type). For every required source listed, state
+  "Will implement" or "Not applicable because [reason]." This enumeration
+  is binding — Phase 4a reviews against it. Silent omissions are Category A.
+- **Reference analysis table.** Identify 2-3 published analyses closest in
+  technique/observable. Tabulate their systematic programs. This table is a
+  binding input to later reviews.
+
+**For measurements additionally:**
+- Define the observable(s) and their physical interpretation precisely.
+- Identify the correction/unfolding strategy and its required inputs.
+- Survey prior measurements — published data points become the primary
+  validation target in Phase 4.
+- Identify theory predictions or MC generators for comparison.
 
 ## Review
 

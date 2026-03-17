@@ -15,8 +15,8 @@ qq̄bb̄ channels). The methodology handles this as follows:
 - Each channel has its own exploration, selection, and background modeling
 - Shared calibrations (b-tagging efficiency, energy scales) are developed once
   and referenced by all channels
-- Each channel produces its own artifact (e.g., `SELECTION_nunu.md`,
-  `SELECTION_llbb.md`)
+- Each channel produces its own artifact (e.g., `SELECTION_CHANNEL_A.md`,
+  `SELECTION_CHANNEL_B.md`)
 - A consolidation artifact documents the overlap check (no events shared
   between channels) and summarizes cross-channel consistency
 
@@ -34,7 +34,7 @@ calibration artifacts consumed by all channels. Examples:
 - **Luminosity:** typically provided by the experiment, but may need validation
 
 Each shared sub-analysis:
-- Has its own experiment log and artifact (e.g., `CALIBRATION_BTAG.md`)
+- Has its own experiment log and artifact (e.g., `CALIBRATION_<NAME>.md`)
 - Follows the same structure as a phase (method, results, validation, code)
 - Produces a calibration artifact with **central values + uncertainties** that
   channels consume as inputs

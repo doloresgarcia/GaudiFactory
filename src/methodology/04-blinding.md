@@ -4,29 +4,40 @@ Blinding prevents the analyst (human or agent) from tuning the analysis to
 produce a desired result in the signal region. The protocol is procedural,
 with staged unblinding.
 
-**What is blinded:** The distribution of the final discriminant variable (the
-variable used for statistical inference — e.g., invariant mass, BDT output
-score) in the signal region. Other distributions in the signal region (control
-variables, event counts in sidebands) may be examined for debugging and
-validation purposes.
+**Applicability to measurements.** The blinding/unblinding terminology is
+standard HEP practice originating from searches, but the same staged
+protocol applies to measurements that lack explicit signal/background
+structure (e.g., event shapes, extracted parameters). In that context, the
+protocol functions as **staged validation**: Phase 4a validates on MC-only
+pseudo-data, Phase 4b checks consistency on 10% of real data, and Phase 4c
+produces the final result on the full dataset. The specific prohibitions
+differ — searches must not examine SR data at all in Phases 1-3, while
+inclusive measurements have no SR to avoid — but the gate structure and
+discipline are identical: do not compute the final quantity on real data
+until each preceding gate has passed. Throughout this section,
+"blinding/unblinding" and "staged validation" are interchangeable where the
+phase structure and gate requirements are concerned.
+
+**What is blinded:** For searches, the distribution of the final discriminant
+variable (e.g., invariant mass, BDT output score) in the signal region.
+Other distributions (control variables, sideband counts) may be examined.
+For extraction measurements (counting, ratios), the blinded quantity is the
+extracted physical parameter — "Asimov data" means MC pseudo-data counts
+generated from MC truth parameters. See `conventions/extraction.md` for the
+full extraction protocol.
 
 ### 4.1 Blinding Stages
 
-**Fully blinded (Phases 1–3):** The signal region discriminant distribution in
-data is not examined. Background estimates in the SR rely on extrapolation from
-control regions or simulation.
+**Fully blinded (Phases 1–3):** For searches, the SR discriminant
+distribution in data is not examined; background estimates rely on
+extrapolation from control regions or simulation. For measurements without
+SR structure, no data-derived result is computed — all development uses MC.
 
 **Asimov-only (Phase 4, expected results):** Expected limits and sensitivity
 use Asimov data (background-only pseudo-data). Signal injection tests use
-pseudo-data at known signal strengths.
-
-**For extraction measurements (counting, ratios):** There is no
-signal/background decomposition, so "Asimov data" means MC pseudo-data
-counts generated from MC truth parameters. The blinded quantity is the
-extracted physical parameter — it must not be computed on real data until
-Phase 4b (10% sample) or 4c (full sample). Phase 4a validates the method
-on MC-only pseudo-data, evaluates systematics, and reports expected
-precision.
+pseudo-data at known signal strengths. For extraction measurements, Phase 4a
+validates the method on MC-only pseudo-data, evaluates systematics, and
+reports expected precision.
 
 **Partial unblinding — 10% data (Phase 4, agent-gated):** After the expected
 results and fit validation pass rigorous agent review (see Section 4.2), the

@@ -47,6 +47,26 @@ At the end of this phase, run a stub PDF build to verify the toolchain:
 
 This catches toolchain problems early — not in Phase 5.
 
+## Key requirements
+
+These are the critical actionable items for Phase 2. See
+`methodology/03-phases.md` → Phase 2 for full details.
+
+- **Inventory samples completely.** For each file: tree names, branch names
+  and types, number of events, cross-section, luminosity. Document the
+  schema — this is artifact content.
+- **Validate data quality.** Check for pathologies: empty branches, outliers,
+  discontinuities, unphysical values. Document all findings.
+- **Apply standard object definitions.** Retrieve from the experiment corpus
+  (RAG). Verify data/MC agreement in inclusive distributions.
+- **Survey discriminating variables.** Produce signal vs. background
+  distributions for all candidate kinematic variables. Rank by separation
+  power (ROC AUC, significance improvement, or equivalent).
+- **Establish baseline yields.** Report event counts after preselection for
+  data and each MC sample, with cross-section normalization.
+- **PDF build test.** Run a stub `pixi run build-pdf` at the end of this
+  phase to catch toolchain issues early.
+
 ## Rules
 
 - Prototype on small subsets (~1000 events). Do not process full data to

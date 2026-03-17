@@ -56,14 +56,29 @@ Required sections:
 11. **Future directions** — concrete roadmap
 12. **Appendices** — covariance matrices as tables, extended cutflow, auxiliary plots
 
-### Depth calibration
+## Key requirements
 
-The AN is the complete record — not a summary. A measurement analysis with
-~5 systematics, ~3 cross-checks, ~6 cuts, and ~18 bins should produce
-~50-100 rendered pages. Under 30 pages means detail is missing.
+These are the critical items for the analysis note. See
+`methodology/03-phases.md` → Phase 5 for full details.
 
-Machine-readable `results/` directory required (CSV/JSON for spectrum,
-covariance matrices).
+- **The AN is the complete record, not a summary.** Every detail needed to
+  reproduce the analysis from scratch must be in the note. If a reviewer
+  has to read the code to understand a choice, the AN has a gap.
+- **Depth calibration.** A measurement with ~5 systematics, ~3 cross-checks,
+  ~6 cuts, ~18 bins should produce ~50-100 rendered pages. Under 30 pages
+  means detail is missing.
+- **Per-systematic subsections.** Each systematic source gets its own
+  subsection: description, method, impact figure, per-bin table. A summary
+  table alone is insufficient.
+- **Per-cross-check subsections.** Each cross-check gets its own subsection
+  with comparison plots, chi2/p-value, and interpretation. One-liners are
+  not subsections.
+- **Completeness test.** A physicist unfamiliar with the analysis should be
+  able to read the AN alone and understand every choice, reproduce every
+  number, and evaluate whether conclusions are supported.
+- **Machine-readable results.** `results/` directory with CSV/JSON for
+  spectra, uncertainties, and covariance matrices. Results that exist only
+  in a PDF are not reusable.
 
 ## Figure setup
 
