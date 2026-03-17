@@ -24,4 +24,29 @@ starting points. Discrepancies → trust data, document the inconsistency.
 rephrased queries. If still unhelpful, proceed with training knowledge and
 flag the gap.
 
+### 2.3 Numeric Constants and Reference Values
+
+**Never quote numeric constants from training data.** Every number that
+enters the analysis — PDG masses, widths, branching ratios, coupling
+constants, cross-sections, world-average measurements — must come from
+a retrievable, citable source. Acceptable sources:
+
+1. **RAG corpus** — search for the value, cite the paper ID and table/equation
+2. **Web fetch** — fetch from PDG live tables, HEPData, or official sources
+3. **Published paper** — cite with full reference
+
+LLM training data is NOT a source. The training cutoff may be years old,
+values may be misremembered, and there is no way to verify or cite them.
+An analysis that uses $M_Z = 91.1876$ GeV must cite where that number
+came from — not assert it from memory.
+
+**This applies to:** particle masses, widths, coupling constants, SM
+predictions, published cross-sections, luminosity values, beam energies,
+QCD coefficients, radiative correction formulae, any number used as input
+to the analysis or as a validation target.
+
+**At review:** Any numeric constant without a citation is Category A.
+The reviewer must verify that validation targets (PDG values, reference
+measurements) were fetched from a source, not recalled from training data.
+
 ---

@@ -155,6 +155,23 @@ calls to install packages.
 
 ---
 
+## Numeric Constants: Never From Memory
+
+**Every number that enters the analysis must come from a citable source.**
+PDG masses, widths, coupling constants, world-average measurements,
+QCD coefficients, radiative correction formulae — all must be fetched
+from the RAG corpus, web (PDG live tables, HEPData), or a cited paper.
+
+LLM training data is NOT a source. Quote $M_Z = 91.1876$ GeV? Cite
+where it came from. Use $\alpha_s = 0.1180$? Fetch and cite. Use the
+QCD correction coefficient 1.405? Cite the paper.
+
+**At review, any uncited numeric constant is Category A.**
+
+See `methodology/02-inputs.md` §2.3 for the full policy.
+
+---
+
 ## Tool Requirements
 
 Non-negotiable. Use these — not alternatives.
