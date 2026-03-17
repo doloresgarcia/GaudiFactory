@@ -172,37 +172,41 @@ quantities is a Category A review finding.
 ### Captions
 
 See §5.2 for caption requirements. Captions must be self-contained and
-follow the format: **`<Plot name>. <Full description in complete sentences.>`**
+follow the format: **`<Plot name>. <Context and conclusion.>`**
 
-A good caption is 2-5 sentences. It must:
+A good caption is 2-4 sentences. It must:
 1. Name the plot (what observable, what selection stage, what comparison).
-2. Describe what is shown (axes, curves, markers, bands, colors, hatching).
+2. State context not visible in the plot (selection applied, normalization
+   method, which phase/systematic this validates, connection to other results).
 3. State the key observation or conclusion the reader should draw.
-4. Note any selection or normalization applied.
+
+**Do NOT restate what is already in the legend or axis labels.** If the
+legend says "Data (black)" and "MC (blue)", the caption does not need to
+repeat this. The caption adds information the plot alone cannot convey.
 
 **Examples:**
 
-Bad (Category A):
+Bad (Category A — too sparse):
 > "Thrust distribution."
 
-Bad (Category A):
-> "Data vs MC comparison of nChargedHadrons."
+Bad (redundant with legend):
+> "Data (black points) are compared to MC simulation (blue histogram).
+> The lower panel shows the data/MC ratio; the grey band indicates
+> the MC statistical uncertainty."
 
 Good:
-> "Distribution of charged hadron multiplicity after the hadronic event
-> selection. Data (black points) are compared to MC simulation (blue
-> histogram) normalized to the same integrated luminosity. The lower panel
-> shows the data/MC ratio; the grey band indicates the MC statistical
-> uncertainty. Good agreement is observed across the full multiplicity
-> range, with data/MC ratios consistent with unity within 2%."
+> "Charged hadron multiplicity after the hadronic event selection,
+> normalized to equal area. The mean multiplicity of ~20 is characteristic
+> of hadronic Z decays. Data/MC agreement is within 2% across the full
+> range; the low-multiplicity tail is sensitive to two-photon background
+> contamination (see §5.3)."
 
 Good:
-> "Measured hadronic cross-section as a function of centre-of-mass energy.
-> The data points (black) show the cross-section at five energy groups with
-> statistical (inner bars) and total (outer bars) uncertainties. The solid
-> red curve is the best-fit Breit-Wigner convolved with the O(α²) ISR
-> radiator. The lower panel shows the ratio of data to the fitted curve;
-> the dashed lines indicate ±5%. The fit yields χ²/ndf = 3.07/2 (p = 0.22)."
+> "Measured hadronic cross-section as a function of centre-of-mass energy
+> with the best-fit BW+ISR curve. The fit uses statistical errors only
+> (inner bars); outer bars show total uncertainties including systematics.
+> The fit yields χ²/ndf = 3.07/2 (p = 0.22). The off-peak points at
+> 89.4 and 93.0 GeV provide the primary constraint on Γ_Z."
 
 Sparse captions — anything under two full sentences — are Category A.
 

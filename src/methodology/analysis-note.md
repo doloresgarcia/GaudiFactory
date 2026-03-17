@@ -42,8 +42,11 @@ lineshape, residuals, profiles, correlations, systematics, comparisons).
    efficiency (per-cut and cumulative)
 4. **Corrections / unfolding** (measurements) — full procedure, closure/stress
    tests, response matrix, regularization
-5. **Systematic uncertainties** — one subsection per source: what, how
-   evaluated, impact (table + figure), correlation info. Summary table.
+5. **Systematic uncertainties** — one subsection per source: physical
+   origin, evaluation method (with justification of variation size),
+   numerical impact (table + figure), interpretation and caveats.
+   Document failed evaluation attempts. Summary budget table with
+   footnotes explaining any capped, excluded, or sub-leading terms.
 6. **Cross-checks** — each as a subsection within the section it validates
    (not a standalone section). Comparison plots, chi2/p-value, interpretation.
    Large cross-checks → appendix with forward reference.
@@ -54,8 +57,15 @@ lineshape, residuals, profiles, correlations, systematics, comparisons).
 10. **Conclusions** — result, precision, dominant limitations
 11. **Future directions** — concrete roadmap (§12)
 12. **Appendices** — per-bin systematic tables, covariance matrices (as
-    tables), extended cutflow, auxiliary plots. Appendices are where the
-    bulk of detail lives.
+    tables), extended cutflow, auxiliary plots, **limitation index**.
+    Appendices are where the bulk of detail lives.
+
+The **limitation index** (in appendices) collects all constraints [A1],
+limitations [L1], and design decisions [D1] introduced in Phase 1 and
+propagated through the analysis. Each entry has: label, one-line
+description, where introduced, impact on result, mitigation. This enables
+a reviewer to see the full scope of known issues in one place and verify
+each was properly addressed.
 
 ---
 

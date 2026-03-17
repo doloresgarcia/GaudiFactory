@@ -31,11 +31,12 @@ note. Terse artifacts produce terse AN sections.
 6. **Code reference** — `pixi run <task>` commands that produced results
 
 **Figure captions must be self-contained** and follow the format:
-`<Plot name>. <Full description in complete sentences.>` A caption must
-be 2-5 sentences: name the plot, describe what is shown (axes, curves,
-markers, bands), state the key conclusion, and note any selection or
-normalization. Anything under two full sentences is Category A. See
-`appendix-plotting.md` § "Captions" for examples of good and bad captions.
+`<Plot name>. <Context and conclusion.>` A caption must be 2-4 sentences:
+name the plot, state context not visible in the plot (selection,
+normalization, what this validates), and give the key conclusion. **Do not
+restate what is already in the legend or axis labels** — the caption adds
+information the plot alone cannot convey. Anything under two full sentences
+is Category A. See `appendix-plotting.md` § "Captions" for examples.
 
 **Supplementary files** (`.npz`, `.json`, workspaces, trained models) must
 include a brief description in the artifact: what the file contains, how to

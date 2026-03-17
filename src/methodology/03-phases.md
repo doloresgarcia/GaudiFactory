@@ -41,10 +41,20 @@ measurements substitute: fiducial region, sidebands, purity optimization.
 - Identify signal process, backgrounds (classified: irreducible, reducible,
   instrumental), discriminating variables
 - Propose selection approach, background estimation strategy, control regions
+- **Technique justification:** Explicitly defend the chosen technique against
+  alternatives (e.g., "double-tag vs single-tag because...", "bin-by-bin
+  correction vs full unfolding because..."). A reader should understand not
+  just what will be done, but why it was chosen over the alternatives.
 - **Systematic plan:** read applicable `conventions/` document, enumerate
   every required source with "Will implement" or "Not applicable because
   [reason]." This is binding — Phase 4a reviews against it.
 - Identify 2-3 reference analyses, tabulate their systematic programs
+- **Constraint and limitation labels.** Throughout the strategy, label
+  known constraints [A1], [A2], ..., known limitations [L1], [L2], ...,
+  and key design decisions [D1], [D2], .... These labels propagate to
+  later phases and the final AN. A constraint is a data/MC property that
+  restricts what can be done; a limitation is a feature that weakens the
+  result; a decision is a deliberate choice with alternatives.
 
 **For measurements additionally:** Define observable(s), correction strategy,
 prior measurements (validation target), theory predictions for comparison.
@@ -141,6 +151,16 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
   See `conventions/extraction.md` for extraction-specific protocol.
 - For measurements: full covariance matrix (stat + per-syst + total) +
   comparison to ≥1 theory prediction using full covariance
+
+- **Per-systematic documentation depth.** Each systematic source in the
+  artifact must include: (a) physical origin — what detector or physics
+  effect causes this, (b) evaluation method — how the variation was
+  determined and justified, (c) numerical impact on each result parameter,
+  (d) interpretation — is this dominant, subdominant, conservative? Any
+  caveats or capping? (e) failed attempts — if an alternative evaluation
+  was tried and failed, document what was tried, why it failed, and how
+  the fallback was chosen. Failed attempts are valuable because they
+  prevent future analysts from repeating the same dead end.
 
 **Artifact:** `INFERENCE_EXPECTED.md`. **Review:** 4-bot (§6).
 
