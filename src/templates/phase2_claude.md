@@ -37,9 +37,10 @@ Expect to discover the data format at runtime. To avoid wasting time/memory:
    before bulk loading.
 4. **Document the schema.** The discovered structure is artifact content.
 
-## PDF build test
+## PDF build test (independent — can run in parallel)
 
-At the end of this phase, run a stub PDF build to verify the toolchain:
+Run a stub PDF build to verify the toolchain. This is independent of the
+Phase 2 exploration work and can be sub-delegated or run in parallel:
 1. Create a minimal `phase5_documentation/exec/ANALYSIS_NOTE.md` with a
    title, one section heading, and one figure reference
 2. Run `pixi run build-pdf`

@@ -215,6 +215,13 @@ mechanical pass before or during review. Metadata errors in figures destroy
 reviewer trust disproportionate to their severity, because they signal that
 the author did not look at their own plots.
 
+**Reviewers must read every plot.** Every figure produced by the phase must
+be opened and inspected by the reviewer — not just referenced. The reviewer
+must verify that the plot makes physical sense (distributions have expected
+shapes, data/MC agreement is reasonable, uncertainties are proportional to
+statistics, no unphysical features). A reviewer that skips plot inspection
+is not reviewing.
+
 **Known limitation: LLM visual inspection is unreliable.** Current models
 are poor at catching text overlaps, alignment issues, clipped labels, and
 figure sizing problems. To mitigate this:
@@ -289,19 +296,11 @@ disk and applies the review criteria.
 | Inference (4b/4c) | Results consistent with expectations? Post-fit diagnostics clean? |
 | Documentation | Per-systematic subsections present? Cross-checks co-located with relevant results (not in standalone section)? Math renders? `results/` directory populated? Figures pass cosmetic checklist (6.4.2)? BibTeX entries have DOI/arXiv links? |
 
-**Fallback: self-review.** If subagent spawning is unavailable, the
-orchestrator performs review itself. In this case it must:
-- Read the artifact from disk (not from conversation memory)
-- Apply the review criteria explicitly (using this table)
-- Write findings to `phase*/review/REVIEW_NOTES.md`
-- Even if no issues are found, write "Self-review performed: [checklist
-  items verified]" — the absence of a review record is indistinguishable
-  from a skipped review
-
-Self-review is inherently weaker than subagent review because the author
-and reviewer share context and biases. To partially compensate, focus on
-**completeness** (what's missing?) rather than correctness (is what's here
-right?), since completeness failures are the dominant failure mode.
+**No self-review fallback.** All phases except Phase 2 require independent
+reviewer subagents. Self-review is not an acceptable substitute — the
+author reviewing their own work misses both correctness and completeness
+failures. If the agent framework cannot spawn subagents, the analysis
+cannot proceed past Phase 2.
 
 ### 6.5 Iteration and Escalation
 
@@ -354,6 +353,19 @@ The pipeline is normally forward-only, but a reviewer or executor may discover
 that a fundamental assumption from an earlier phase is wrong — a major
 background was missed, the selection approach is unworkable, or the data
 contradicts the strategy.
+
+**Regression must be triggered, not avoided.** The natural tendency of
+agents (and humans) is to paper over upstream problems with downstream
+workarounds — adding a systematic to cover a mismodeled input, accepting a
+poor closure test, or documenting an instability as a "known limitation."
+This produces weak analyses. If a reviewer identifies a physics issue
+traceable to an earlier phase, the correct action is regression, not
+acceptance. Concrete triggers that must not be rationalized away:
+- Data/MC disagreement on a variable that enters the observable or MVA
+- Closure test failure (chi2 p-value < 0.05) in any validation
+- Operating point instability (result varies significantly with cut value)
+- An undocumented or unexplained dominant systematic
+- MC used for periods/conditions it was not generated for
 
 When this happens:
 

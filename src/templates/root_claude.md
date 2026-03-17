@@ -117,6 +117,7 @@ Read relevant sections from `methodology/` as needed:
 | Orchestration | `methodology/03a-orchestration.md` | Orchestrator planning |
 | Blinding | `methodology/04-blinding.md` | Phase 4 |
 | Artifacts | `methodology/05-artifacts.md` | Writing phase artifacts |
+| Analysis note spec | `methodology/analysis-note.md` | Phase 4b (writing AN), Phase 5 |
 | Review protocol | `methodology/06-review.md` | Spawning reviewers |
 | Tools & paradigms | `methodology/07-tools.md` | Coding phases |
 | Coding practices | `methodology/11-coding.md` | Coding phases |
@@ -179,8 +180,10 @@ phase begins. No exceptions.
 | 4c | `phase4_inference/exec/INFERENCE_OBSERVED.md` | 1-bot |
 | 5 | `phase5_documentation/exec/ANALYSIS_NOTE.md` | 5-bot (4 + rendering) |
 
-**Review before advancing.** After each artifact, spawn a reviewer subagent
-(preferred) or self-review. Write findings to `phase*/review/REVIEW_NOTES.md`.
+**Review before advancing.** After each artifact, spawn a reviewer subagent.
+Self-review is only acceptable for Phase 2 (exploration). All other phases
+require independent reviewer agents. Write findings to
+`phase*/review/REVIEW_NOTES.md`.
 
 **Experiment log.** Append to `experiment_log.md` throughout. An empty
 experiment log at the end of a phase is a process failure.

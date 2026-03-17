@@ -15,13 +15,24 @@ A brief natural-language description of the physics goal. Examples:
 The prompt need not specify methodology. It states the physics target and any
 constraints (dataset, final state, energy range).
 
-### 2.2 Experiment Context (Retrieval-Based)
+### 2.2 Experiment Context (Retrieval-Based, When Available)
 
-The agent has access to a retrieval system (SciTreeRAG over a corpus of
-collaboration publications, theses, and internal notes) for the relevant
-experiment(s), exposed as MCP tools. This replaces hand-curated configuration
-files. See `.mcp.json` for the server configuration and orchestration §RAG
-Integration for the tool reference.
+The agent **may** have access to a retrieval system (SciTreeRAG over a corpus
+of collaboration publications, theses, and internal notes) for the relevant
+experiment(s), exposed as MCP tools. When available, this replaces
+hand-curated configuration files. See `.mcp.json` for the server
+configuration and orchestration §RAG Integration for the tool reference.
+
+**When RAG is not available:** The agent proceeds using its training
+knowledge and any documentation provided in the analysis directory (e.g.,
+detector papers, prior analysis notes placed in a `docs/` directory by the
+user). All experiment-specific claims must be marked as "based on training
+knowledge — no corpus verification" and flagged for human review. The
+analysis is still valid; it simply has weaker provenance for detector
+parameters and prior measurements. The phase templates' "RAG queries
+(mandatory)" sections become "RAG queries (if corpus available)" — the
+queries are still the right questions to answer, but the agent uses whatever
+sources are at hand.
 
 The agent queries this corpus to obtain:
 - Detector specifications (subsystem resolutions, angular coverage, material

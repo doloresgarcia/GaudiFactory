@@ -1,6 +1,7 @@
 # Phase 5: Documentation
 
-> Read `methodology/03-phases.md` → "Phase 5" for full requirements.
+> Read `methodology/analysis-note.md` for the full AN specification.
+> Read `methodology/03-phases.md` → "Phase 5" for phase requirements.
 > Read `methodology/appendix-plotting.md` for figure standards.
 > Read `methodology/appendix-checklist.md` for the review checklist.
 

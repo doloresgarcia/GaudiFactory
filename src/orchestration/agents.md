@@ -1,23 +1,12 @@
-## Agent Session Definitions
+## Agent Prompt Templates
 
-### Context assembly
+This file contains the **literal prompt templates** for each agent role.
+The methodology (`06-review.md`, `03a-orchestration.md`) defines the review
+protocol and orchestrator architecture; this file provides the copy-pasteable
+prompts the orchestrator sends to each subagent.
 
-Methodology §8 is the canonical source for context assembly rules. This
-section provides the operational implementation.
-
-Every agent receives curated context, not the full methodology spec. The
-orchestrating agent (lead) assembles the input for each session following
-the layered approach in methodology §8.2:
-
-1. **Bird's-eye framing** (~1 page) — physics prompt, analysis type,
-   current phase, applicable conventions, end-goal reminder (journal
-   submission)
-2. **Relevant methodology sections** — selected per role (see table in §8.2)
-3. **Upstream artifacts** — phase-specific inputs
-
-The CLAUDE.md files (project-root + analysis-root + phase-level) are loaded
-automatically by Claude Code. These carry the essential rules (tools, pixi,
-coding standards) without needing to include the full methodology.
+Context assembly follows methodology §3a.4.2 (three layers: bird's-eye
+framing, relevant methodology sections, upstream artifacts).
 
 ### Execution agent
 

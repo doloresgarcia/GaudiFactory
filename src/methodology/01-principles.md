@@ -8,6 +8,15 @@ intentionally minimal: it defines *what* must happen and *what* each phase must
 produce, not *how* the agent should implement it. The agent selects tools,
 writes code, and makes physics judgments within the constraints described here.
 
+**Quality bar: publication-ready.** The standard for every phase is: would
+a senior physicist on a collaboration review committee approve this? Not
+"is it good enough to move on" but "is it good enough to publish." This
+means: every systematic evaluated, every cross-check quantitative, every
+plot physically sensible, every claim supported by evidence. Agents must
+not rationalize shortcuts, accept weak closures, or paper over data/MC
+disagreements. When something is wrong, go back and fix it — do not
+document it as a "known limitation" and move on.
+
 **Design principles:**
 
 - **Prose over code.** The methodology is expressed in natural language. No

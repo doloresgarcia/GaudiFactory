@@ -47,12 +47,11 @@ It writes: commit messages and (if needed) the physics prompt passed to
 subagents. See `templates/root_claude.md` for the full list of what the
 orchestrator does and does not do.
 
-**Fallback: self-review.** If agent spawning is unavailable or impractical,
-the orchestrator may perform review itself. In this case it must still:
-- Read the artifact from disk (not from conversation memory)
-- Apply the review criteria explicitly (Section 6.4)
-- Write findings to REVIEW_NOTES.md
-- This is strictly weaker than subagent review and should be a last resort
+**Review is always by subagent.** Self-review is not an acceptable fallback.
+If the agent framework cannot spawn subagents, the analysis cannot proceed
+past Phase 2 (which uses self-review by design). All other phases require
+independent reviewer agents. This is non-negotiable — the author reviewing
+their own work produces systematically weaker quality.
 
 **Anti-pattern:** Running straight from Phase 1 to Phase 5 in a single pass,
 producing only the strategy document and the final analysis note, with no
@@ -114,14 +113,27 @@ isn't here?"
 ```
 
 *4-bot review (for phases requiring it):*
-Spawn four reviewer agents (first three in parallel):
-1. Physics reviewer — "is the physics correct and complete?" (receives
-   only the physics prompt and artifact, no methodology or conventions)
-2. Critical reviewer — "find everything wrong or missing"
-3. Constructive reviewer — "what would make this stronger"
-4. Arbiter — reads all reviews, issues PASS / ITERATE / ESCALATE
+Spawn four reviewer agents (first three in parallel).
+See `methodology/06-review.md` §6.2–6.4 for the full reviewer protocol,
+framing, phase-specific review focus, and completeness checks. Summary:
 
-The arbiter's verdict determines whether the phase advances.
+1. **Physics reviewer** — receives ONLY the physics prompt and artifact
+   (no methodology, no conventions). Reviews as a senior collaboration
+   member: "Is the physics correct and complete? Would I approve this?"
+2. **Critical reviewer** — receives the artifact, methodology, and
+   conventions. Goal: find everything wrong or missing, both in what is
+   present and what is absent. Must explicitly check the conventions
+   document row-by-row.
+3. **Constructive reviewer** — same inputs as critical. Goal: what would
+   make this stronger? Clarity, additional validation, improved
+   presentation. Escalates to Category A if warranted.
+4. **Arbiter** — reads all three reviews and the original artifact.
+   Adjudicates disagreements. Issues PASS / ITERATE / ESCALATE. Must
+   not PASS with any unresolved A or B items.
+
+The arbiter's verdict determines whether the phase advances. The bar is
+high: the arbiter should ITERATE liberally and only PASS when a senior
+physicist would be comfortable with the result.
 
 ---
 
