@@ -26,6 +26,18 @@ Common causes of thin ANs:
 - Methods described in one sentence instead of full paragraphs with
   equations
 
+**No empty sections.** Every section heading must be followed by at least
+one paragraph of prose before any figures. A section that contains only
+a figure with no introductory text is **Category A** — the reader cannot
+understand what the figure shows or why it matters without context. Even
+a Results subsection showing a well-captioned figure needs prose
+explaining: what is being shown, what the key features are, and how it
+relates to the analysis goals. A bare heading followed immediately by a
+`![caption](figure.pdf)` line produces an empty-looking section in the
+rendered PDF. The AN writing subagent must verify that every `##` and
+`###` heading is followed by at least 2-3 sentences of prose before any
+figure or table.
+
 The rule of thumb: every selection cut needs a before/after distribution
 plot, every systematic needs an impact figure, every cross-check needs a
 comparison plot. A 5-energy-point lineshape fit should have ~30+ figures
