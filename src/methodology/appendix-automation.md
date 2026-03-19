@@ -49,7 +49,7 @@ run_regression_check() {
 
     # Fix the origin phase
     run_agent --name "$(pick_session_name)" \
-      --output "$origin_phase/exec" \
+      --output "$origin_phase/outputs" \
       "Fix regression described in $origin_phase/REGRESSION_TICKET.md"
 
     # Re-review at the original tier for that phase
@@ -123,7 +123,7 @@ run_4bot_review() {
         exec_name=$(pick_session_name)
         write_iteration_inputs "$dir" "$i" "$exec_name"
         run_agent --name "$exec_name" \
-          --output "$dir/exec" "iterate v$((i+1))"
+          --output "$dir/outputs" "iterate v$((i+1))"
         ;;
       ESCALATE)
         present_for_human_review "$dir"
@@ -175,7 +175,7 @@ run_1bot_review() {
     exec_name=$(pick_session_name)
     write_iteration_inputs_1bot "$dir" "$i" "$exec_name"
     run_agent --name "$exec_name" \
-      --output "$dir/exec" "iterate v$((i+1))"
+      --output "$dir/outputs" "iterate v$((i+1))"
   done
 
   # Fell through — hit the hard cap
@@ -197,19 +197,19 @@ run_1bot_review() {
 #   4a → 4b → human gate → 4c → 5
 
 run_agent --name "$(pick_session_name)" \
-  --output "phase1_strategy/exec" "execute phase 1"
+  --output "phase1_strategy/outputs" "execute phase 1"
 run_4bot_review "phase1_strategy" || exit 1
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase1): strategy"
 
 run_agent --name "$(pick_session_name)" \
-  --output "phase2_exploration/exec" "execute phase 2"
+  --output "phase2_exploration/outputs" "execute phase 2"
 # Self-review only — no external review
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase2): exploration"
 
 # Phase 3 — per channel (parallel execution, sequential review)
 for channel in channel_a channel_b; do
   run_agent --name "$(pick_session_name)" \
-    --output "phase3_selection/channel_$channel/exec" \
+    --output "phase3_selection/channel_$channel/outputs" \
     "execute phase 3 ($channel)" &
 done
 wait
@@ -217,7 +217,7 @@ for channel in channel_a channel_b; do
   run_1bot_review "phase3_selection/channel_$channel" || exit 1
 done
 run_agent --name "$(pick_session_name)" \
-  --output "phase3_selection/exec" "consolidate channels"
+  --output "phase3_selection/outputs" "consolidate channels"
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase3): selection"
 
 # Shared calibrations (can run in parallel with phases 2-3)
@@ -231,7 +231,7 @@ wait
 
 # Phase 4a — agent gate (4-bot review must PASS to proceed)
 run_agent --name "$(pick_session_name)" \
-  --output "phase4_inference/4a_expected/exec" "execute phase 4a"
+  --output "phase4_inference/4a_expected/outputs" "execute phase 4a"
 run_4bot_review "phase4_inference/4a_expected" || {
   echo "Phase 4a review did not pass."
   exit 1
@@ -240,19 +240,19 @@ git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4a): ex
 
 # Unified flow: both measurements and searches use 4b + 4c
 run_agent --name "$(pick_session_name)" \
-  --output "phase4_inference/4b_partial/exec" "10% data validation"
+  --output "phase4_inference/4b_partial/outputs" "10% data validation"
 run_4bot_review "phase4_inference/4b_partial" || exit 1
 present_for_human_review "phase4_inference/4b_partial"
 wait_for_human_decision  # APPROVE / REQUEST CHANGES / HALT
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4b): partial validation"
 
 run_agent --name "$(pick_session_name)" \
-  --output "phase4_inference/4c_observed/exec" "full data"
+  --output "phase4_inference/4c_observed/outputs" "full data"
 run_1bot_review "phase4_inference/4c_observed" || exit 1
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4c): observed results"
 
 run_agent --name "$(pick_session_name)" \
-  --output "phase5_documentation/exec" "execute phase 5"
-run_4bot_review "phase5_documentation" || exit 1
+  --output "phase5_documentation/outputs" "execute phase 5"
+run_5bot_review "phase5_documentation" || exit 1  # 4-bot + rendering reviewer
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase5): analysis note"
 ```

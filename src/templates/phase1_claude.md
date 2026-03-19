@@ -10,7 +10,7 @@ structure will be. Execute after the plan is set.
 
 ## Output artifact
 
-`exec/STRATEGY.md` — analysis strategy with physics motivation, sample
+`outputs/STRATEGY.md` — analysis strategy with physics motivation, sample
 inventory, selection approach, systematic plan, and technique selection.
 
 ## Methodology references

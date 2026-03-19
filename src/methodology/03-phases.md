@@ -287,7 +287,7 @@ with figure generation or data processing):
 1. **Figures subagent.** Produces any remaining AN-specific figures not
    already generated in Phases 2-4 (e.g., per-cut distributions, per-
    systematic impact plots). Reads data files, runs plotting scripts,
-   saves to `phase5_documentation/exec/figures/`. This is a code-writing
+   saves to `phase5_documentation/outputs/figures/`. This is a code-writing
    agent. **Flagship figures** (defined in Phase 1 strategy) receive
    extra attention: tighter axis limits, careful legend placement,
    considered color choices. These are the figures that would appear in
@@ -295,7 +295,7 @@ with figure generation or data processing):
 
 2. **AN writing subagent.** Reads ALL phase artifacts (strategy, exploration,
    selection, inference) and the figures directory. Writes the complete AN
-   text to `phase5_documentation/exec/ANALYSIS_NOTE.md`. This agent does
+   text to `phase5_documentation/outputs/ANALYSIS_NOTE.md`. This agent does
    NOT read data files or write code — it reads artifacts and writes prose.
    It must produce a document that meets the completeness test: a physicist
    unfamiliar with the analysis can reproduce every number from the AN alone.

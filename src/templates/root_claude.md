@@ -211,13 +211,13 @@ phase begins. No exceptions.
 
 | Phase | Required artifact | Review type |
 |-------|-------------------|-------------|
-| 1 | `phase1_strategy/exec/STRATEGY.md` | 4-bot |
-| 2 | `phase2_exploration/exec/EXPLORATION.md` | Self |
-| 3 | `phase3_selection/exec/SELECTION.md` | 1-bot |
-| 4a | `phase4_inference/exec/INFERENCE_EXPECTED.md` | 4-bot |
-| 4b | `phase4_inference/exec/INFERENCE_PARTIAL.md` + `phase4_inference/exec/ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
-| 4c | `phase4_inference/exec/INFERENCE_OBSERVED.md` | 1-bot |
-| 5 | `phase5_documentation/exec/ANALYSIS_NOTE.md` | 5-bot (4 + rendering) |
+| 1 | `phase1_strategy/outputs/STRATEGY.md` | 4-bot |
+| 2 | `phase2_exploration/outputs/EXPLORATION.md` | Self |
+| 3 | `phase3_selection/outputs/SELECTION.md` | 1-bot |
+| 4a | `phase4_inference/outputs/INFERENCE_EXPECTED.md` | 4-bot |
+| 4b | `phase4_inference/outputs/INFERENCE_PARTIAL.md` + `phase4_inference/outputs/ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
+| 4c | `phase4_inference/outputs/INFERENCE_OBSERVED.md` | 1-bot |
+| 5 | `phase5_documentation/outputs/ANALYSIS_NOTE.md` | 5-bot (4 + rendering) |
 
 **Review before advancing.** After each artifact, spawn a reviewer subagent.
 Self-review is only acceptable for Phase 2 (exploration). All other phases
@@ -453,8 +453,8 @@ numpy = ">=1.24"
 # Named tasks
 [tasks]
 py = "python"
-select = "python phase3_selection/scripts/apply_selection.py"
-all = "python phase3_selection/scripts/apply_selection.py && ..."
+select = "python phase3_selection/src/apply_selection.py"
+all = "python phase3_selection/src/apply_selection.py && ..."
 ```
 
 **Common pitfalls:**

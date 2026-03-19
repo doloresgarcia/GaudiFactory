@@ -38,8 +38,8 @@ Subagents are **executors** or **reviewers**. Each receives curated context
 (§3a.4). See `appendix-prompts.md` for literal prompt templates.
 
 **Executors** receive phase CLAUDE.md, upstream artifacts, experiment log,
-conventions. They work plan-then-code: `plan.md` first, then scripts/figures,
-artifact last.
+conventions. They work plan-then-code: `plan.md` first, then code in `src/`,
+figures in `outputs/figures/`, artifact last.
 
 **Reviewers:**
 

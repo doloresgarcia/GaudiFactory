@@ -1,4 +1,4 @@
-# reslop
+# slopspec
 
 LLM-driven HEP analysis framework. An orchestrator agent delegates work to
 subagents through five sequential phases, producing a publication-quality
@@ -122,7 +122,7 @@ compiles the analysis note via pandoc.
 ## Directory structure
 
 ```
-reslop/
+slopspec/
   src/                        Spec infrastructure
     methodology/              Full spec: phases, review, orchestration, appendices
     conventions/              Domain knowledge (symlinked into analyses)
@@ -134,7 +134,7 @@ reslop/
       pixi.toml               Environment + task graph
       .analysis_config        data_dir + allow paths for isolation hook
       conventions/ → src/conventions/
-      phase{1..5}_*/          Phase dirs with CLAUDE.md, exec/, scripts/, figures/, review/
+      phase{1..5}_*/          Phase dirs with CLAUDE.md, outputs/, src/, review/, logs/
 ```
 
 ## How scaffolding works
@@ -147,7 +147,7 @@ templates in `src/templates/`:
    `{{analysis_type}}` placeholders replaced.
 2. **Phase directories** (`phase1_strategy/`, `phase2_exploration/`,
    `phase3_selection/`, `phase4_inference/`, `phase5_documentation/`) are
-   created with `exec/`, `scripts/`, `figures/`, and `review/` subdirs.
+   created with `outputs/`, `outputs/figures/`, `src/`, `review/`, and `logs/` subdirs.
 3. **Conventions symlink** — `conventions/` → `../../src/conventions/` is
    created so agents can read domain knowledge.
 4. **`.analysis_config`** is created with `analysis_type` set. Edit it to

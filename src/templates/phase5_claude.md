@@ -15,12 +15,12 @@ These should be handled by **separate subagents** in sequence:
 
 Produce any AN-specific figures not already generated in Phases 2-4.
 Read data/MC files, write plotting scripts, save to
-`phase5_documentation/exec/figures/`. Also symlink existing phase figures:
+`phase5_documentation/outputs/figures/`. Also symlink existing phase figures:
 
 ```bash
-ln -sf ../../../phase2_exploration/figures/*.pdf phase5_documentation/exec/figures/
-ln -sf ../../../phase3_selection/figures/*.pdf phase5_documentation/exec/figures/
-ln -sf ../../../phase4_inference/figures/*.pdf phase5_documentation/exec/figures/
+ln -sf ../../../phase2_exploration/outputs/figures/*.pdf phase5_documentation/outputs/figures/
+ln -sf ../../../phase3_selection/outputs/figures/*.pdf phase5_documentation/outputs/figures/
+ln -sf ../../../phase4_inference/outputs/figures/*.pdf phase5_documentation/outputs/figures/
 ```
 
 The AN typically needs ~30+ figures. Phases 2-4 produce some, but the AN
@@ -30,8 +30,8 @@ comparisons, and per-systematic impact figures.
 **Figure path verification (mandatory).** After aggregating figures, run:
 ```bash
 # Verify every figure reference in the AN resolves to a file
-grep -oP 'figures/[^)]+\.pdf' exec/ANALYSIS_NOTE.md | sort -u | while read f; do
-  [ -f "exec/$f" ] || echo "MISSING: $f"
+grep -oP 'figures/[^)]+\.pdf' outputs/ANALYSIS_NOTE.md | sort -u | while read f; do
+  [ -f "outputs/$f" ] || echo "MISSING: $f"
 done
 ```
 Any missing figure is Category A. Fix before proceeding to the AN
@@ -46,7 +46,7 @@ writing subagent.
 - The conventions files (for completeness checks)
 - The experiment log
 
-And writes: `exec/ANALYSIS_NOTE.md` — the complete analysis note.
+And writes: `outputs/ANALYSIS_NOTE.md` — the complete analysis note.
 
 **The gold standard:** a physicist who has never seen the analysis should
 be able to reproduce every number from the AN alone. Under 30 rendered
@@ -73,7 +73,7 @@ and formatting.
 
 1. **Convert markdown to LaTeX** (not directly to PDF):
    ```bash
-   cd phase5_documentation/exec
+   cd phase5_documentation/outputs
    pandoc ANALYSIS_NOTE.md -o ANALYSIS_NOTE.tex --standalone \
      --include-in-header=../../conventions/preamble.tex \
      --number-sections --toc --filter pandoc-crossref --citeproc
@@ -154,9 +154,9 @@ to route back to the AN writing agent. It does not fix physics content.
 
 ## Output artifacts
 
-- `exec/ANALYSIS_NOTE.md` — pandoc-compatible markdown (from sub-task 2)
-- `exec/ANALYSIS_NOTE.tex` — typeset LaTeX (from sub-task 3)
-- `exec/ANALYSIS_NOTE.pdf` — final compiled PDF (from sub-task 3)
+- `outputs/ANALYSIS_NOTE.md` — pandoc-compatible markdown (from sub-task 2)
+- `outputs/ANALYSIS_NOTE.tex` — typeset LaTeX (from sub-task 3)
+- `outputs/ANALYSIS_NOTE.pdf` — final compiled PDF (from sub-task 3)
 
 ## Methodology references
 

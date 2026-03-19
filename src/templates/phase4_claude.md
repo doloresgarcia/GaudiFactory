@@ -20,9 +20,9 @@ the artifact structure will be. Execute after the plan is set.
 
 | Sub-phase | Artifact | Review |
 |-----------|----------|--------|
-| 4a | `exec/INFERENCE_EXPECTED.md` | 4-bot |
-| 4b | `exec/INFERENCE_PARTIAL.md` + `ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
-| 4c | `exec/INFERENCE_OBSERVED.md` | 1-bot |
+| 4a | `outputs/INFERENCE_EXPECTED.md` | 4-bot |
+| 4b | `outputs/INFERENCE_PARTIAL.md` + `outputs/ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
+| 4c | `outputs/INFERENCE_OBSERVED.md` | 1-bot |
 
 ## Methodology references
 

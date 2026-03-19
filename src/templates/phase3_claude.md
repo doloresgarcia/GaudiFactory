@@ -13,7 +13,7 @@ produce, what the artifact structure will be. Execute after the plan is set.
 
 ## Output artifact
 
-`exec/SELECTION.md` — final object definitions, event selection with
+`outputs/SELECTION.md` — final object definitions, event selection with
 optimization, cutflow table, and technique-specific deliverables.
 
 ## Applicable conventions
