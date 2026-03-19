@@ -195,8 +195,11 @@ bibliography requirements.
 - **Depth calibration.** ~50-100 rendered pages. Under 30 = Category A.
   Rule of thumb: every cut needs a distribution plot, every systematic needs
   an impact figure, every cross-check needs a comparison plot.
-- **Per-systematic subsections.** Each source gets its own subsection:
-  description, method, impact figure, per-bin table.
+- **Per-systematic subsections.** Each source gets its own subsection
+  written in running prose: physical origin, evaluation method, numerical
+  impact, and interpretation. Do NOT use bold-labeled paragraph headings
+  ("**Origin:**", "**Method:**") — write natural prose that reads like an
+  analysis note, not a form.
 - **Figure captions.** Follow `<Plot name>. <2-5 sentence description.>`
   Anything under two sentences is Category A.
 - **Table formatting.** No monospace overflow. Short labels, consistent

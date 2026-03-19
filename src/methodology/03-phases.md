@@ -227,14 +227,16 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
   comparison to ≥1 theory prediction using full covariance
 
 - **Per-systematic documentation depth.** Each systematic source in the
-  artifact must include: (a) physical origin — what detector or physics
-  effect causes this, (b) evaluation method — how the variation was
-  determined and justified, (c) numerical impact on each result parameter,
-  (d) interpretation — is this dominant, subdominant, conservative? Any
-  caveats or capping? (e) failed attempts — if an alternative evaluation
-  was tried and failed, document what was tried, why it failed, and how
-  the fallback was chosen. Failed attempts are valuable because they
-  prevent future analysts from repeating the same dead end.
+  artifact must be described in running prose covering: the physical
+  origin (what detector or physics effect causes it), the evaluation
+  method (how the variation was determined and justified), the numerical
+  impact on each result parameter, and interpretation (dominant,
+  subdominant, conservative? any caveats?). If an alternative evaluation
+  was tried and failed, document what was tried and why, to prevent
+  future analysts from repeating the same dead end. Write this as
+  natural prose — do NOT use bold-labeled paragraph headings like
+  "**Origin:**", "**Method:**", "**Impact:**". These make the document
+  read like a form rather than an analysis note.
 
 **Artifact:** `INFERENCE_EXPECTED.md` + `ANALYSIS_NOTE.md` (v1 — AN
 structure established here with expected-only results; 4b/4c/5 update it).
