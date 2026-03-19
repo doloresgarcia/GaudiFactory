@@ -265,15 +265,22 @@ Read ANALYSIS_NOTE.tex. Improve it:
    figsize. Setting height ensures they appear visually the same size
    (matching plot areas), while the wider colorbar figure naturally
    takes more horizontal space — together they fill the page.
-   For 2-across: \includegraphics[height=0.45\linewidth]{...}
-     (square plots: 0.45 + 0.45 = 0.90\linewidth.
-      One colorbar plot: ~0.45 + ~0.54 = ~0.99\linewidth. Perfect.)
-   For 3-across: \includegraphics[height=0.32\linewidth]{...}
-     (3 squares: 0.96. 2 squares + 1 colorbar: ~1.0. Good.)
-   For 3x3 grids: \includegraphics[height=0.30\linewidth]{...}
-   Use \hfill between figures. The goal is to fill the page width
-   while keeping plot areas visually equal. If figures are too small
-   and leave whitespace, INCREASE the height value.
+   Sizing depends on how many figures have colorbars (wider):
+   - 2 square plots: height=0.45\linewidth (0.45+0.45=0.90)
+   - 1 square + 1 colorbar: height=0.45\linewidth (0.45+0.54=0.99)
+   - 2 colorbar plots: height=0.38\linewidth (0.46+0.46=0.92)
+   - 3 square plots: height=0.32\linewidth (0.32*3=0.96)
+   - 2 square + 1 colorbar: height=0.32\linewidth (0.32+0.32+0.38=1.02, OK)
+   - 3 colorbar plots: height=0.27\linewidth (0.33*3=0.99)
+   - 3x3 grid (square): height=0.30\linewidth
+   - 3x3 grid (with colorbars): height=0.25\linewidth
+   **CRITICAL: if 3 figures ALL have colorbars, use height=0.27\linewidth
+   not 0.32. At 0.32, three colorbar plots sum to ~1.14\linewidth and
+   the third wraps to a new line. Always check: N × (height × aspect)
+   must be ≤ \linewidth.**
+   Use \hfill between figures. If figures are too small and leave
+   whitespace, increase the height. If figures wrap to a new line,
+   decrease the height.
    Use \begin{figure*} for full-width composites. Rewrite captions to
    describe all sub-panels: "(a) ..., (b) ..., (c) ...".
 
