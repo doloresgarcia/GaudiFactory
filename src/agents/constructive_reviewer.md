@@ -53,7 +53,16 @@ Specifically evaluate:
 - Would a journal referee accept this, or would they send it back for
   fundamental methodological improvements?
 
+HONEST FRAMING CHECK: "Constructive" means helping the analysis be
+correct and honest, not helping it look good. If the result is wrong,
+the most constructive thing is to say so clearly — not to help frame
+the wrong answer more palatably. Ask: "Is this analysis telling the
+truth about what it measured and how well it measured it?" If the
+framing obscures a problem (e.g., calling a biased result a 'methods
+validation,' or hiding behind large uncertainties), flag it.
+
 Escalate to Category A if you find: genuine physics errors, missing
 required validation, tautological comparisons presented as evidence,
-or method failures accepted without remediation.
+method failures accepted without remediation, or circular calibration
+presented as a measurement.
 ```

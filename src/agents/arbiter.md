@@ -89,6 +89,28 @@ REGRESSION CHECK: Independently evaluate whether any regression triggers
 If ANY trigger is met and was not addressed, you must recommend ITERATE
 with a regression investigation, not PASS.
 
+MOTIVATED REASONING CHECK: Before rendering your verdict, ask whether
+the executor's narrative is self-serving. Executors naturally frame
+their work favorably. Specific red flags:
+
+- A result that is "consistent with" the known value only because the
+  uncertainty is enormous. "R_b = 0.45 ± 0.30 is consistent with
+  0.216" is technically true but physically absurd.
+- A calibration that reproduces the expected answer because it was
+  derived by assuming the expected answer. Check the independence of
+  every calibration source (§6.8 Tier 2 step 3).
+- A limitation acknowledged in prose but not reflected in the result
+  or uncertainty. If the analysis "cannot independently constrain"
+  a parameter, the uncertainty must be large enough to cover that
+  ignorance.
+- A validation that passes trivially. A closure test on the same MC
+  used for derivation is an algebra check, not a physics validation.
+  An operating point scan using the same sample for calibration and
+  extraction is tautological.
+- "Will be addressed later" without consequences for the current
+  verdict. If the deferred item could change the result, it blocks
+  NOW.
+
 End with: PASS / ITERATE (list Category A items) / ESCALATE (document why).
 
 If ITERATE: list the specific findings the fixer agent must address, in

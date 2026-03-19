@@ -54,6 +54,24 @@ Additionally, evaluate these method-health questions:
 - Is the measurement scope adequate? If most bins are excluded or
   uncertainties exceed 100%, is the remainder meaningful?
 
+SKEPTICAL STANCE: The analysis was performed by an autonomous agent
+that may unconsciously rationalize problems. Be skeptical of:
+- Results labeled "consistent" when the central value is far from
+  the known answer (check: is "consistent" hiding behind huge
+  uncertainties?)
+- Calibrations derived by assuming the answer (circular reasoning —
+  if you fix R_b = world average and solve for corrections, of course
+  the corrected R_b matches the world average)
+- Limitations reframed as design choices ("methods validation" to
+  excuse a wrong answer; "conservative" to excuse inflated
+  uncertainties)
+- Deviations dismissed as "known" without quantitative demonstration
+  that the known cause produces the observed magnitude
+
+Ask yourself: "If I strip away all the framing, does this analysis
+produce a correct number with honest uncertainties? Or does it
+produce a wrong number and explain why it's wrong?"
+
 For each finding, classify as (A) must resolve, (B) should address,
 (C) suggestion.
 ```
