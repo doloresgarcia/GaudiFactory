@@ -260,27 +260,40 @@ Read ANALYSIS_NOTE.tex. Improve it:
    - Reco vs gen level of the same observable → side-by-side
    - Systematic shifts for related sources → grouped
    - 1D projections (kt + dtheta) → side-by-side
-   **Sizing in composites: use HEIGHT to equalize, fill the page.**
-   Figures with colorbars are wider than plain plots at the same
-   figsize. Setting height ensures they appear visually the same size
-   (matching plot areas), while the wider colorbar figure naturally
-   takes more horizontal space — together they fill the page.
-   Sizing depends on how many figures have colorbars (wider):
-   - 2 square plots: height=0.45\linewidth (0.45+0.45=0.90)
-   - 1 square + 1 colorbar: height=0.45\linewidth (0.45+0.54=0.99)
-   - 2 colorbar plots: height=0.38\linewidth (0.46+0.46=0.92)
-   - 3 square plots: height=0.32\linewidth (0.32*3=0.96)
-   - 2 square + 1 colorbar: height=0.32\linewidth (0.32+0.32+0.38=1.02, OK)
-   - 3 colorbar plots: height=0.23\linewidth (empirically validated)
-   - 3x3 grid (square): height=0.30\linewidth
-   - 3x3 grid (with colorbars): height=0.25\linewidth
-   **CRITICAL: if 3 figures ALL have colorbars, use height=0.23\linewidth
-   (empirically validated). At 0.27 or larger, three colorbar plots
-   wrap to a new line. For 2 colorbar plots, use height=0.38\linewidth.
-   Always verify: if figures wrap to two lines, decrease the height.**
-   Use \hfill between figures. If figures are too small and leave
-   whitespace, increase the height. If figures wrap to a new line,
-   decrease the height.
+   **Sizing: measure actual figure dimensions, then compute.**
+
+   BEFORE combining any figures, run this script to get every figure's
+   aspect ratio (write it to a temp file and read the results):
+
+   ```python
+   import subprocess, re
+   from pathlib import Path
+   for f in sorted(Path("figures").glob("*.pdf")):
+       r = subprocess.run(["pdfinfo", str(f)], capture_output=True, text=True)
+       for line in r.stdout.split("\n"):
+           if "Page size" in line:
+               m = re.findall(r"[\d.]+", line)
+               w, h = float(m[0]), float(m[1])
+               print(f"{f.name}: {w:.0f}x{h:.0f} aspect={w/h:.3f}")
+   ```
+
+   Then for each composite, compute the height that fills the page:
+   - For N figures side-by-side at the same height h:
+     total_width = h * (aspect_1 + aspect_2 + ... + aspect_N)
+     We want total_width ≤ 0.95\linewidth (leave 5% for \hfill gaps)
+     So: h = 0.95 / sum(aspects)
+   - Example: 3 colorbar figures each with aspect 1.10:
+     h = 0.95 / (1.10 + 1.10 + 1.10) = 0.95 / 3.30 = 0.288
+     → use height=0.28\linewidth
+   - Example: 2 square (aspect 0.97) + 1 colorbar (aspect 1.10):
+     h = 0.95 / (0.97 + 0.97 + 1.10) = 0.95 / 3.04 = 0.312
+     → use height=0.31\linewidth
+   - For 2×2 or 3×3 grids, compute per-row and use the tighter value.
+
+   Use HEIGHT (not width) so figures with different aspect ratios
+   appear at the same visual size. Use \hfill between figures.
+   Round DOWN slightly (e.g., 0.288 → 0.28) to ensure no wrapping.
+
    Use \begin{figure*} for full-width composites. Rewrite captions to
    describe all sub-panels: "(a) ..., (b) ..., (c) ...".
 

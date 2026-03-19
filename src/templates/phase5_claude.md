@@ -96,13 +96,13 @@ and formatting.
      maps for related sources, closure check projections (kt + dtheta).
      Use `\begin{figure*}` for full-width composites. Rewrite captions
      to describe the composite ("(a) ... (b) ... (c) ...").
-     **Sizing in composites: use HEIGHT to equalize and fill the page.**
-     Figures with colorbars are physically wider than plain plots.
-     Setting height ensures matching visual size while the wider
-     colorbar figures naturally fill more horizontal space. Together
-     they fill the page. For 2-across: `height=0.45\linewidth`.
-     For 3-across: `height=0.32\linewidth`. Use `\hfill` between
-     figures. If too much whitespace remains, increase the height.
+     **Sizing: measure actual PDF dimensions, then compute height.**
+     Before combining, use `pdfinfo` to get each figure's width and
+     height in points, compute aspect ratio (w/h). Then for N figures
+     side-by-side: `h = 0.95 / sum(aspects)` (in units of \linewidth).
+     This fills the page width while equalizing visual size across
+     figures with different aspect ratios (e.g., colorbars make wider).
+     See `appendix-prompts.md` typesetting agent for the full recipe.
 
    - **Fix float placement.** Add `\FloatBarrier` at section boundaries
      (`\section`, `\subsection`) to prevent figures from drifting far
