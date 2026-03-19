@@ -272,8 +272,12 @@ Read ANALYSIS_NOTE.tex. Improve it:
    Add \clearpage before appendices and before figure-dense sections.
    No figure should appear more than 1 page from its first text reference.
 
-3. FIX TABLES. Use booktabs (\toprule, \midrule, \bottomrule). Apply
-   \small or \resizebox to wide tables. No column overflow.
+3. FIX TABLES. Tables should NOT split across pages. Pandoc generates
+   \begin{longtable} which splits by default. Convert each longtable to
+   a regular \begin{table}[htbp]\begin{tabular} float unless the table
+   genuinely cannot fit on one page (e.g., a 50-row per-bin table).
+   Use booktabs (\toprule, \midrule, \bottomrule). Apply \small or
+   \resizebox to wide tables. No column overflow.
 
 4. VERIFY SECTIONS. Every \section and \subsection must have text before
    any \begin{figure}. Flag empty sections.

@@ -29,6 +29,15 @@
 % Full column width for both figure and table captions.
 \usepackage[font=small]{caption}
 
+% --- Tables: prevent page splits ---
+% Pandoc generates longtable by default, which splits across pages.
+% We strongly discourage this by penalizing breaks inside floats.
+% The typesetting agent should also convert longtables to regular
+% table floats where the table fits on a single page.
+\usepackage{longtable}
+\setlength{\LTpre}{0pt}
+\setlength{\LTpost}{0pt}
+
 % --- Float placement (relaxed) ---
 % LaTeX defaults are too conservative for figure-heavy technical docs.
 % These settings allow up to 90% of a page to be floats, preventing
