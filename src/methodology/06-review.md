@@ -158,6 +158,8 @@ problems. Concrete triggers (must not be rationalized away):
   total uncertainty warrants investigation, not acceptance)
 - MC used for periods without corresponding simulation
 - Result > 3σ from a well-measured reference value (see §6.8)
+- Result with relative deviation > 50% from a well-measured reference
+  value, regardless of pull (see §6.8 — the "gross bias" clause)
 - GoF toy distribution inconsistent with observed chi2 (the observed
   chi2 falls outside the 95% interval of the toy distribution)
 - Wholesale bin exclusion: flat-prior gate or similar criterion
@@ -189,9 +191,24 @@ next review gate.
 When the Phase 1 strategy defines validation targets (PDG values, published
 reference measurements), these create binding review obligations:
 
-**The rule:** Any extracted parameter with a pull > 3σ from a well-measured
-reference value is **Category A** (blocks advancement) unless the reviewer
-can verify **all three** of the following:
+**The rule:** Any extracted parameter that meets **either** of the
+following conditions is **Category A** (blocks advancement) unless the
+reviewer can verify the three checks below:
+
+- **Pull threshold:** pull > 3σ from a well-measured reference value, OR
+- **Gross bias threshold:** relative deviation > 50% from a well-measured
+  reference value (i.e., |result − reference| / reference > 0.5),
+  regardless of the pull.
+
+The gross bias clause exists because large uncertainties can mask
+obviously wrong results. A measurement of R_b = 0.45 ± 0.10 "passes"
+a 3σ pull test against R_b = 0.216, but the central value is more than
+double the known answer — this is not a statistical fluctuation, it is
+a method bias that must be investigated. Pull-based thresholds alone
+protect against precise-but-wrong results; the gross bias clause
+protects against imprecise-and-wrong ones.
+
+The reviewer must verify **all three** of the following:
 
 1. **Quantitative explanation.** A specific, identified cause (not a
    narrative list of possible factors) that accounts for the observed

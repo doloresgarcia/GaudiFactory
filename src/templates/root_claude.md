@@ -114,6 +114,8 @@ disk.
   - [ ] Any flat-prior gate excluding > 50% of bins?
   - [ ] Any tautological comparison presented as independent validation?
   - [ ] Any visually identical distributions that should be independent?
+  - [ ] Any result with > 50% relative deviation from a well-measured
+        reference value (gross bias — §6.8)?
   If ANY box is checked, the orchestrator must trigger regression or
   re-run the affected phase — even if the arbiter said PASS. The
   orchestrator is the last line of defense against process failures.

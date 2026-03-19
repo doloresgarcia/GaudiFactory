@@ -263,16 +263,23 @@ structure established here with expected-only results; 4b/4c/5 update it).
 - Compare to **both** 10% and expected. Flag >2σ disagreement with expected
   or disagreement with 10% beyond statistical scaling.
 - Investigate anomalies (large NP pulls, poor GoF)
-- **Derived quantity viability check.** Before quoting a derived quantity
-  (e.g., α_s from Γ_had, N_ν from Γ_inv), verify the extraction is
-  meaningful: does the primary measurement have sufficient precision to
-  constrain the derived quantity? If the propagated uncertainty exceeds
-  10× the world-average precision, or if intermediate steps produce
-  unphysical values (negative widths, imaginary couplings), the derived
-  quantity should be documented as "not reliably extractable from this
-  measurement" rather than quoted with an inflated uncertainty. Quoting
-  a result with a > 3σ pull from a well-measured value without a
-  quantitative explanation of the tension is not acceptable (§6.8).
+- **Viability check (primary and derived quantities).** Before quoting
+  any result — primary observable or derived quantity — verify the
+  extraction is meaningful:
+  - If the total uncertainty exceeds 50% of the central value, or
+    exceeds 10× the world-average precision, the measurement may lack
+    resolving power. Document whether it can distinguish the SM from
+    alternatives at any meaningful confidence.
+  - If the central value deviates from a well-measured reference by
+    more than 50% in relative terms (e.g., R_b = 0.45 vs. 0.216),
+    this is a **gross bias** — regardless of the pull — and triggers
+    mandatory investigation per §6.8.
+  - If intermediate steps produce unphysical values (negative widths,
+    imaginary couplings), the quantity should be documented as "not
+    reliably extractable" rather than quoted with an inflated uncertainty.
+  Quoting a result with a > 3σ pull OR > 50% relative deviation from a
+  well-measured value without a quantitative explanation is not
+  acceptable (§6.8).
 
 **Artifact:** `INFERENCE_OBSERVED.md`. **Review:** 1-bot (§6).
 
