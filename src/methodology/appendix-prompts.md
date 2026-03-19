@@ -2,7 +2,7 @@
 
 Full agent definitions — role, inputs/outputs, methodology references, and
 prompt templates — live in `../agents/*.md`. See `../agents/README.md` for
-the index.
+the index and phase activation matrix.
 
 This appendix provides a summary of roles and context assembly rules.
 
@@ -30,6 +30,7 @@ that will read those files.
 | Critical reviewer | `agents/critical_reviewer.md` | Full methodology + RAG | `review/critical/` |
 | Constructive reviewer | `agents/constructive_reviewer.md` | Full methodology + RAG | `review/constructive/` |
 | Plot validator | `agents/plot_validator.md` | Plotting scripts + histogram data | `review/validation/` |
+| BibTeX validator | `agents/bibtex_validator.md` | references.bib + web access | `review/validation/` |
 | Rendering reviewer | `agents/rendering_reviewer.md` | Compiled PDF only | `review/rendering/` |
 
 **Adjudication and specialist agents:**
@@ -42,8 +43,19 @@ that will read those files.
 
 ### Review panel composition
 
-| Review tier | Parallel agents | Sequential |
-|-------------|----------------|------------|
-| 4-bot | physics + critical + constructive + plot validator | arbiter |
-| 5-bot | physics + critical + constructive + plot validator + rendering | arbiter |
-| 1-bot | critical + plot validator | (check findings directly) |
+| Review tier | Phases | Parallel agents | Sequential |
+|-------------|--------|----------------|------------|
+| 4-bot | 1, 4a | physics + critical + constructive + plot validator | arbiter |
+| 4-bot+bib | 4b | physics + critical + constructive + plot validator + bibtex | arbiter |
+| 5-bot | 5 | physics + critical + constructive + plot validator + rendering + bibtex | arbiter |
+| 1-bot | 3, 4c | critical + plot validator | (check findings directly) |
+| Self | 2 | executor self-check + plot validator | — |
+
+### Execution pipeline by phase
+
+| Phase | Step 1 | Step 2 | Step 3 |
+|-------|--------|--------|--------|
+| 1–3, 4a | executor | | |
+| 4b | executor (stats) | note writer (draft AN) | typesetter (compile) |
+| 4c | executor (stats) | note writer (update AN) | |
+| 5 | executor (figures) | note writer (final AN) | typesetter (final PDF) |

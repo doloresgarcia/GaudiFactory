@@ -193,6 +193,126 @@ run_1bot_review() {
   return 2
 }
 
+# --- 5-bot review (Phase 5: 4-bot + rendering reviewer + bibtex validator) ---
+
+# Returns 0 on PASS, 1 on regression, 2 on escalation/max-iterations.
+run_5bot_review() {
+  dir=$1
+  i=0
+  while [ $i -lt $max_review_iterations ]; do
+    i=$((i + 1))
+    if [ $i -gt 3 ]; then
+      echo "WARNING: review iteration $i for $dir"
+    fi
+    if [ $i -gt 5 ]; then
+      echo "STRONG WARNING: review iteration $i for $dir"
+    fi
+
+    # All reviewers run in parallel (independent)
+    run_agent --role physics_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/physics" "physics review" &
+    run_agent --role critical_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/critical" "critical review" &
+    run_agent --role constructive_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/constructive" "constructive review" &
+    run_agent --role plot_validator --name "$(pick_session_name)" \
+      --output "$dir/review/validation" "plot validation" &
+    run_agent --role rendering_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/rendering" "rendering review" &
+    run_agent --role bibtex_validator --name "$(pick_session_name)" \
+      --output "$dir/review/validation" "bibtex validation" &
+    wait
+
+    # Arbiter reads all reviews and the artifact
+    run_agent --name "$(pick_session_name)" \
+      --output "$dir/review/arbiter" "arbitrate"
+    decision=$(extract_decision "$dir/review/arbiter")
+
+    case $decision in
+      PASS)
+        if ! run_regression_check "$dir"; then
+          return 1
+        fi
+        check_upstream_feedback "$dir"
+        return 0
+        ;;
+      ITERATE)
+        exec_name=$(pick_session_name)
+        write_iteration_inputs "$dir" "$i" "$exec_name"
+        run_agent --role fixer --name "$exec_name" \
+          --output "$dir/outputs" "fix iteration v$((i+1))"
+        ;;
+      ESCALATE)
+        present_for_human_review "$dir"
+        wait_for_human_input
+        ;;
+    esac
+  done
+
+  echo "ERROR: 5-bot review reached $max_review_iterations iterations for $dir"
+  present_for_human_review "$dir"
+  wait_for_human_input
+  return 2
+}
+
+# --- 4-bot review with bibtex validation (Phase 4b: AN has citations) ---
+
+run_4bot_review_with_bibtex() {
+  dir=$1
+  i=0
+  while [ $i -lt $max_review_iterations ]; do
+    i=$((i + 1))
+    if [ $i -gt 3 ]; then
+      echo "WARNING: review iteration $i for $dir"
+    fi
+    if [ $i -gt 5 ]; then
+      echo "STRONG WARNING: review iteration $i for $dir"
+    fi
+
+    # All reviewers run in parallel — includes bibtex validator
+    run_agent --role physics_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/physics" "physics review" &
+    run_agent --role critical_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/critical" "critical review" &
+    run_agent --role constructive_reviewer --name "$(pick_session_name)" \
+      --output "$dir/review/constructive" "constructive review" &
+    run_agent --role plot_validator --name "$(pick_session_name)" \
+      --output "$dir/review/validation" "plot validation" &
+    run_agent --role bibtex_validator --name "$(pick_session_name)" \
+      --output "$dir/review/validation" "bibtex validation" &
+    wait
+
+    run_agent --name "$(pick_session_name)" \
+      --output "$dir/review/arbiter" "arbitrate"
+    decision=$(extract_decision "$dir/review/arbiter")
+
+    case $decision in
+      PASS)
+        if ! run_regression_check "$dir"; then
+          return 1
+        fi
+        check_upstream_feedback "$dir"
+        return 0
+        ;;
+      ITERATE)
+        exec_name=$(pick_session_name)
+        write_iteration_inputs "$dir" "$i" "$exec_name"
+        run_agent --role fixer --name "$exec_name" \
+          --output "$dir/outputs" "fix iteration v$((i+1))"
+        ;;
+      ESCALATE)
+        present_for_human_review "$dir"
+        wait_for_human_input
+        ;;
+    esac
+  done
+
+  echo "ERROR: 4-bot+bib review reached $max_review_iterations iterations for $dir"
+  present_for_human_review "$dir"
+  wait_for_human_input
+  return 2
+}
+
 # --- Main pipeline ---
 #
 # *** EXAMPLE PATTERN ***
@@ -246,21 +366,42 @@ run_4bot_review "phase4_inference/4a_expected" || {
 }
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4a): expected results"
 
-# Unified flow: both measurements and searches use 4b + 4c
+# Phase 4b — 10% data validation + draft AN + human gate
+# Three sequential execution steps:
+#   1. Executor: statistical analysis on 10% data
+#   2. Note writer: draft AN from all phase artifacts
+#   3. Typesetter: compile draft PDF for review and human gate
 run_agent --name "$(pick_session_name)" \
-  --output "phase4_inference/4b_partial/outputs" "10% data validation"
-run_4bot_review "phase4_inference/4b_partial" || exit 1
+  --output "phase4_inference/4b_partial/outputs" "execute phase 4b statistics"
+run_agent --role note_writer --name "$(pick_session_name)" \
+  --output "phase4_inference/4b_partial/outputs" "write draft AN"
+run_agent --role typesetter --name "$(pick_session_name)" \
+  --output "phase4_inference/4b_partial/outputs" "compile draft PDF"
+# Review includes bibtex validation (AN has citations)
+run_4bot_review_with_bibtex "phase4_inference/4b_partial" || exit 1
 present_for_human_review "phase4_inference/4b_partial"
 wait_for_human_decision  # APPROVE / REQUEST CHANGES / HALT
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4b): partial validation"
 
+# Phase 4c — full data + AN update
 run_agent --name "$(pick_session_name)" \
-  --output "phase4_inference/4c_observed/outputs" "full data"
+  --output "phase4_inference/4c_observed/outputs" "execute phase 4c statistics"
+run_agent --role note_writer --name "$(pick_session_name)" \
+  --output "phase4_inference/4c_observed/outputs" "update AN with full results"
 run_1bot_review "phase4_inference/4c_observed" || exit 1
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase4c): observed results"
 
+# Phase 5 — documentation (3 sequential sub-tasks + 5-bot review)
+#   1. Executor: produce remaining AN-specific figures
+#   2. Note writer: write final AN from all artifacts
+#   3. Typesetter: typeset final publication-quality PDF
 run_agent --name "$(pick_session_name)" \
-  --output "phase5_documentation/outputs" "execute phase 5"
-run_5bot_review "phase5_documentation" || exit 1  # 4-bot + rendering reviewer
+  --output "phase5_documentation/outputs" "produce AN figures"
+run_agent --role note_writer --name "$(pick_session_name)" \
+  --output "phase5_documentation/outputs" "write final AN"
+run_agent --role typesetter --name "$(pick_session_name)" \
+  --output "phase5_documentation/outputs" "typeset final PDF"
+# 5-bot review: 4-bot + rendering reviewer + bibtex validator
+run_5bot_review "phase5_documentation" || exit 1
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase5): analysis note"
 ```

@@ -16,16 +16,21 @@ Review is mandatory at every phase gate. Skipping review is a process failure.
 | 2: Exploration | Self-review | Mechanical; errors caught in Phase 3 |
 | 3: Processing | 1-bot | External eye on closure/modeling |
 | 4a: Expected | 4-bot | Gates 10% validation |
-| 4b: 10% validation | 4-bot → human gate | Draft AN must be polished |
+| 4b: 10% validation | 4-bot+bib → human gate | Draft AN must be polished; bibtex validated |
 | 4c: Full data | 1-bot | Methodology already human-approved |
-| 5: Documentation | 5-bot (4 + rendering) | Final product |
+| 5: Documentation | 5-bot (4 + rendering + bibtex) | Final product |
 
 **4-bot:** Physics + critical + constructive + plot validator (parallel),
 then arbiter. Physics reviewer receives ONLY physics prompt + artifact.
 Plot validator performs programmatic code/data checks (red flags are
 auto-Category A). See `agents/` for full definitions.
 
-**5-bot:** Adds rendering reviewer who compiles and inspects the PDF.
+**4-bot+bib (Phase 4b):** Same as 4-bot but adds BibTeX validator — the
+draft AN has citations that must be verified against DOI/arXiv/INSPIRE.
+
+**5-bot (Phase 5):** Adds rendering reviewer (compiles and inspects the
+PDF) and BibTeX validator. Full panel: physics + critical + constructive +
+plot validator + rendering + bibtex → arbiter.
 
 **1-bot:** Critical reviewer + plot validator (parallel). Category A items
 → fixer agent → re-submit.

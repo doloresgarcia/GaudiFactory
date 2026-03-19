@@ -15,13 +15,16 @@ the artifact structure will be. Execute after the plan is set.
 
 **Both measurements and searches follow the same 4a → 4b → 4c structure:**
 - **4a:** Statistical analysis — systematics, expected results. Artifact: `INFERENCE_EXPECTED.md`. No AN draft here.
-- **4b:** 10% data validation. Compare to expected. Write full AN draft with 10% results. Review + PDF render. Human gate after review passes.
-- **4c:** Full data. Compare to 10% and expected. Update AN with full results.
+- **4b:** 10% data validation. Compare to expected. Three execution steps:
+  executor (stats) → note writer (draft AN) → typesetter (compile PDF).
+  Review includes BibTeX validation. Human gate after review passes.
+- **4c:** Full data. Compare to 10% and expected. Executor (stats) →
+  note writer (update AN with full results).
 
 | Sub-phase | Artifact | Review |
 |-----------|----------|--------|
 | 4a | `outputs/INFERENCE_EXPECTED.md` | 4-bot |
-| 4b | `outputs/INFERENCE_PARTIAL.md` + `outputs/ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
+| 4b | `outputs/INFERENCE_PARTIAL.md` + `outputs/ANALYSIS_NOTE_DRAFT.md` | 4-bot+bib → human gate |
 | 4c | `outputs/INFERENCE_OBSERVED.md` | 1-bot |
 
 ## Methodology references

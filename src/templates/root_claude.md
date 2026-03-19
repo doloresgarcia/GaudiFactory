@@ -242,13 +242,13 @@ The arbiter must not PASS with unresolved A or B items.
 
 | Phase | Review type |
 |-------|-------------|
-| 1: Strategy | 4-bot (physics + critical + constructive + arbiter) |
-| 2: Exploration | Self-review |
-| 3: Processing | 1-bot (single critical reviewer) |
+| 1: Strategy | 4-bot (physics + critical + constructive + plot validator + arbiter) |
+| 2: Exploration | Self-review + plot validator |
+| 3: Processing | 1-bot (critical + plot validator) |
 | 4a: Expected | 4-bot |
-| 4b: 10% validation | 4-bot → human gate |
+| 4b: 10% validation | 4-bot+bib (adds BibTeX validator) → human gate |
 | 4c: Full data | 1-bot |
-| 5: Documentation | 5-bot (4-bot + rendering reviewer) |
+| 5: Documentation | 5-bot (4-bot + rendering + BibTeX validator) |
 
 **Iteration limits:** 4/5-bot: warn at 3, strong warn at 5, hard cap at 10. 1-bot: warn at 2, escalate after 3. All subagents use `model: "opus"`.
 
