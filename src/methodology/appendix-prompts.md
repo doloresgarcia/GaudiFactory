@@ -248,12 +248,20 @@ You do NOT change physics content — only layout and formatting.
 
 Read ANALYSIS_NOTE.tex. Improve it:
 
+0. FIX MARGINS. Find the geometry package line and set margins to
+   0.75in (letter) or 2cm (A4). Pandoc's default 1in margins waste
+   too much page width for a figure-heavy technical note. If no
+   geometry line exists, add \usepackage[margin=0.75in]{geometry}
+   in the preamble.
+
 1. COMBINE RELATED FIGURES. Pandoc puts each image in its own float.
    Group related figures using \subfloat or side-by-side \includegraphics:
    - Data/MC distributions for similar variables → 2x2 or 3x3 grid
    - Reco vs gen level of the same observable → side-by-side
    - Systematic shifts for related sources → grouped
    - 1D projections (kt + dtheta) → side-by-side
+   Use 0.45\linewidth per sub-figure for 2-across, 0.32\linewidth for
+   3-across (only if text remains readable at that size).
    Use \begin{figure*} for full-width composites. Rewrite captions to
    describe all sub-panels: "(a) ..., (b) ..., (c) ...".
 

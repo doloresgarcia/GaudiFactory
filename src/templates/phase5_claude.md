@@ -81,6 +81,13 @@ and formatting.
 
 2. **Read and improve the `.tex` file.** Specific tasks:
 
+   - **Fix margins.** Pandoc's default margin (`margin=1in` or
+     `margin=0.75in`) may be too wide for a figure-heavy technical
+     note. Replace the geometry line in the preamble with
+     `\usepackage[margin=0.75in]{geometry}` for letter paper or
+     `\usepackage[a4paper,margin=2cm]{geometry}` for A4. The goal is
+     to maximize the usable text width for figures and tables.
+
    - **Combine related figures.** Pandoc produces one `\begin{figure}`
      per markdown image. Group related figures into composite floats
      using `\subfloat` or side-by-side `\includegraphics`. Candidates:
@@ -89,6 +96,8 @@ and formatting.
      maps for related sources, closure check projections (kt + dtheta).
      Use `\begin{figure*}` for full-width composites. Rewrite captions
      to describe the composite ("(a) ... (b) ... (c) ...").
+     For side-by-side: use `0.45\linewidth` per sub-figure (2-across)
+     or `0.32\linewidth` (3-across, if text is not too small).
 
    - **Fix float placement.** Add `\FloatBarrier` at section boundaries
      (`\section`, `\subsection`) to prevent figures from drifting far
