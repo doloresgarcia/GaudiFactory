@@ -260,11 +260,18 @@ Read ANALYSIS_NOTE.tex. Improve it:
    - Reco vs gen level of the same observable → side-by-side
    - Systematic shifts for related sources → grouped
    - 1D projections (kt + dtheta) → side-by-side
-   Use HEIGHT-based sizing (not width) because figures with colorbars
-   are wider than plain plots at the same figsize. All figures are
-   produced at figsize=(10,10) so height = plot-area width.
-   For 2-across: \includegraphics[height=0.45\linewidth]{...}
-   For 3-across: \includegraphics[height=0.3\linewidth]{...}
+   **Sizing in composites: use WIDTH, fill the page.**
+   In composites, width is the binding constraint — you want N figures
+   to fill the horizontal space. Use \hfill between them to distribute
+   any remaining space evenly. The goal is MINIMAL whitespace between
+   figures — they should nearly touch.
+   For 2-across: \includegraphics[width=0.48\linewidth]{...}
+   For 3-across: \includegraphics[width=0.32\linewidth]{...}
+   For 2x2 grids: \includegraphics[width=0.48\linewidth]{...}
+   For 3x3 grids: \includegraphics[width=0.32\linewidth]{...}
+   (The default height-based sizing in the preamble is for SINGLE
+   standalone figures only, where colorbar width variation matters.
+   In composites you control layout explicitly, so use width.)
    Use \begin{figure*} for full-width composites. Rewrite captions to
    describe all sub-panels: "(a) ..., (b) ..., (c) ...".
 
