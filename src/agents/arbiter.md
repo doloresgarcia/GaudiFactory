@@ -18,6 +18,8 @@ missed, and it enforces the dismissal and regression rules strictly.
 ## Writes
 
 - `{NAME}_ARBITER.md` (in `review/arbiter/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

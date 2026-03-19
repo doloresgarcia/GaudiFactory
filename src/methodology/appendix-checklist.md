@@ -21,6 +21,10 @@ review finding if absent:
 - [ ] One subsection per systematic source (not just a summary table)
 - [ ] One subsection per cross-check (not just a mention)
 - [ ] Per-cut event selection with individual cut distributions and efficiencies
+- [ ] MVA diagnostics in AN when a classifier is used (ROC, score distributions,
+  feature importance, data/MC on classifier output)
+- [ ] Data/MC comparison for every selection variable (grouped in appendix grids)
+- [ ] Fit diagnostic plots (NP pulls, GoF, post-fit data/model comparisons)
 - [ ] Full covariance matrix (statistical + systematic) in appendix
 - [ ] Machine-readable `results/` directory with spectrum, covariance, parameters
 - [ ] Comparison to published data with quantitative metric (not just "consistent")

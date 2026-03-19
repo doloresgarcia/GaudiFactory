@@ -19,6 +19,8 @@ subagent in Phase 5.
 - Improved `ANALYSIS_NOTE.tex`
 - Compiled `ANALYSIS_NOTE.pdf`
 - `TYPESETTING_ISSUES.md` (if physics issues found — for orchestrator)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

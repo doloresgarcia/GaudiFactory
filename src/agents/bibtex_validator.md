@@ -20,6 +20,8 @@ citations (Phase 4b draft AN, Phase 5 final AN).
 ## Writes
 
 - `{NAME}_BIBTEX_VALIDATION.md` (in `review/validation/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

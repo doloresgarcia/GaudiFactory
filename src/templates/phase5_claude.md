@@ -37,16 +37,29 @@ done
 Any missing figure is Category A. Fix before proceeding to the AN
 writing subagent.
 
-### Sub-task 2: AN writing (prose-writing subagent)
+### Sub-task 2: AN polishing (prose-writing subagent)
 
-**This subagent does NOT read data files or write code.** It reads:
+The complete AN already exists from Phase 4a (updated with observed results
+in 4b/4c). **This subagent does NOT rewrite the AN from scratch.** It reads:
+- The existing `ANALYSIS_NOTE.md` (from Phase 4a/4b/4c)
 - All phase artifacts (STRATEGY.md, EXPLORATION.md, SELECTION.md,
   INFERENCE_EXPECTED.md, INFERENCE_OBSERVED.md)
-- The figures directory (to reference figure paths)
+- The figures directory (to verify figure references)
 - The conventions files (for completeness checks)
 - The experiment log
 
-And writes: `outputs/ANALYSIS_NOTE.md` — the complete analysis note.
+And produces the final `outputs/ANALYSIS_NOTE.md` by polishing the existing AN.
+
+**This subagent does NOT read data files or write code.** Its tasks:
+- Review the existing AN for completeness against the checklist in
+  `methodology/appendix-checklist.md`
+- Add any missing figure references for Phase 5-produced figures
+- Ensure all diagnostic figures (MVA, per-cut, per-systematic, fit
+  diagnostics, cross-checks) are referenced in the appropriate sections
+- Polish prose quality — fix unclear passages, ensure natural flow,
+  verify every section has adequate introductory text
+- Verify the completeness test: a physicist unfamiliar with the analysis
+  can reproduce every number from the AN alone
 
 **The gold standard:** a physicist who has never seen the analysis should
 be able to reproduce every number from the AN alone. Under 30 rendered
@@ -58,9 +71,9 @@ before any figure or table. A bare heading followed immediately by a
 figure reference produces an empty-looking section in the rendered PDF
 and is Category A.
 
-**Start in plan mode.** Before writing any prose, produce a plan: the AN
-section structure, which figures go where, which results tables are needed.
-Execute after the plan is set.
+**Start in plan mode.** Before writing any prose changes, produce a plan:
+what gaps exist in the current AN, which figures need references added,
+which sections need prose improvement. Execute after the plan is set.
 
 ### Sub-task 3: Typesetting (LaTeX expert subagent)
 

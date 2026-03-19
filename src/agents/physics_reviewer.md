@@ -16,6 +16,8 @@ analysis for publication?"
 ## Writes
 
 - `{NAME}_PHYSICS_REVIEW.md` (in `review/physics/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

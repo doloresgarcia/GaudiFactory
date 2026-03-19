@@ -1,8 +1,11 @@
 ## Analysis Note Specification
 
-The AN is a single evolving document across Phases 4b, 4c, and 5. Phase 4b
-writes the complete AN with 10% results. Phase 4c updates numbers. Phase 5
-polishes and renders. Structure is written in 4b; later phases update results.
+The AN is a single evolving document across Phases 4a–5. Phase 4a writes the
+complete AN with ALL detail — every diagnostic plot, every systematic
+subsection, every cross-check, every comparison — using expected (Asimov/MC)
+results only. Phase 4b updates numbers to 10% data. Phase 4c updates to full
+data. Phase 5 polishes prose and typesets the PDF. The full AN is written
+once in 4a; later phases update results, not structure or detail.
 
 **The gold standard: a physicist who has never seen the analysis should be
 able to reproduce every number from the AN alone.** This is the completeness
@@ -22,6 +25,9 @@ Common causes of thin ANs:
   the result?)
 - Missing cross-check result plots (just saying "PASS" is not enough —
   show the comparison)
+- Missing MVA diagnostics when a classifier is used (ROC, score
+  distributions, feature importance — these are produced in Phase 3
+  and must appear in the AN)
 - Summary tables without supporting figures
 - Methods described in one sentence instead of full paragraphs with
   equations
@@ -50,8 +56,9 @@ lineshape, residuals, profiles, correlations, systematics, comparisons).
 
 1. **Introduction** — motivation, observable definition, prior measurements
 2. **Data samples** — experiment, √s, luminosity, MC generators, event counts
-3. **Event selection** — every cut with motivation, distribution plot,
-   efficiency (per-cut and cumulative)
+3. **Event selection** — every cut with motivation, distribution plot
+   (N-1 preferred), efficiency (per-cut and cumulative), sensitivity to
+   cut variation
 4. **Corrections / unfolding** (measurements) — full procedure, closure/stress
    tests, response matrix, regularization
 5. **Systematic uncertainties** — one subsection per source: physical
@@ -60,8 +67,11 @@ lineshape, residuals, profiles, correlations, systematics, comparisons).
    Document failed evaluation attempts. Summary budget table with
    footnotes explaining any capped, excluded, or sub-leading terms.
 6. **Cross-checks** — each as a subsection within the section it validates
-   (not a standalone section). Comparison plots, chi2/p-value, interpretation.
-   Large cross-checks → appendix with forward reference.
+   (not a standalone section). Comparison plots (overlay, ratio, or pull —
+   not just pass/fail), chi2/p-value, interpretation. Examples: run-period
+   stability, subdetector comparisons, alternative selections, alternative
+   correction methods, kinematic subsamples, generator comparisons. Large
+   cross-checks → appendix with forward reference.
 7. **Statistical method** — likelihood, fit validation, GoF
 8. **Results** — full uncertainties, per-bin tables, summary figures
 9. **Comparison to prior results and theory** — quantitative (chi2 with full
@@ -78,6 +88,29 @@ propagated through the analysis. Each entry has: label, one-line
 description, where introduced, impact on result, mitigation. This enables
 a reviewer to see the full scope of known issues in one place and verify
 each was properly addressed.
+
+### Standard diagnostic figures
+
+The following diagnostic figures are required in the AN when applicable.
+Most are produced during Phases 2–4 and saved as figure artifacts; Phase 5
+aggregates them. Missing diagnostics are Category A at review.
+
+- **Per-variable data/MC comparisons.** Every selection variable and every
+  MVA training feature. Group into grids in appendix when numerous.
+- **Per-cut distributions.** N-1 distributions preferred (apply all cuts
+  except the one being shown). Include sensitivity to cut variation
+  (e.g., ±10% shift in cut value).
+- **MVA diagnostics** (when a classifier is used): ROC curve with AUC,
+  train/test score distributions (overtraining check), feature importance
+  ranking, data/MC comparison on classifier output, alternative
+  architecture comparison.
+- **Per-systematic impact figures.** How each source shifts the result
+  (already required; restated for completeness).
+- **Cross-check result figures.** Overlay, ratio, or pull plots showing
+  the comparison — not just a pass/fail statement.
+- **Fit diagnostics.** Nuisance parameter pulls (pre-fit and post-fit),
+  goodness-of-fit (chi2/ndf, p-value), post-fit data/model comparisons,
+  corrected result vs theory or prior expectation.
 
 ---
 

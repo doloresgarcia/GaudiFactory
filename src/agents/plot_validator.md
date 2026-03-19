@@ -25,6 +25,8 @@ arbiter is explicitly forbidden from downgrading them.
 ## Writes
 
 - `{NAME}_PLOT_VALIDATION.md` (in `review/validation/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

@@ -68,6 +68,11 @@ the full protocol. The bar is high: ITERATE liberally.
 - **Commit before spawning** each subagent (checkpoint).
 - **Respawn stalled agents** — no commit in >10 min and no progress → terminate, respawn from last commit.
 - **Context splitting** for Phase 4b/5: separate subagents for statistical analysis and AN writing.
+- **Session logs survive crashes.** Every agent writes an incremental
+  session log to `logs/` as it works (see `appendix-sessions.md`). If an
+  agent is terminated or crashes, the log up to that point is on disk.
+  The orchestrator should check the session log after a stalled agent is
+  killed to understand what was accomplished before respawning.
 
 ---
 

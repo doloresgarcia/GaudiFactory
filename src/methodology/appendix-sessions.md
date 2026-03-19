@@ -39,8 +39,8 @@ need to append to the same log, they must do so sequentially.
 ## Agent Session Identity
 
 Every agent session is assigned a **session name** — a random human first name
-(e.g., "Gerald", "Margaret", "Tomoko"). The orchestrator draws from a pool of
-names and never reuses a name within an analysis run. This serves two purposes:
+drawn from the pool below. The orchestrator never reuses a name within an
+analysis run. This serves two purposes:
 
 1. **Traceability.** Every file produced by a session includes the session name
    and timestamp. When reading artifacts, agents and humans can trace who
@@ -51,16 +51,28 @@ names and never reuses a name within an analysis run. This serves two purposes:
    the first. Agents always read the most recent artifact (by timestamp);
    humans can compare versions.
 
+**Name pool** (88 names — from `orchestrator/names.py`):
+Ada, Agnes, Albert, Alfred, Amara, Andrzej, Anselm, Basil, Boris,
+Brigitte, Casimir, Celeste, Claude, Cosima, Dagmar, Dmitri, Dolores,
+Dorothea, Edmund, Eloise, Emeric, Eric, Estelle, Fabian, Fabiola,
+Felix, Fiona, Florence, Gerald, Gertrude, Greta, Gunnar, Hana, Hedwig,
+Hiroshi, Hugo, Ingrid, Isolde, Ivan, Jasper, Joe, Johanna, Jules,
+Katya, Kenji, Klaus, Lena, Leopold, Ludmila, Magnus, Marcel, Margaret,
+Mireille, Nadia, Nikolai, Nora, Odette, Oscar, Otto, Pavel, Peter,
+Petra, Phil, Philippa, Quentin, Rainer, Renata, Rosa, Sabine, Sally,
+Sam, Sigrid, Sven, Theo, Tomas, Tomoko, Ulrich, Ursula, Valentina,
+Vera, Viktor, Wanda, Wolfgang, Xena, Yuki, Yvette, Zelda, Zoran.
+
 **Naming convention for handoff files:**
 ```
 {ARTIFACT}_{session_name}_{YYYY-MM-DD}_{HH-MM}.md
 ```
 
 Examples:
-- `STRATEGY_gerald_2026-03-13_14-30.md`
-- `STRATEGY_CRITICAL_REVIEW_florence_2026-03-13_15-00.md`
-- `STRATEGY_ARBITER_hiroshi_2026-03-13_15-30.md`
-- `inputs_margaret_2026-03-13_15-45.md`
+- `STRATEGY_fabiola_2026-03-13_14-30.md`
+- `STRATEGY_CRITICAL_REVIEW_phil_2026-03-13_15-00.md`
+- `STRATEGY_ARBITER_albert_2026-03-13_15-30.md`
+- `inputs_dolores_2026-03-13_15-45.md`
 
 The orchestrator tells each agent its assigned session name in the input
 prompt. The agent uses this name when naming its output files. Downstream
@@ -69,24 +81,70 @@ the artifact type pattern (e.g., `STRATEGY_*_*.md`), sorted by timestamp.
 This eliminates the need to overwrite files on iteration — each session's
 work is preserved and the history is self-documenting.
 
-## Agent Transcript Logs
+## Agent Session Logs
 
-Each phase has a `logs/` directory that centralizes all agent conversation
-transcripts. At the end of each session, the agent exports its full
-conversation via `cc /export` to:
+Each phase has a `logs/` directory that centralizes all agent session
+records. Every agent maintains an **incremental session log** — a
+per-session file written to progressively as the agent works, not just
+at session end. This is the crash-resilient lab notebook: if an agent
+dies mid-task, the log up to that point survives.
 
+**File naming:**
 ```
 logs/{role}_{session_name}_{YYYY-MM-DD}_{HH-MM}.md
 ```
 
 Examples:
-- `logs/executor_gerald_2026-03-13_14-30.md`
-- `logs/critical_florence_2026-03-13_15-00.md`
-- `logs/arbiter_hiroshi_2026-03-13_15-30.md`
+- `logs/executor_sam_2026-03-13_14-30.md`
+- `logs/critical_andrzej_2026-03-13_15-00.md`
+- `logs/arbiter_sally_2026-03-13_15-30.md`
 
-This replaces the previous pattern of scattering `session.log` files
-across `outputs/` and `review/` subdirectories. All transcripts for a
-phase live in one auditable location.
+**When to append.** Agents write to their session log at natural
+milestones, not after every line of thought. Typical milestones:
+
+| Milestone | What to log |
+|-----------|-------------|
+| Session start | Role, assigned task, key inputs received |
+| Plan produced | Summary of plan (not the full plan — that's in `plan.md`) |
+| Code written | What script was written, what it does, key design choices |
+| Test/validation run | What was run, result (pass/fail/numbers), interpretation |
+| Figure generated | Which figure, what it shows, any issues |
+| Decision point | What alternatives were considered, what was chosen, why |
+| Error/retry | What failed, what was tried next |
+| Artifact produced | What was written, summary of content |
+| Session end | What was accomplished, what remains, any open issues |
+
+**Format.** Each entry is a timestamped markdown block. Keep entries
+concise — 2-5 sentences each. The log is a lab notebook, not a transcript.
+
+```markdown
+### 14:32 — Session start
+Executor for Phase 3 selection. Inputs: STRATEGY.md, EXPLORATION.md,
+experiment_log.md. Task: implement BDT-based signal selection per strategy.
+
+### 14:35 — Plan produced
+Plan: (1) preselection cuts, (2) BDT training with XGBoost, (3) alternative
+NN architecture, (4) optimize working point, (5) closure tests. See plan.md.
+
+### 14:48 — Preselection implemented
+Wrote preselection.py: 4 cuts (ncharged≥5, thrust<0.9, Evis>0.5√s, |cosθ|<0.9).
+Cutflow: 847k→612k→589k→571k→498k. All cuts motivated by EXPLORATION.md distributions.
+
+### 15:12 — BDT training complete
+XGBoost with 12 features, 500 rounds. AUC=0.94 on test set. Train/test score
+distributions overlap well (no overtraining). Saved ROC, scores, feature importance
+to figures/.
+```
+
+**Supplement: `/export`.** At session end, agents should still run
+`cc /export` to save the full conversation transcript alongside the
+session log. The transcript is a complete record; the session log is the
+crash-safe summary. If the agent crashes before `/export`, the session
+log is still available.
+
+All session logs for a phase live in one auditable location (`logs/`),
+replacing the previous pattern of scattering logs across `outputs/` and
+`review/` subdirectories.
 
 ---
 
@@ -121,29 +179,29 @@ analysis_name/
     src/                         # Phase-level codebase (can grow to thousands of lines)
     outputs/                     # All produced artifacts
       figures/                   # Plots
-      inputs_gerald_2026-03-13_14-30.md       # Session-named inputs
-      plan_gerald_2026-03-13_14-30.md
-      STRATEGY_gerald_2026-03-13_14-30.md     # Session-named artifact
+      inputs_fabiola_2026-03-13_14-30.md       # Session-named inputs
+      plan_fabiola_2026-03-13_14-30.md
+      STRATEGY_fabiola_2026-03-13_14-30.md     # Session-named artifact
       # On iteration, new files appear alongside (no overwrites):
-      # inputs_margaret_2026-03-13_16-00.md
-      # STRATEGY_margaret_2026-03-13_16-00.md
+      # inputs_peter_2026-03-13_16-00.md
+      # STRATEGY_peter_2026-03-13_16-00.md
     review/
       critical/
-        inputs_florence_2026-03-13_15-00.md
-        STRATEGY_CRITICAL_REVIEW_florence_2026-03-13_15-00.md
+        inputs_andrzej_2026-03-13_15-00.md
+        STRATEGY_CRITICAL_REVIEW_andrzej_2026-03-13_15-00.md
       constructive/
-        inputs_tomoko_2026-03-13_15-00.md
-        STRATEGY_CONSTRUCTIVE_REVIEW_tomoko_2026-03-13_15-00.md
+        inputs_dolores_2026-03-13_15-00.md
+        STRATEGY_CONSTRUCTIVE_REVIEW_dolores_2026-03-13_15-00.md
       validation/                  # Plot validator (programmatic checks)
-        STRATEGY_PLOT_VALIDATION_kenji_2026-03-13_15-00.md
+        STRATEGY_PLOT_VALIDATION_joe_2026-03-13_15-00.md
       arbiter/
-        inputs_hiroshi_2026-03-13_15-30.md
-        STRATEGY_ARBITER_hiroshi_2026-03-13_15-30.md
-    logs/                        # Agent conversation transcripts (cc /export)
-      executor_gerald_2026-03-13_14-30.md
-      critical_florence_2026-03-13_15-00.md
-      constructive_tomoko_2026-03-13_15-00.md
-      arbiter_hiroshi_2026-03-13_15-30.md
+        inputs_albert_2026-03-13_15-30.md
+        STRATEGY_ARBITER_albert_2026-03-13_15-30.md
+    logs/                        # Agent session logs (incremental + /export)
+      executor_fabiola_2026-03-13_14-30.md
+      critical_andrzej_2026-03-13_15-00.md
+      constructive_dolores_2026-03-13_15-00.md
+      arbiter_albert_2026-03-13_15-30.md
 
   phase2_exploration/
     experiment_log.md

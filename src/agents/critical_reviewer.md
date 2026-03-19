@@ -22,6 +22,8 @@ via RAG. It errs on the side of strictness.
 ## Writes
 
 - `{NAME}_CRITICAL_REVIEW.md` (in `review/critical/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

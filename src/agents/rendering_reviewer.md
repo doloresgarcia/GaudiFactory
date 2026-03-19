@@ -17,6 +17,8 @@ focuses exclusively on the rendered document — not physics content.
 ## Writes
 
 - `{NAME}_RENDERING_REVIEW.md` (in `review/rendering/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

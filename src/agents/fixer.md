@@ -36,6 +36,8 @@ The fixer is used in two contexts:
 - Modified code in `../src/`
 - New or updated figures in `outputs/figures/`
 - Appends to `experiment_log.md`
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 
@@ -81,6 +83,9 @@ RULES:
 - Commit after each finding is resolved, not at the end.
 - Append to experiment_log.md: what each finding was, what you changed,
   what the result was.
+- Maintain your session log (logs/{role}_{session_name}_{timestamp}.md):
+  append a short entry as you resolve each finding. This is your
+  crash-resilient lab notebook — write to it as you go, not at the end.
 
 WHAT NOT TO DO:
 - Do not rewrite the artifact structure

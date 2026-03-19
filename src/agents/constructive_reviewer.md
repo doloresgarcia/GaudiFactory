@@ -21,6 +21,8 @@ and experiment corpus via RAG.
 ## Writes
 
 - `{NAME}_CONSTRUCTIVE_REVIEW.md` (in `review/constructive/`)
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 

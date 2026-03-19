@@ -109,9 +109,13 @@ the plan; it does not redesign it.
   acceptable only for preselection, single-variable, or tiny samples (<1000).
 - If MVA: train, validate, optimize. Train ≥1 alternative architecture.
   Try multiclass if >2 physics classes. Check data/MC on classifier output.
-  Sub-delegate training to sub-agent (§3a.5).
-- Every cut must be motivated by a plot. Cutflow must be monotonically
-  non-increasing (Category A if violated).
+  Sub-delegate training to sub-agent (§3a.5). Diagnostic plots (ROC, score
+  distributions, feature importance) are AN-bound — save as figures for
+  Phase 5 aggregation.
+- Every cut must be motivated by a plot. N-1 distributions preferred
+  (apply all cuts except the one being shown). Document sensitivity to
+  cut variation. Cutflow must be monotonically non-increasing
+  (Category A if violated).
 
 **Regions (searches):** Define CRs (enriched in backgrounds) and VRs
 (between CR and SR, statistically independent).
@@ -238,8 +242,9 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
   "**Origin:**", "**Method:**", "**Impact:**". These make the document
   read like a form rather than an analysis note.
 
-**Artifact:** `INFERENCE_EXPECTED.md` + `ANALYSIS_NOTE.md` (v1 — AN
-structure established here with expected-only results; 4b/4c/5 update it).
+**Artifact:** `INFERENCE_EXPECTED.md` + `ANALYSIS_NOTE.md` (v1 — complete
+AN with all detail using expected-only results; 4b/4c update numbers,
+Phase 5 polishes prose and typesets).
 **Review:** 4-bot+bib (§6).
 
 #### Phase 4b: 10% Data Validation

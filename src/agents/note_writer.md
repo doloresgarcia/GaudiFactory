@@ -23,6 +23,8 @@ and results tables before writing any text.
 ## Writes
 
 - `outputs/ANALYSIS_NOTE.md` — pandoc-compatible markdown
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 
@@ -50,6 +52,11 @@ Before writing any text, produce a plan:
 - Which systematic sources get their own subsections
 
 Then write outputs/ANALYSIS_NOTE.md in pandoc-compatible markdown.
+
+Maintain your session log (logs/{role}_{session_name}_{timestamp}.md):
+append a short entry at each milestone (plan produced, section written,
+figure references verified). This is your crash-resilient lab notebook —
+write to it as you go, not at the end.
 
 QUALITY STANDARDS:
 - Target 50-100 rendered pages. Under 30 is Category A.

@@ -24,6 +24,8 @@ plan-then-code: `plan.md` first, then scripts and figures, artifact last.
 - Analysis code to `../src/` (phase level)
 - Figures to `figures/` (within `outputs/`)
 - Appends to `experiment_log.md`
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 
@@ -47,6 +49,10 @@ Before writing code, produce plan.md. As you work:
 - Write analysis code to ../src/ (phase level), figures to figures/ (within outputs)
 - Commit frequently with conventional commit messages
 - Append to experiment_log.md: what you tried, what worked, what didn't
+- Maintain your session log (logs/{role}_{session_name}_{timestamp}.md):
+  append a short entry at each milestone (plan produced, code written,
+  test run, figure generated, decision made, error encountered). This is
+  your crash-resilient lab notebook — write to it as you go, not at the end.
 - Produce your primary artifact as {ARTIFACT_NAME}.md in outputs/
 
 Before producing your artifact, self-check:

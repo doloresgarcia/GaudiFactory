@@ -18,28 +18,28 @@ that will read those files.
 
 | Role | Definition | Context | Writes |
 |------|-----------|---------|--------|
-| Executor | `agents/executor.md` | Full methodology + RAG | `outputs/` artifacts, `../src/` code, `outputs/figures/` |
-| Note writer | `agents/note_writer.md` | Phase artifacts + conventions | `outputs/ANALYSIS_NOTE.md` |
-| Fixer | `agents/fixer.md` | Arbiter verdict or regression ticket + existing code | Updated artifact + code |
+| Executor | `agents/executor.md` | Full methodology + RAG | `outputs/` artifacts, `../src/` code, `outputs/figures/`, `logs/` session log |
+| Note writer | `agents/note_writer.md` | Phase artifacts + conventions | `outputs/ANALYSIS_NOTE.md`, `logs/` session log |
+| Fixer | `agents/fixer.md` | Arbiter verdict or regression ticket + existing code | Updated artifact + code, `logs/` session log |
 
 **Reviewer agents:**
 
 | Role | Definition | Context | Writes |
 |------|-----------|---------|--------|
-| Physics reviewer | `agents/physics_reviewer.md` | Physics prompt + artifact only | `review/physics/` |
-| Critical reviewer | `agents/critical_reviewer.md` | Full methodology + RAG | `review/critical/` |
-| Constructive reviewer | `agents/constructive_reviewer.md` | Full methodology + RAG | `review/constructive/` |
-| Plot validator | `agents/plot_validator.md` | Plotting scripts + histogram data | `review/validation/` |
-| BibTeX validator | `agents/bibtex_validator.md` | references.bib + web access | `review/validation/` |
-| Rendering reviewer | `agents/rendering_reviewer.md` | Compiled PDF only | `review/rendering/` |
+| Physics reviewer | `agents/physics_reviewer.md` | Physics prompt + artifact only | `review/physics/`, `logs/` session log |
+| Critical reviewer | `agents/critical_reviewer.md` | Full methodology + RAG | `review/critical/`, `logs/` session log |
+| Constructive reviewer | `agents/constructive_reviewer.md` | Full methodology + RAG | `review/constructive/`, `logs/` session log |
+| Plot validator | `agents/plot_validator.md` | Plotting scripts + histogram data | `review/validation/`, `logs/` session log |
+| BibTeX validator | `agents/bibtex_validator.md` | references.bib + web access | `review/validation/`, `logs/` session log |
+| Rendering reviewer | `agents/rendering_reviewer.md` | Compiled PDF only | `review/rendering/`, `logs/` session log |
 
 **Adjudication and specialist agents:**
 
 | Role | Definition | Context | Writes |
 |------|-----------|---------|--------|
-| Arbiter | `agents/arbiter.md` | All reviews + artifact + conventions | `review/arbiter/` |
-| Investigator | `agents/investigator.md` | Review output + origin phase | `REGRESSION_TICKET.md` |
-| Typesetter | `agents/typesetter.md` | LaTeX + figures only | `outputs/ANALYSIS_NOTE.{tex,pdf}` |
+| Arbiter | `agents/arbiter.md` | All reviews + artifact + conventions | `review/arbiter/`, `logs/` session log |
+| Investigator | `agents/investigator.md` | Review output + origin phase | `REGRESSION_TICKET.md`, `logs/` session log |
+| Typesetter | `agents/typesetter.md` | LaTeX + figures only | `outputs/ANALYSIS_NOTE.{tex,pdf}`, `logs/` session log |
 
 ### Execution pipeline by phase
 

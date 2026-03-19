@@ -19,6 +19,8 @@ diagnosis and scope for the fix agent.
 
 - `REGRESSION_TICKET.md` (in the origin phase directory)
 - Appends to `regression_log.md`
+- Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
+  session log — see `appendix-sessions.md`)
 
 ## Methodology References
 
