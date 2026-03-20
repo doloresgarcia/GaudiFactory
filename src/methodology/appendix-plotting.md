@@ -131,8 +131,14 @@ plt.close(fig)
   `ax.set_ylabel(...)` with units in brackets, e.g. `r"$p_T$ [GeV]"`.
   Do not increase axis label font size beyond the stylesheet default — no
   `fontsize=` argument on `set_xlabel`/`set_ylabel`.
-- **Labels on every axes.** In multi-panel figures, call
-  `mh.label.exp_label(...)` on EACH axes, not just the first one.
+- **Labels on every independent axes.** In multi-panel figures where each
+  panel is an independent plot (2×2 grids, side-by-side comparisons), call
+  `mh.label.exp_label(...)` on EACH axes.
+  **Exception: ratio plots.** For ratio plots (main panel + ratio panel
+  with `sharex=True`), call `exp_label` on the MAIN panel ONLY — never
+  on the ratio panel. The ratio panel is a subsidiary display, not an
+  independent plot. Putting the experiment label on the ratio panel
+  clutters it and is Category A.
 - **Label stacking pitfall (Category A).** When `data=False`, mplhep
   auto-adds "Simulation" as the left label. Do NOT also set `llabel` or
   `text` to something containing "MC", "Simulation", "truth", etc. — this

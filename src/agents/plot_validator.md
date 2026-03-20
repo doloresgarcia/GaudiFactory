@@ -68,6 +68,8 @@ PROGRAMMATIC FIGURE CHECKS:
       or `mh.hist2dplot(H, cbarextend=True)`
 - [ ] Ratio plots use `sharex=True` (no redundant x-axis labels on main panel)
 - [ ] Ratio plots use `fig.subplots_adjust(hspace=0)` (no gap between panels)
+- [ ] Ratio plots: `exp_label` called on MAIN panel only, NOT on ratio panel
+      (grep for `exp_label` calls and verify the axes argument is the main panel)
 - [ ] Legend uses `mpl_magic(ax)` for y-axis scaling OR has `loc=` in a
       genuinely empty region (ROC curves, exponential tails). Using
       `loc="upper right"` on a peaked distribution without `mpl_magic` is
@@ -118,9 +120,11 @@ LABEL QUALITY (Category A if violated):
       Must be "Energy-dep. efficiency" or similar.
 - [ ] Axis labels include units where applicable.
 
-LAYOUT (Category B):
+LAYOUT (Category A for ratio panel issues, B otherwise):
 - [ ] Subplot layout suits the content. Horizontal bar charts with long
       labels crammed into narrow panels → flag for redesign.
+- [ ] Ratio plots: experiment label appears on MAIN panel only.
+      If the ALEPH/CMS label appears on the ratio panel → Category A.
 - [ ] Axis ranges appropriate — data fills the plot area, no excessive
       whitespace, no clipped content.
 - [ ] Ratio panel has no visible gap from main panel.
