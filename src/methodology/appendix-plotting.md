@@ -80,6 +80,17 @@ plt.close(fig)
   annotation text). Any script that sets a numeric font size is a Category A
   review finding.
 - **Legend font size.** Always pass `fontsize="x-small"` to `ax.legend(...)`.
+- **Legend placement (Category A if overlapping data).** The legend must not
+  overlap with data points, fit curves, or other plot content. For plots
+  where the signal/fit curve peaks in the upper region (e.g., resonance
+  lineshapes, mass distributions), use `loc="center right"` or
+  `loc="lower right"` instead of `loc="upper right"`. For distributions
+  peaking at the left, use `loc="upper right"`. **The plot validator must
+  visually inspect every figure for legend-data overlap** — checking the
+  `loc=` parameter in the script is necessary but not sufficient, since
+  the overlap depends on the data range. When in doubt, use
+  `loc="best"` (matplotlib's auto-placement) or explicitly position with
+  `bbox_to_anchor`.
 - **Aspect and colorbars (Category A if wrong).** Keep figures with square
   aspect. For ANY 2D plot with a colorbar (`pcolormesh`, `imshow`,
   `hist2dplot`), you MUST use one of these three patterns to prevent the
