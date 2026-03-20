@@ -269,16 +269,18 @@ Three sub-phases. **Both measurements and searches follow 4a → 4b → 4c.**
   "**Origin:**", "**Method:**", "**Impact:**". These make the document
   read like a form rather than an analysis note.
 
-**Artifact:** `INFERENCE_EXPECTED.md` + `ANALYSIS_NOTE.md` (v1 — complete
+**Artifact:** `INFERENCE_EXPECTED.md` + `ANALYSIS_NOTE_4a_v1.md` (complete
 AN with all detail using expected-only results; 4b/4c update numbers,
 Phase 5 polishes prose and typesets).
 
 **PDF compilation is mandatory at 4a.** After the AN writing subagent
-produces `ANALYSIS_NOTE.md`, the typesetting subagent must compile it
-to PDF via `build-pdf` and verify: all figures render, no broken
-cross-references, no table overflow. The compiled PDF is a review
-input — the 4-bot+bib review panel reads the PDF, not the markdown.
-A review that starts without a compiled PDF is a process failure.
+produces `ANALYSIS_NOTE_4a_v1.md`, the typesetting subagent must compile it
+through the standard typesetter workflow: convert markdown to `.tex`
+(via pandoc), improve the typesetting (float placement, figure grouping,
+table formatting — same workflow as Phase 5 §3), then compile the `.tex`
+to PDF. The compiled PDF is a review input — the 4-bot+bib review panel
+reads the PDF, not the markdown. A review that starts without a compiled
+PDF is a process failure.
 
 **Review:** 4-bot+bib (§6).
 
@@ -294,13 +296,13 @@ A review that starts without a compiled PDF is a process failure.
 - **Update AN:** Update the AN (established in 4a) with 10% data results.
   Phases 4c/5 update results and finalize.
 
-**Artifact:** `INFERENCE_PARTIAL.md` + `ANALYSIS_NOTE_DRAFT.md`.
+**Artifact:** `INFERENCE_PARTIAL.md` + `ANALYSIS_NOTE_4b_v1.md`.
 
 **Figure reference verification (mandatory before PDF compilation).**
 Before compiling the AN draft to PDF, verify all figure references
 resolve to existing files:
 ```bash
-grep -oP 'figures/[^)]+\.pdf' ANALYSIS_NOTE_DRAFT.md | sort -u | \
+grep -oP 'figures/[^)]+\.pdf' ANALYSIS_NOTE_4b_v*.md | sort -u | \
   while read f; do [ -f "$f" ] || echo "MISSING: $f"; done
 ```
 Copy or symlink any missing figures from earlier phases into the output
@@ -309,8 +311,9 @@ all references resolve.
 
 **PDF compilation is mandatory at 4b.** The human gate requires a
 publication-quality draft AN as a compiled PDF. The typesetting
-subagent compiles and verifies the updated AN before the review panel
-and before the human sees it. The human reviews the PDF, not markdown.
+subagent converts the updated markdown to `.tex`, improves typesetting,
+and compiles to PDF before the review panel and before the human sees
+it. The human reviews the PDF, not markdown.
 
 **Review:** 4-bot (§6) → **human gate** (§4.2).
 
@@ -349,7 +352,7 @@ per-energy-point cross-sections. These are the single source of truth for
 numbers in the AN — the note writer reads from these files, not from
 prose artifacts.
 
-**Artifact:** `INFERENCE_OBSERVED.md` + updated `ANALYSIS_NOTE.md`.
+**Artifact:** `INFERENCE_OBSERVED.md` + `ANALYSIS_NOTE_4c_v1.md`.
 
 **AN update is mandatory at 4c.** The AN writing subagent updates the
 AN with full data results (replacing 10% numbers from 4b). PDF
@@ -381,7 +384,7 @@ with figure generation or data processing):
 
 2. **AN writing subagent.** Reads ALL phase artifacts (strategy, exploration,
    selection, inference) and the figures directory. Writes the complete AN
-   text to `phase5_documentation/outputs/ANALYSIS_NOTE.md`. This agent does
+   text to `phase5_documentation/outputs/ANALYSIS_NOTE_5_v1.md`. This agent does
    NOT read data files or write code — it reads artifacts and writes prose.
    It must produce a document that meets the completeness test: a physicist
    unfamiliar with the analysis can reproduce every number from the AN alone.
@@ -389,7 +392,7 @@ with figure generation or data processing):
 3. **Typesetting subagent.** Runs AFTER the AN writing subagent. This agent
    is a LaTeX typesetting expert. It:
    - Runs `pandoc` to convert the markdown AN to `.tex` (not PDF):
-     `pandoc ANALYSIS_NOTE.md -o ANALYSIS_NOTE.tex --standalone
+     `pandoc ANALYSIS_NOTE_5_v1.md -o ANALYSIS_NOTE_5_v1.tex --standalone
      --include-in-header=../../conventions/preamble.tex
      --number-sections --toc --filter pandoc-crossref --citeproc`
    - Reads the generated `.tex` file and improves the typesetting:
@@ -410,7 +413,7 @@ with figure generation or data processing):
        headings at the bottom of pages.
      - **Add `\FloatBarrier`** at section boundaries to prevent figures
        from drifting too far from their text.
-   - Compiles the `.tex` to PDF via `tectonic ANALYSIS_NOTE.tex` (or
+   - Compiles the `.tex` to PDF via `tectonic ANALYSIS_NOTE_5_v1.tex` (or
      `pdflatex`). Fixes any compilation errors.
    - Reads the compiled PDF and verifies: no broken figures, no
      unresolved cross-references, no overflow, no cut-off content.
@@ -428,7 +431,7 @@ previous output.
 
 See `analysis-note.md` for full AN specification.
 
-**Artifact:** `ANALYSIS_NOTE.md` + compiled PDF + `results/` directory.
+**Artifact:** `ANALYSIS_NOTE_5_v1.md` + compiled PDF + `results/` directory.
 **Review:** 5-bot (§6).
 
 ---

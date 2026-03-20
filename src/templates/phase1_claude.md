@@ -82,4 +82,5 @@ These are the critical actionable items for Phase 1. See
 ## Review
 
 **4-bot review** — see `methodology/06-review.md` for protocol.
-Write findings to `review/REVIEW_NOTES.md`.
+Write findings to `review/{role}/` using session-named files
+(see `methodology/appendix-sessions.md` for naming conventions).

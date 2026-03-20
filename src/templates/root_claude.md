@@ -78,10 +78,17 @@ for each phase in [1, 2, 3, 4a, 4b, 4c, 5]:
 
 **Phase 4 flow (both measurements and searches):**
 All three sub-phases (4a → 4b → 4c) are required for both analysis types.
-- **4a:** Statistical analysis — systematics, expected results. No AN draft.
-- **4b:** 10% data validation. Compare to expected. Write full AN draft.
-  Review + PDF render. Human gate after 4b review passes.
-- **4c:** Full data. Compare to **both** 10% and expected. Update AN with full results.
+- **4a:** Statistical analysis — systematics, expected results. Executor
+  (stats) → note writer (AN v1 with ALL detail, expected results only) →
+  typesetter (markdown → .tex → improve typesetting → compile PDF).
+  The review panel reads the compiled PDF — a review without a PDF is a
+  process failure. PDF compilation mandatory before review.
+- **4b:** 10% data validation. Compare to expected. Executor (stats) →
+  note writer (update AN numbers to 10% data) → typesetter (recompile
+  .tex + PDF). Human gate reviews the compiled PDF, not markdown.
+- **4c:** Full data. Compare to **both** 10% and expected. Executor
+  (stats) → note writer (update AN with full results). PDF compilation
+  recommended; required if 4c review finds AN text issues.
 
 **Systematic variation sizing:** Every systematic variation must be
 motivated by a measurement or published uncertainty. "±50% on the
@@ -115,6 +122,11 @@ disk.
 - Write analysis prose (subagents do this)
 
 **What the orchestrator MUST do:**
+- **Log the initial prompt.** Before any phase work, write the user's
+  physics prompt (the research question / analysis goal) to `prompt.md`
+  in the analysis root. This is the first action — the prompt is the
+  analysis's founding document and must be on disk for audit, subagent
+  context assembly, and reproducibility.
 - **Health monitoring.** Commit before spawning each subagent. Check progress
   every ~5 minutes for long-running subagents. Respawn stalled agents from
   the last commit (if no commit in >10 minutes and no progress, terminate
@@ -234,17 +246,17 @@ phase begins. No exceptions.
 | Phase | Required artifact | Review type |
 |-------|-------------------|-------------|
 | 1 | `phase1_strategy/outputs/STRATEGY.md` | 4-bot |
-| 2 | `phase2_exploration/outputs/EXPLORATION.md` | Self |
+| 2 | `phase2_exploration/outputs/EXPLORATION.md` | Self + plot validator |
 | 3 | `phase3_selection/outputs/SELECTION.md` | 1-bot |
-| 4a | `phase4_inference/outputs/INFERENCE_EXPECTED.md` | 4-bot |
-| 4b | `phase4_inference/outputs/INFERENCE_PARTIAL.md` + `phase4_inference/outputs/ANALYSIS_NOTE_DRAFT.md` | 4-bot → human gate |
-| 4c | `phase4_inference/outputs/INFERENCE_OBSERVED.md` | 1-bot |
-| 5 | `phase5_documentation/outputs/ANALYSIS_NOTE.md` | 5-bot (4 + rendering) |
+| 4a | `phase4_inference/outputs/INFERENCE_EXPECTED.md` + `ANALYSIS_NOTE_4a_v1.{md,tex,pdf}` | 4-bot+bib |
+| 4b | `phase4_inference/outputs/INFERENCE_PARTIAL.md` + `ANALYSIS_NOTE_4b_v1.{md,tex,pdf}` | 4-bot+bib → human gate |
+| 4c | `phase4_inference/outputs/INFERENCE_OBSERVED.md` + `ANALYSIS_NOTE_4c_v1.{md,tex,pdf}` | 1-bot |
+| 5 | `phase5_documentation/outputs/ANALYSIS_NOTE_5_v{final}.{md,tex,pdf}` | 5-bot (4 + rendering) |
 
 **Review before advancing.** After each artifact, spawn a reviewer subagent.
 Self-review is only acceptable for Phase 2 (exploration). All other phases
 require independent reviewer agents. Write findings to
-`phase*/review/REVIEW_NOTES.md`.
+`phase*/review/{role}/` using session-named files.
 
 **Experiment log.** Append to `experiment_log.md` throughout. An empty
 experiment log at the end of a phase is a process failure.
@@ -264,7 +276,7 @@ The arbiter must not PASS with unresolved A or B items.
 
 | Phase | Review type |
 |-------|-------------|
-| 1: Strategy | 4-bot (physics + critical + constructive + plot validator + arbiter) |
+| 1: Strategy | 4-bot (physics + critical + constructive + arbiter) |
 | 2: Exploration | Self-review + plot validator |
 | 3: Processing | 1-bot (critical + plot validator) |
 | 4a: Expected | 4-bot+bib (AN v1 has citations) |

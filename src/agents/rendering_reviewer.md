@@ -9,8 +9,8 @@ focuses exclusively on the rendered document — not physics content.
 
 ## Reads
 
-- `outputs/ANALYSIS_NOTE.md` — the source markdown
-- `outputs/ANALYSIS_NOTE.pdf` — the compiled PDF (compiles it if not present)
+- `outputs/ANALYSIS_NOTE_5_v*.md` — the source markdown (latest version)
+- `outputs/ANALYSIS_NOTE_5_v*.pdf` — the compiled PDF (compiles it if not present)
 - `outputs/figures/` — figure directory
 - `outputs/references.bib` — bibliography
 
@@ -40,7 +40,7 @@ NOT evaluate physics content — only document quality.
 First, compile the analysis note:
 ```bash
 cd phase5_documentation/outputs
-pandoc ANALYSIS_NOTE.md -o ANALYSIS_NOTE.pdf --pdf-engine=tectonic \
+pandoc ANALYSIS_NOTE_5_v1.md -o ANALYSIS_NOTE_5_v1.pdf --pdf-engine=tectonic \
   -V geometry:margin=0.75in -V documentclass:article -V fontsize:11pt \
   --number-sections --toc --filter pandoc-crossref --citeproc \
   --include-in-header=../../conventions/preamble.tex

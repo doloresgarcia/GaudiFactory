@@ -37,7 +37,7 @@ Expect to discover the data format at runtime. See
 ## PDF build test (independent — can run in parallel)
 
 Verify the PDF toolchain works by creating a minimal stub file at
-`phase5_documentation/outputs/ANALYSIS_NOTE.md` (a few lines of markdown with
+`phase5_documentation/outputs/ANALYSIS_NOTE_5_v1.md` (a few lines of markdown with
 a math expression and a citation) and running `pixi run build-pdf`. Delete
 the stub after confirming. This is independent of exploration and can be
 sub-delegated.
@@ -70,6 +70,9 @@ These are the critical actionable items for Phase 2. See
 
 ## Review
 
-**Self-review.** Explicitly check: sample inventory complete? Data quality
-checked? Experiment log updated? Distributions look physical?
-Write findings to `review/REVIEW_NOTES.md`.
+**Self-review + plot validator.** Explicitly check: sample inventory
+complete? Data quality checked? Experiment log updated? Distributions
+look physical? The plot validator runs alongside self-review to validate
+figures programmatically.
+Write findings to `review/{role}/` using session-named files
+(see `methodology/appendix-sessions.md` for naming conventions).

@@ -99,4 +99,5 @@ valid conclusion. See `methodology/03-phases.md` → Phase 3 for full details.
 ## Review
 
 **1-bot review** — see `methodology/06-review.md` for protocol.
-Write findings to `review/REVIEW_NOTES.md`.
+Write findings to `review/{role}/` using session-named files
+(see `methodology/appendix-sessions.md` for naming conventions).

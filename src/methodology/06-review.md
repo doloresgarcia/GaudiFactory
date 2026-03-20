@@ -13,19 +13,21 @@ Review is mandatory at every phase gate. Skipping review is a process failure.
 | Phase | Type | Notes |
 |-------|------|-------|
 | 1: Strategy | 4-bot | Sets direction; physics errors propagate |
-| 2: Exploration | Self-review | Mechanical; errors caught in Phase 3 |
+| 2: Exploration | Self-review + plot validator | Mechanical; figures validated programmatically |
 | 3: Processing | 1-bot | External eye on closure/modeling |
 | 4a: Expected | 4-bot+bib | Gates 10% validation; AN v1 has citations |
 | 4b: 10% validation | 4-bot+bib → human gate | Draft AN must be polished; bibtex validated |
 | 4c: Full data | 1-bot | Methodology already human-approved |
 | 5: Documentation | 5-bot (4 + rendering + bibtex) | Final product |
 
-**4-bot:** Physics + critical + constructive + plot validator (parallel),
-then arbiter. Physics reviewer receives ONLY physics prompt + artifact.
+**4-bot:** Physics + critical + constructive (parallel), then arbiter.
+The plot validator joins 4-bot and 1-bot reviews at phases that produce
+figures (Phases 2–5); it is skipped at Phase 1 (strategy has no figures).
+Physics reviewer receives ONLY physics prompt + artifact.
 Plot validator performs programmatic code/data checks (red flags are
 auto-Category A). See `agents/` for full definitions.
 
-**4-bot+bib (Phase 4b):** Same as 4-bot but adds BibTeX validator — the
+**4-bot+bib (Phases 4a, 4b):** Same as 4-bot but adds BibTeX validator — the
 draft AN has citations that must be verified against DOI/arXiv/INSPIRE.
 
 **5-bot (Phase 5):** Adds rendering reviewer (compiles and inspects the
@@ -87,7 +89,7 @@ Figure review has two components that catch different failure modes:
 plotting scripts for mechanical violations of `appendix-plotting.md`.
 Catches: absolute `fontsize=N` values, wrong colorbar patterns, missing
 `hspace=0`, `figsize` violations, `ax.set_title()`, `data=False` +
-`rlabel`/`llabel` stacking. This runs before the review agent and
+`llabel`/`text` stacking. This runs before the review agent and
 produces a machine-readable report. Any violation is auto-Category A.
 The linter does NOT read rendered figures — it reads code.
 

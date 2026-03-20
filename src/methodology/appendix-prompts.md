@@ -19,7 +19,7 @@ that will read those files.
 | Role | Definition | Context | Writes |
 |------|-----------|---------|--------|
 | Executor | `agents/executor.md` | Full methodology + RAG | `outputs/` artifacts, `../src/` code, `outputs/figures/`, `logs/` session log |
-| Note writer | `agents/note_writer.md` | Phase artifacts + conventions | `outputs/ANALYSIS_NOTE.md`, `logs/` session log |
+| Note writer | `agents/note_writer.md` | Phase artifacts + conventions | `outputs/ANALYSIS_NOTE_{phase}_v{N}.md`, `logs/` session log |
 | Fixer | `agents/fixer.md` | Arbiter verdict or regression ticket + existing code | Updated artifact + code, `logs/` session log |
 
 **Reviewer agents:**
@@ -39,7 +39,7 @@ that will read those files.
 |------|-----------|---------|--------|
 | Arbiter | `agents/arbiter.md` | All reviews + artifact + conventions | `review/arbiter/`, `logs/` session log |
 | Investigator | `agents/investigator.md` | Review output + origin phase | `REGRESSION_TICKET.md`, `logs/` session log |
-| Typesetter | `agents/typesetter.md` | LaTeX + figures only | `outputs/ANALYSIS_NOTE.{tex,pdf}`, `logs/` session log |
+| Typesetter | `agents/typesetter.md` | LaTeX + figures only | `outputs/ANALYSIS_NOTE_{phase}_v{N}.{tex,pdf}`, `logs/` session log |
 
 ### Execution pipeline by phase
 

@@ -102,6 +102,8 @@ run_4bot_review() {
       --output "$dir/review/constructive" "constructive review" &
     run_agent --role plot_validator --name "$(pick_session_name)" \
       --output "$dir/review/validation" "plot validation" &
+    # NOTE: Plot validator is skipped for Phase 1 (no figures).
+    # The orchestrator should omit plot_validator when dir=phase1_strategy.
     wait
 
     # Arbiter reads all reviews and the artifact
@@ -331,7 +333,9 @@ git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase1): str
 
 run_agent --name "$(pick_session_name)" \
   --output "phase2_exploration/outputs" "execute phase 2"
-# Self-review only — no external review
+# Plot validator runs alongside self-review at Phase 2
+run_agent --role plot_validator --name "$(pick_session_name)" \
+  --output "phase2_exploration/review/validation" "plot validation"
 git add phase*/ calibrations/ *.md pixi.toml && git commit -m "feat(phase2): exploration"
 
 # Phase 3 — per channel (parallel execution, sequential review)

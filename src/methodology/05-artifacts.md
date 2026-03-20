@@ -22,6 +22,13 @@ and why.
 publication quality — the Phase 4b/5 agent reads them to draft the analysis
 note. Terse artifacts produce terse AN sections.
 
+**AN versioning.** The analysis note is phase-stamped and never overwritten:
+`ANALYSIS_NOTE_{phase}_v{N}.{md,tex,pdf}`. Each phase (4a, 4b, 4c, 5)
+produces a new phase-stamped v1; review/fix cycles within a phase increment
+the version (v2, v3, ...). All versions are preserved on disk for audit and
+comparison. Each phase's note writer reads the latest version from the
+previous phase and produces a new phase-stamped v1.
+
 **Standard sections:**
 1. **Summary** — what was accomplished (1 paragraph)
 2. **Method** — reproducible detail

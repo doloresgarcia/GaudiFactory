@@ -1,11 +1,14 @@
 ## Analysis Note Specification
 
-The AN is a single evolving document across Phases 4a–5. Phase 4a writes the
-complete AN with ALL detail — every diagnostic plot, every systematic
+The AN is a versioned document across Phases 4a–5. Phase 4a writes the
+complete AN v1 with ALL detail — every diagnostic plot, every systematic
 subsection, every cross-check, every comparison — using expected (Asimov/MC)
-results only. Phase 4b updates numbers to 10% data. Phase 4c updates to full
-data. Phase 5 polishes prose and typesets the PDF. The full AN is written
-once in 4a; later phases update results, not structure or detail.
+results only. Phase 4b starts from the latest 4a version and updates numbers
+to 10% data. Phase 4c updates to full data. Phase 5 polishes prose and
+typesets. Each phase produces a phase-stamped version
+(`ANALYSIS_NOTE_{phase}_v{N}.md`); no version is ever overwritten.
+Review/fix cycles increment the version within a phase (v1, v2, ...).
+All versions are preserved on disk for audit and comparison.
 
 **The gold standard: a physicist who has never seen the analysis should be
 able to reproduce every number from the AN alone.** This is the completeness

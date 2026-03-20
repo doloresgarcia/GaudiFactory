@@ -26,7 +26,7 @@ claude   # pass your physics prompt
  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
  │ Phase 1  │──▶│ Phase 2  │──▶│ Phase 3  │──▶│ Phase 4a │──▶│ Phase 4b │──▶│ Phase 4c │──▶│ Phase 5  │
  │ Strategy │   │ Explore  │   │Processing│   │ Expected │   │  10% Val │   │Full Data │   │ Document │
- │ (4-bot)  │   │ (self)   │   │ (1-bot)  │   │ (4-bot)  │   │(4-bot+HG)│   │ (1-bot)  │   │ (5-bot)  │
+ │ (4-bot)  │   │(self+plt)│   │ (1-bot)  │   │(4bot+bib)│   │(4bot+bib)│   │ (1-bot)  │   │ (5-bot)  │
  └──────────┘   └──────────┘   └──────────┘   └──────────┘   └────┬─────┘   └──────────┘   └──────────┘
                                                                    │
                                                              HUMAN GATE
@@ -51,10 +51,10 @@ Each phase runs the same loop:
 | Phase | Review | Key deliverable |
 |-------|--------|-----------------|
 | **1. Strategy** | 4-bot | Technique selection, systematic plan, reference analysis table, conventions enumeration |
-| **2. Exploration** | Self | Sample inventory, data quality, variable ranking, preselection cutflow |
+| **2. Exploration** | Self + plot validator | Sample inventory, data quality, variable ranking, preselection cutflow |
 | **3. Processing** | 1-bot | Event selection, correction chain or background model, closure tests |
-| **4a. Expected** | 4-bot | Systematic completeness table, covariance matrix, reference comparisons |
-| **4b. 10% Validation** | 4-bot | 10% data results, draft AN with full structure, human gate |
+| **4a. Expected** | 4-bot+bib | Systematic completeness table, covariance matrix, reference comparisons |
+| **4b. 10% Validation** | 4-bot+bib → human gate | 10% data results, draft AN with full structure |
 | **4c. Full Data** | 1-bot | Full observed results, post-fit diagnostics |
 | **5. Documentation** | 5-bot | Analysis note (pandoc markdown → PDF, 50-100 pages), machine-readable results |
 
@@ -87,7 +87,7 @@ Reviewer finds physics issue from Phase M < current Phase N
 ### Phase 5: 5-bot review
 
 ```
-Physics + Critical (referee) + Constructive + Rendering (reads compiled PDF) + Arbiter
+Physics + Critical + Constructive + Plot Validator + Rendering + BibTeX Validator (parallel) → Arbiter
 ```
 
 The rendering reviewer runs `pixi run build-pdf` and uses the Read tool to
@@ -157,6 +157,8 @@ templates in `src/templates/`:
 6. **Methodology symlink** — `methodology/` → `../../src/methodology/` is
    created so agents can consult the full methodology spec for detailed
    protocol definitions.
+7. **Agents symlink** — `agents/` → `../../src/agents/` is created so the
+   orchestrator can read agent role definitions.
 
 After scaffolding, the analysis directory is self-contained: its CLAUDE.md
 files carry the essential instructions for execution. The full methodology
@@ -165,7 +167,7 @@ detailed protocol definitions (review criteria, blinding protocol, etc.).
 
 **How templates map to methodology:** Each template distills the relevant
 methodology sections into execution-ready instructions:
-- `root_claude.md` — §3 (phases), §6 (review, summary), §10 (scaling), §12 (feasibility)
+- `root_claude.md` — §3 (phases), §6 (review, summary), §7 (tools/scaling), §12 (feasibility)
 - `phase1_claude.md` — §3 Phase 1, §6.4 review focus for strategy
 - `phase2_claude.md` — §3 Phase 2, §5 (artifact format)
 - `phase3_claude.md` — §3 Phase 3, §6.4 review focus for selection

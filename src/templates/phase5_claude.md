@@ -30,7 +30,7 @@ comparisons, and per-systematic impact figures.
 **Figure path verification (mandatory).** After aggregating figures, run:
 ```bash
 # Verify every figure reference in the AN resolves to a file
-grep -oP 'figures/[^)]+\.pdf' outputs/ANALYSIS_NOTE.md | sort -u | while read f; do
+grep -oP 'figures/[^)]+\.pdf' outputs/ANALYSIS_NOTE_5_v*.md | sort -u | while read f; do
   [ -f "outputs/$f" ] || echo "MISSING: $f"
 done
 ```
@@ -41,14 +41,14 @@ writing subagent.
 
 The complete AN already exists from Phase 4a (updated with observed results
 in 4b/4c). **This subagent does NOT rewrite the AN from scratch.** It reads:
-- The existing `ANALYSIS_NOTE.md` (from Phase 4a/4b/4c)
+- The existing `ANALYSIS_NOTE_4c_v*.md` (latest version from Phase 4c)
 - All phase artifacts (STRATEGY.md, EXPLORATION.md, SELECTION.md,
   INFERENCE_EXPECTED.md, INFERENCE_OBSERVED.md)
 - The figures directory (to verify figure references)
 - The conventions files (for completeness checks)
 - The experiment log
 
-And produces the final `outputs/ANALYSIS_NOTE.md` by polishing the existing AN.
+And produces `outputs/ANALYSIS_NOTE_5_v1.md` by polishing the existing AN.
 
 **This subagent does NOT read data files or write code.** Its tasks:
 - Review the existing AN for completeness against the checklist in
@@ -87,7 +87,7 @@ and formatting.
 1. **Convert markdown to LaTeX** (not directly to PDF):
    ```bash
    cd phase5_documentation/outputs
-   pandoc ANALYSIS_NOTE.md -o ANALYSIS_NOTE.tex --standalone \
+   pandoc ANALYSIS_NOTE_5_v1.md -o ANALYSIS_NOTE_5_v1.tex --standalone \
      --include-in-header=../../conventions/preamble.tex \
      --number-sections --toc --filter pandoc-crossref --citeproc
    ```
@@ -140,7 +140,7 @@ and formatting.
 
 3. **Compile to PDF:**
    ```bash
-   tectonic ANALYSIS_NOTE.tex
+   tectonic ANALYSIS_NOTE_5_v1.tex
    ```
    Fix any compilation errors. The final `ANALYSIS_NOTE.pdf` is the
    deliverable.
@@ -167,9 +167,9 @@ to route back to the AN writing agent. It does not fix physics content.
 
 ## Output artifacts
 
-- `outputs/ANALYSIS_NOTE.md` — pandoc-compatible markdown (from sub-task 2)
-- `outputs/ANALYSIS_NOTE.tex` — typeset LaTeX (from sub-task 3)
-- `outputs/ANALYSIS_NOTE.pdf` — final compiled PDF (from sub-task 3)
+- `outputs/ANALYSIS_NOTE_5_v1.md` — pandoc-compatible markdown (from sub-task 2)
+- `outputs/ANALYSIS_NOTE_5_v1.tex` — typeset LaTeX (from sub-task 3)
+- `outputs/ANALYSIS_NOTE_5_v1.pdf` — final compiled PDF (from sub-task 3)
 
 ## Methodology references
 
@@ -230,4 +230,5 @@ bibliography requirements.
 **5-bot review** — see `methodology/06-review.md` for protocol.
 The rendering reviewer inspects the **typeset PDF** (from sub-task 3),
 not the raw pandoc output.
-Write findings to `review/REVIEW_NOTES.md`.
+Write findings to `review/{role}/` using session-named files
+(see `methodology/appendix-sessions.md` for naming conventions).

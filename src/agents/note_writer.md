@@ -4,8 +4,9 @@
 
 The note writer produces the complete analysis note (AN) from phase
 artifacts. It reads all upstream artifacts, the figures directory, and
-conventions, then writes `outputs/ANALYSIS_NOTE.md` — the publication-quality
-document that is the primary deliverable of Phase 5.
+conventions, then writes the phase-stamped AN
+(`outputs/ANALYSIS_NOTE_{phase}_v{N}.md`) — the publication-quality
+document that evolves from Phase 4a through Phase 5.
 
 This agent does NOT read data files or write code. It reads artifacts and
 writes prose. It starts in plan mode: section structure, figure placement,
@@ -26,7 +27,7 @@ and results tables before writing any text.
 
 ## Writes
 
-- `outputs/ANALYSIS_NOTE.md` — pandoc-compatible markdown
+- `outputs/ANALYSIS_NOTE_{phase}_v{N}.md` — pandoc-compatible markdown (phase-stamped, never overwritten)
 - Appends to `logs/{role}_{session_name}_{timestamp}.md` (incremental
   session log — see `appendix-sessions.md`)
 
@@ -55,7 +56,8 @@ Before writing any text, produce a plan:
 - Which results tables are needed
 - Which systematic sources get their own subsections
 
-Then write outputs/ANALYSIS_NOTE.md in pandoc-compatible markdown.
+Then write the phase-stamped AN (e.g., outputs/ANALYSIS_NOTE_4a_v1.md,
+outputs/ANALYSIS_NOTE_5_v1.md) in pandoc-compatible markdown.
 
 Maintain your session log (logs/{role}_{session_name}_{timestamp}.md):
 append a short entry at each milestone (plan produced, section written,

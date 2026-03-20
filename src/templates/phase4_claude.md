@@ -25,9 +25,9 @@ the artifact structure will be. Execute after the plan is set.
 
 | Sub-phase | Artifact | Review |
 |-----------|----------|--------|
-| 4a | `outputs/INFERENCE_EXPECTED.md` + `outputs/ANALYSIS_NOTE.md` (v1) | 4-bot+bib |
-| 4b | `outputs/INFERENCE_PARTIAL.md` + updated `outputs/ANALYSIS_NOTE.md` | 4-bot+bib → human gate |
-| 4c | `outputs/INFERENCE_OBSERVED.md` + updated `outputs/ANALYSIS_NOTE.md` | 1-bot |
+| 4a | `outputs/INFERENCE_EXPECTED.md` + `outputs/ANALYSIS_NOTE_4a_v1.{md,tex,pdf}` | 4-bot+bib |
+| 4b | `outputs/INFERENCE_PARTIAL.md` + `outputs/ANALYSIS_NOTE_4b_v1.{md,tex,pdf}` | 4-bot+bib → human gate |
+| 4c | `outputs/INFERENCE_OBSERVED.md` + `outputs/ANALYSIS_NOTE_4c_v1.{md,tex,pdf}` | 1-bot |
 
 ## Methodology references
 
@@ -104,4 +104,5 @@ conventions file — do not skip them.
 ## Review
 
 **4-bot review** (4a, 4b) / **1-bot review** (4c) — see `methodology/06-review.md`
-for protocol. Write findings to `review/REVIEW_NOTES.md`.
+for protocol. Write findings to `review/{role}/` using session-named files
+(see `methodology/appendix-sessions.md` for naming conventions).

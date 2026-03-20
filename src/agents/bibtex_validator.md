@@ -14,7 +14,7 @@ citations (Phase 4b draft AN, Phase 5 final AN).
 ## Reads
 
 - `outputs/references.bib`
-- `outputs/ANALYSIS_NOTE.md` (or `ANALYSIS_NOTE_DRAFT.md`) — to find all `[@key]` citations
+- `outputs/ANALYSIS_NOTE_{phase}_v*.md` — to find all `[@key]` citations
 - Web access — to validate DOIs, arXiv IDs, and INSPIRE-HEP records
 
 ## Writes

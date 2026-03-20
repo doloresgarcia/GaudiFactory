@@ -259,8 +259,11 @@ analysis_name/
         figures/
         ...
         INFERENCE_EXPECTED.md
+        ANALYSIS_NOTE_4a_v1.md
+        ANALYSIS_NOTE_4a_v1.tex
+        ANALYSIS_NOTE_4a_v1.pdf
       review/
-        physics/                # 4-bot review (agent gate)
+        physics/                # 4-bot+bib review (agent gate)
           ...
         critical/
           ...
@@ -279,7 +282,9 @@ analysis_name/
         figures/
         ...
         INFERENCE_PARTIAL.md
-        ANALYSIS_NOTE_DRAFT.md
+        ANALYSIS_NOTE_4b_v1.md
+        ANALYSIS_NOTE_4b_v1.tex
+        ANALYSIS_NOTE_4b_v1.pdf
         UNBLINDING_CHECKLIST.md
       review/
         physics/                # 4-bot review before human
@@ -292,6 +297,7 @@ analysis_name/
           ...
       logs/
     4c_observed/                 # Created after human approval
+      experiment_log.md
       retrieval_log.md
       UPSTREAM_FEEDBACK.md
       REGRESSION_TICKET.md
@@ -300,6 +306,9 @@ analysis_name/
         figures/
         ...
         INFERENCE_OBSERVED.md
+        ANALYSIS_NOTE_4c_v1.md
+        ANALYSIS_NOTE_4c_v1.tex
+        ANALYSIS_NOTE_4c_v1.pdf
       review/
         critical/               # 1-bot review
           ...
@@ -312,7 +321,9 @@ analysis_name/
     outputs/
       figures/
       ...
-      ANALYSIS_NOTE.md
+      ANALYSIS_NOTE_5_v1.md
+      ANALYSIS_NOTE_5_v1.tex
+      ANALYSIS_NOTE_5_v1.pdf
     review/
       physics/                  # 5-bot review
         ...
