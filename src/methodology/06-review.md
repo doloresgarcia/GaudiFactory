@@ -59,7 +59,7 @@ Before concluding, the reviewer must answer:
 |-------|-------|
 | Strategy | Backgrounds complete? Systematic plan covers conventions? 2-3 reference analyses tabulated? |
 | Exploration | Samples complete? Data quality OK? Distributions physical? |
-| Processing | Background model closes? Every cut motivated by plot? Cutflow monotonic? **MVA:** data/MC on classifier OK? Alternative architecture tried? |
+| Processing | Background model closes? Every cut motivated by plot? Cutflow monotonic? **MVA:** data/MC on classifier OK? Alternative architecture tried? **MVA input modelling check:** Did the executor check data/MC agreement on all classifier inputs before training? Any input with data/MC χ²/ndf > 5 that enters the classifier without documented justification or calibration is Category A. A classifier that passes MC closure but fails on data due to a mismodelled input is a preventable error, not a discovery. |
 | 4a: Expected | Systematics complete vs. conventions + references? Signal injection/closure passes? Operating point stable (Category A if not)? MC coverage matches data periods? Validation target check (§6.8). |
 | 4b: 10% | Draft AN publication-quality? Results consistent with expected? Diagnostics clean? Validation target check (§6.8). |
 | 4c: Full data | Post-fit diagnostics healthy? Anomalies characterized? **Validation target check:** every result compared to PDG/reference values — any pull > 3σ is Category A unless quantitatively explained (see §6.8). |

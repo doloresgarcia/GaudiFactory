@@ -107,6 +107,27 @@ the plan; it does not redesign it.
 **Selection:**
 - Default to MVA (BDT, NN) for multi-dimensional classification. Cuts
   acceptable only for preselection, single-variable, or tiny samples (<1000).
+- **Input variable quality gate (MVA analyses).** Before training any
+  classifier, produce a variable survey table for all candidate input
+  features:
+
+  | Variable | Flavour discrimination | Data/MC χ²/ndf | Decision |
+  |----------|----------------------|----------------|----------|
+
+  Each candidate input must pass both a discrimination check (contributes
+  to signal/background separation) and a modelling check (data/MC
+  agreement). Variables with data/MC χ²/ndf > 5 should be discarded
+  unless (a) they provide exceptional discrimination AND (b) a
+  data-driven calibration (reweighting, scale factor) is applied and
+  validated. A poorly-modelled input that enters the classifier will
+  produce a biased result on data even if MC closure passes — the
+  closure test cannot catch data/MC mismodelling by construction.
+
+  Training alternative classifier architectures or feature combinations
+  during exploration is expected — the experiment log records what was
+  tried. But the AN documents the variable survey, the selection
+  rationale, the final classifier, and the result — not every
+  intermediate training attempt.
 - If MVA: train, validate, optimize. Train ≥1 alternative architecture.
   Try multiclass if >2 physics classes. Check data/MC on classifier output.
   Sub-delegate training to sub-agent (§3a.5). Diagnostic plots (ROC, score

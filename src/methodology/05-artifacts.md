@@ -53,6 +53,17 @@ The flagship list propagates from the strategy artifact through to the
 AN writing subagent. Every flagship figure must appear in the Results or
 Comparison section of the AN, not buried in an appendix.
 
+**Dead-end approaches.** The experiment log records all approaches
+tried, including failures. The AN presents the variable survey, the
+selection rationale, the final method, and the result. A failed
+approach gets at most one sentence and optionally one figure
+demonstrating why it fails — not a dedicated section with multiple
+plots. The number of potential failure modes is infinite; documenting
+each one adds noise without physics value. The exception is a failure
+mode that teaches a generalizable lesson (e.g., a subtle resolution
+definition error that others would likely repeat) — these deserve a
+brief methodological discussion.
+
 **Supplementary files** (`.npz`, `.json`, workspaces, trained models) must
 include a brief description in the artifact: what the file contains, how to
 load it, which pixi task produced it.

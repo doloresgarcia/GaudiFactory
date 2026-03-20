@@ -290,6 +290,25 @@ with a single caption. Related comparisons (e.g., data/MC for multiple
 variables) should be side-by-side. A 2×2 grid uses `figsize=(20, 20)`, a
 3×3 uses `figsize=(30, 30)` — following the 10-inches-per-subplot rule.
 
+**Variable survey and per-cut compositions.** When presenting N
+related distributions (input variable data/MC comparisons, per-cut
+motivation plots, per-systematic shift maps, per-subperiod
+comparisons), compose them as a single multi-panel figure rather than
+N separate figures. Produce individual `(10, 10)` figures per the
+standard rules, then reference them in the AN as a composed grid.
+Sizing for composed grids in the AN:
+
+| Grid | Per-panel height | Example |
+|------|-----------------|---------|
+| 2×2 | `0.35\linewidth` | Data/MC for 4 key variables |
+| 3×3 | `0.28\linewidth` | Full input variable survey |
+| 2×3 | `0.30\linewidth` | Per-subperiod comparisons |
+
+Use `(a)`–`(i)` panel labels in each individual figure via
+`mh.label.add_text("(a)", ax=ax)`. Write one shared caption for the
+composed figure describing all panels. In the AN markdown, use
+side-by-side image syntax or pandoc-crossref subfigure syntax.
+
 ### Figure cross-referencing
 
 Use pandoc-crossref syntax for numbered figure references in analysis notes:
