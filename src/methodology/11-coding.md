@@ -56,7 +56,38 @@ produces N independent results (e.g., per-file histograms, per-year
 densities), verify they are not bit-for-bit identical. Identical
 outputs from independent inputs indicate a fork/threading bug.
 
-### 11.4 Task Graph
+### 11.4 Separation of Analysis and Plotting
+
+**Analysis code and plotting code must be independent.** Analysis scripts
+produce machine-readable artifacts (JSON, NPZ, CSV) — histograms, yields,
+fit results, systematic shifts. Plotting scripts read those artifacts and
+produce figures. The two must never be entangled in the same script.
+
+This separation provides three benefits:
+1. **Plots are rerunnable.** Tweaking a legend, axis range, or color does
+   not require re-running the analysis chain. `pixi run plot-X` regenerates
+   the figure in seconds from the saved artifact.
+2. **Artifacts are the handoff.** Downstream phases and the AN read
+   artifacts, not figures. If a plotting script crashes, no data is lost.
+3. **Review is cleaner.** Code reviewers can audit the analysis logic
+   without wading through matplotlib boilerplate, and vice versa.
+
+**In practice:**
+- Analysis scripts write to `outputs/` (JSON, NPZ): yields, efficiencies,
+  fit parameters, systematic shifts, histograms.
+- Plotting scripts read from `outputs/` and write to `outputs/figures/`
+  (PDF, PNG).
+- Each plotting script has its own pixi task (e.g., `p3-plots`,
+  `p4a-plots`). The `all` task runs analysis first, then plots.
+- Plotting scripts must NOT call `uproot.open()` or process ROOT files
+  directly. If a plot needs data not in the artifacts, the analysis script
+  must be extended to produce it — do not bypass the artifact layer.
+
+**Exception:** Quick data/MC overlay plots during Phase 2 exploration may
+read ROOT files directly (exploration is inherently interactive). From
+Phase 3 onward, the separation is mandatory.
+
+### 11.5 Task Graph
 
 **Every script → pixi task.** `pixi run all` reproduces the full analysis
 from raw data. Task names are human-readable. Scripts are idempotent (fixed
@@ -65,7 +96,7 @@ seeds, fixed output paths).
 Split scripts exceeding ~5 min into stages with intermediate outputs.
 Update `pixi.toml` whenever scripts are added or removed.
 
-### 11.5 Debug Code
+### 11.6 Debug Code
 
 Prefix with `debug_` or place in `scratch/`. Never include in `all` task.
 Clean up before review.
