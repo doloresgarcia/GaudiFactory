@@ -33,7 +33,7 @@ Cite all retrieved sources in the artifact (paper ID + section).
 
 - Physics motivation and observable definition
 - Sample inventory (data + MC)
-- Selection approach with justification
+- Selection approach with justification (see "≥2 approaches" below)
 - Systematic uncertainty plan
 - Literature review from RAG corpus
 - **Technique selection** — determine the analysis technique (unfolding,
@@ -58,6 +58,15 @@ These are the critical actionable items for Phase 1. See
   instrumental. Estimate relative importance (order of magnitude is fine).
 - **Define discriminating variables.** Identify the variable(s) for final
   statistical interpretation (invariant mass, BDT score, event shape, etc.).
+- **≥2 selection approaches must be qualitatively different.** Two
+  parametric variants of the same method (e.g., two different IP cuts) do
+  NOT count as distinct approaches. At least one approach must be MVA-based
+  (BDT on available discriminating variables) unless a concrete constraint
+  makes MVA infeasible — in which case the constraint must be documented
+  with a [D] label and validated at review. Phase 3 treats cut-based
+  selection as a downscope from MVA (see `methodology/12-downscoping.md`),
+  so the strategy must at minimum identify what MVA inputs are available
+  and why an MVA is or isn't planned.
 - **Systematic plan with conventions enumeration.** Read the applicable
   `conventions/` files listed above. For every required source listed, state
   "Will implement" or "Not applicable because [reason]." This enumeration
@@ -85,8 +94,9 @@ Before submitting for review, verify:
 
 - [ ] Corpus queries executed — at least 3 searches, all results cited
 - [ ] Backgrounds classified (irreducible, reducible, instrumental)
-- [ ] >=2 selection approaches identified with comparison plan (or
-      documented infeasibility with Phase 1 review validating)
+- [ ] >=2 qualitatively different selection approaches identified (not
+      parametric variants of same method). At least one MVA-based, or
+      MVA infeasibility documented with [D] label
 - [ ] Systematic plan enumerates EVERY source in applicable conventions
       files: "Will implement" or "Not applicable because [reason]"
 - [ ] Reference analysis table: 2-3 analyses with systematic programs
@@ -97,8 +107,9 @@ Before submitting for review, verify:
       strategy defined, theory comparison independence verified
 
 **Your reviewer will check** (§6.4): Backgrounds complete? Systematic
-plan covers conventions? Reference analyses tabulated? >=2 selection
-approaches planned? Method parity with published analyses?
+plan covers conventions? Reference analyses tabulated? >=2 qualitatively
+different selection approaches (not variants of the same cut)? MVA
+considered or infeasibility justified? Method parity with published analyses?
 
 ## Review
 
