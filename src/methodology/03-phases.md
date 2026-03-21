@@ -45,6 +45,15 @@ measurements substitute: fiducial region, sidebands, purity optimization.
   alternatives (e.g., "double-tag vs single-tag because...", "bin-by-bin
   correction vs full unfolding because..."). A reader should understand not
   just what will be done, but why it was chosen over the alternatives.
+- **Selection approach exploration plan.** Phase 1 defines which approaches
+  to explore — not which single approach to use. The strategy must identify
+  at least two candidate selection approaches and commit to trying both in
+  Phase 3. For each candidate, state the expected advantages, known costs,
+  and what a quantitative comparison would look like. Phase 3 performs the
+  exploration and selects based on evidence. Declaring a single approach
+  without a comparison plan is acceptable only when the strategy documents
+  why alternatives are infeasible (not merely suboptimal) — and the Phase 1
+  review must validate this justification.
 - **Systematic plan:** read applicable `conventions/` document, enumerate
   every required source with "Will implement" or "Not applicable because
   [reason]." This is binding — Phase 4a reviews against it.
@@ -113,6 +122,13 @@ the plan; it does not redesign it.
 **Selection:**
 - Default to MVA (BDT, NN) for multi-dimensional classification. Cuts
   acceptable only for preselection, single-variable, or tiny samples (<1000).
+- **Approach comparison (mandatory).** Phase 3 must try at least two
+  selection approaches and compare them quantitatively before choosing one.
+  The comparison must use a common figure of merit evaluated on the same
+  sample. Document in the artifact: what was tried, the figure of merit for
+  each, and why the chosen approach is preferred. The only acceptable
+  exemption is when Phase 1 documented that alternatives are infeasible AND
+  the Phase 1 review validated this.
 - **Input variable quality gate (MVA analyses).** Before training any
   classifier, produce a variable survey table for all candidate input
   features:
@@ -157,10 +173,15 @@ test in VRs (p > 0.05 or Category A).
 - **Early diagonal fraction check (gate).** Before building the full
   correction chain, compute the response matrix on a small MC subset
   (~10K events) and report the diagonal fraction. If diagonal fraction
-  < 50%, trigger an immediate strategy reassessment: consider coarser
-  binning, SVD unfolding, or dimensionality reduction BEFORE investing
-  in full-scale processing. Do not build a complete BBB chain and
-  discover at the end that the method is invalid.
+  < 50%, the **first** action is to check whether the matching strategy
+  is appropriate for the observable type (see `conventions/unfolding.md`
+  → "Matching strategy"). For variable-multiplicity observables (Lund
+  declusterings, subjet splits, fragmentation functions), sub-object
+  matching produces artificially low diagonal fractions; switching to
+  histogram-level (event-response) matching typically fixes this. Only
+  after verifying the matching strategy should coarser binning, SVD, or
+  dimensionality reduction be considered. Do not conclude that unfolding
+  is impossible from a single matching strategy.
 - Closure + stress tests on MC. Failure (p < 0.05) is Category A.
 - Prototype full chain on data.
 - Binning must be justified (resolution, statistics, physics features).

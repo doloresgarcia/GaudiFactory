@@ -61,11 +61,17 @@ Query the experiment corpus for:
 
 Cite sources in the artifact.
 
-## MVA classification checklist
+## Selection approach comparison (mandatory)
 
-Default to multivariate techniques (BDT, NN) for multi-dimensional
-classification. See `methodology/03-phases.md` → Phase 3 "Selection" for
-full guidance including when to use cuts vs. MVA.
+Phase 3 must try at least two selection approaches before choosing one.
+See `methodology/03-phases.md` → Phase 3 "Selection" for full requirements.
+
+- [ ] Identify approaches from Phase 1 exploration plan
+- [ ] Implement each to the point where a common figure of merit can be evaluated
+- [ ] Report comparison in artifact with figure of merit for each
+- [ ] Select final approach based on evidence and document rationale
+
+If selected approach is MVA:
 
 - [ ] Sub-delegate MVA training to a sub-agent (see §3a.5)
 - [ ] Train primary classifier (BDT or NN)
@@ -75,6 +81,10 @@ full guidance including when to use cuts vs. MVA.
 - [ ] Check data/MC agreement on classifier output — investigate before accepting systematic
 - [ ] Optimize working point with figure of merit
 - [ ] Save trained model, hyperparameters, split seed, validation plots as artifacts
+
+If selected approach is cut-based, this is a downscope from the default MVA
+recommendation. Document the constraint and comparison that justified the
+choice (see `methodology/12-downscoping.md`).
 
 ## Sensitivity optimization (when initial selection is insufficient)
 

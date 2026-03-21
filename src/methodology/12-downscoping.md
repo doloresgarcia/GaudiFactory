@@ -1,15 +1,35 @@
 ## 12. Scope Management and Downscoping
 
-When a resource is unavailable, downscope to what is achievable and document
-the limitation — in the experiment log during execution, and in the AN.
+Downscoping is a last resort when the full-strength approach is genuinely
+infeasible. It is not a shortcut for avoiding difficulty, and it is not
+the default response to a hard problem. Every downscope weakens the
+analysis — the protocol exists to ensure the weakening is documented,
+quantified, and justified.
 
 ### When to downscope
 
-Data/MC unavailable, insufficient MC statistics, compute limits, missing
-external inputs, or method is disproportionate to the gain.
+Downscoping is justified only when the stronger approach has been
+**attempted and failed**, or when attempting it is **demonstrably
+infeasible** (not merely difficult or uncertain). Concrete triggers:
+
+- Data or MC genuinely unavailable (not "hard to use" — unavailable)
+- Insufficient MC statistics after exploring all available samples
+- Compute limits that make the method impossible within the resource
+  envelope (not "slower than we'd like")
+- Missing external inputs with no viable substitute
+- Method attempted and shown to fail (with documented evidence)
+
+"The alternative might not work" or "the alternative would be harder" are
+not sufficient justifications. If the alternative is the stronger method,
+try it first. If it fails, document why and downscope with evidence.
 
 ### How
 
+0. **Attempt the full-strength approach first.** Before downscoping,
+   the executor must either (a) attempt the stronger method and document
+   its failure, or (b) document why attempting it is infeasible (not
+   merely difficult). "We expected it wouldn't work" is not evidence —
+   "we tried it and it failed because [specific reason]" is.
 1. **Document** the constraint in the experiment log.
 2. **Choose best achievable method.** Fall back along complexity ladder
    (GNN → BDT → cut-based) or reduce scope.
@@ -26,11 +46,20 @@ external inputs, or method is disproportionate to the gain.
   MC stat uncertainty (Barlow-Beeston).
 - **Cannot evaluate a systematic from own data:** Never leave as zero. Use
   literature value (via RAG), inflate conservatively, cite source.
+- **Skipping approach exploration.** Choosing a simpler approach (e.g.,
+  cut-based over MVA) without trying the alternative is a downscope. It must
+  follow the standard protocol: document the constraint, quantify the
+  expected impact, and carry the limitation to the AN. Concerns about the
+  alternative's costs (e.g., increased correlations, training difficulty)
+  are valid constraints to document, but they do not exempt the analysis
+  from quantifying what was foregone.
 
 ### Review
 
-Reviewers check: (1) is the simpler method adequate? (2) is the limitation
-documented in the AN?
+Reviewers check: (1) was the stronger approach attempted or is
+infeasibility documented with evidence? (2) is the quantified impact
+credible? (3) is the limitation documented in the AN? Downscoping
+without evidence of attempting the stronger method is Category A.
 
 ### Future Directions
 

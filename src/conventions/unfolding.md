@@ -46,6 +46,41 @@ Required deliverables before proceeding:
 - Quantitative summary of agreement level
 - Documentation of identified discrepancies and expected impact
 
+### Matching strategy
+
+The response matrix relates gen-level bins to reco-level bins. **How** the
+gen↔reco correspondence is established depends on the observable type:
+
+| Observable type | Example | Matching strategy |
+|-----------------|---------|-------------------|
+| One entry per event | Thrust, sphericity, event multiplicity | Trivial: same event maps gen bin → reco bin |
+| One entry per object | Jet pT, jet mass (in N-jet events) | Object-level: match reco jet ↔ gen jet (ΔR, ghost-matching), then map gen bin → reco bin for matched pairs |
+| Variable-multiplicity sub-objects | Lund declusterings, subjet splits, fragmentation z, track functions | **Histogram-level (event-response):** for each event, fill a gen-level histogram and a reco-level histogram from *all* sub-objects. The response matrix is the event-averaged correlation between gen and reco histograms. Do NOT match individual sub-objects. |
+
+**Why sub-object matching fails.** For observables where the number of
+entries per event changes between gen and reco level (e.g., C/A
+declusterings: a lost track reorganizes the clustering tree, changing the
+count and ordering of splittings), matching individual sub-objects
+(1st reco ↔ 1st gen) produces a very noisy response matrix dominated by
+topology changes rather than detector smearing. The diagonal fraction
+will be artificially low (often < 30%), and unfolding will appear to fail
+— not because the observable is unfoldable, but because the matching
+strategy is wrong.
+
+**Histogram-level response** avoids this entirely: each event contributes
+a gen histogram and a reco histogram, and the response matrix captures
+how the full distribution shape migrates. This is the standard approach
+used by ATLAS (Phys. Rev. Lett. 124, 222002, 2020) and ALICE (JHEP 05,
+2024, 116) for Lund plane unfolding, and by fragmentation function
+measurements generally.
+
+**Diagnostic:** If the diagonal fraction is unexpectedly low, the first
+question is **"is the matching strategy appropriate for this observable
+type?"** — not "should we coarsen the binning?" A histogram-level
+response for a variable-multiplicity observable will typically have a
+much higher diagonal fraction than a sub-object-matched response, often
+making standard unfolding viable.
+
 ### Matrix properties to report
 
 - Dimension (N_reco x N_gen bins)
@@ -188,8 +223,19 @@ of them requires explicit justification.
 This situation arises for multi-dimensional observables (2D+) or
 observables where the detector response rearranges combinatorial
 structure (e.g., jet clustering trees, where tracking inefficiency
-changes the tree topology). The remediation hierarchy applies:
+changes the tree topology). The remediation hierarchy applies **in
+order** — do not skip to later steps without trying earlier ones:
 
+0. **Check the matching strategy (mandatory first step).** Is the low
+   diagonal fraction from detector smearing, or from a wrong matching
+   strategy? For variable-multiplicity observables (Lund declusterings,
+   subjet splits, fragmentation functions), sub-object matching (1st
+   reco ↔ 1st gen) produces artificially low diagonal fractions. Switch
+   to histogram-level (event-response) matching — see the "Matching
+   strategy" section above. This alone often raises the diagonal fraction
+   above 50% and makes standard unfolding viable. **Concluding that
+   unfolding is impossible without trying histogram-level response is
+   Category A at review.**
 1. **SVD with aggressive truncation** — keep only the first few singular
    values. This sacrifices resolution but may produce a stable result.
 2. **Coarser binning** — reduce to the point where diagonal fraction
