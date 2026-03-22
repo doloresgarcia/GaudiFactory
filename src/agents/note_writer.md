@@ -219,4 +219,23 @@ catches exactly that failure.
 MACHINE-READABLE OUTPUTS:
 The results/ directory (created by the Phase 4c executor) contains
 the JSON files. Verify they exist and reference them in Appendix C.
+
+SELF-CHECK BEFORE SUBMITTING (mandatory — count and report):
+Before handing the AN to the typesetter, count and report these metrics:
+1. Total display equations ($$...$$): target >= 8 for a measurement
+2. Total figure references (![...](...)): target >= 20
+3. Total table references: target >= 5
+4. Systematic subsections with 4-part template: must equal number of
+   sources in the summary budget table
+5. Comparison statements with chi2/pull: grep for "consistent with",
+   "compatible with", "in agreement with" — every instance must have
+   a number within the same paragraph
+6. Word count of Corrections/Unfolding section: target >= 500 words
+   (this section is commonly too thin)
+7. Word count of each systematic subsection: target >= 100 words each
+   (bare tables without prose are incomplete)
+
+Report: "Self-check: N equations, M figures, P tables, Q systematic
+subsections (of R sources), S comparison statements all quantitative,
+Corrections section W words." Fix any shortfalls before submitting.
 ```
