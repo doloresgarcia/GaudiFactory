@@ -130,8 +130,17 @@ Read ANALYSIS_NOTE.tex. Improve it:
    Use booktabs (\toprule, \midrule, \bottomrule). Apply \small or
    \resizebox to wide tables. No column overflow.
 
-4. COMPILE. Run tectonic (or pdflatex) and fix errors. Check for
-   unresolved references (??) and citations ([?]).
+4. COMPILE AND CHECK TEX LOG. Run tectonic (or pdflatex) and fix errors.
+   After compilation, check for:
+   - Unresolved references (??) and citations ([?])
+   - **Overfull hbox warnings** — run `grep "Overfull.*hbox" *.log`.
+     Any overfull hbox involving a figure or table is Category A. Fix by
+     adding explicit `width=` or `height=` to oversized figures, or
+     `\resizebox` to wide tables. Do NOT ignore these warnings — they
+     mean content extends past the page margins.
+   - **Figure overflow** — figures taller than `0.7\textheight` push
+     captions to the next page. Add `height=0.45\linewidth` to any
+     figure that appears to overflow vertically.
 
 5. AUTOMATED FORMATTING CHECK (mandatory before verification).
    Run these checks on the .tex file after compilation. All must
