@@ -204,6 +204,16 @@ cap at 10. The arbiter should ESCALATE rather than loop indefinitely.
 
 **1-bot:** Warn at 2, escalate to human after 3.
 
+**Re-review documentation (mandatory).** When a review verdict is ITERATE,
+the fix agent produces fixes and the phase is re-reviewed. The re-review
+MUST produce a written re-review artifact (`{PHASE}_REREVIEW.md` or
+`{PHASE}_REVIEW_v2.md`) that explicitly verifies each Category A/B finding
+from the original review. "ITERATE → fix → advance without re-review" is
+a process failure — the orchestrator must not advance the phase without
+a documented re-review PASS. If the re-review identifies new issues, the
+cycle continues (fix → re-review) until PASS. Every cycle produces a
+numbered review artifact on disk for the audit trail.
+
 ### 6.5.1 Arbiter Dismissal Rules
 
 **The arbiter may NOT dismiss a reviewer finding as "out of scope" if the
