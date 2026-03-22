@@ -95,11 +95,29 @@ QUALITY STANDARDS:
 - Every section heading must have at least one paragraph (2-3 sentences
   minimum) of prose before any figure or table.
 - Every figure must have a caption of 2-5 sentences following the format:
-  "<Plot name>. <Context and conclusion.>"
-- Every systematic source gets its own subsection: description, evaluation
-  method, impact figure, per-bin table.
+  "<Plot name>. <Context and conclusion.>" Captions must be INTERPRETIVE
+  — state the physics conclusion, not just what the axes show. Bad:
+  "Data/MC comparison for thrust." Good: "Data/MC comparison for thrust.
+  The MC reproduces the data within 5% across the full range, validating
+  the generator modeling of the event topology."
+- Every systematic source gets its own subsection with the 4-part
+  template: physical origin → evaluation method (with propagation chain
+  and formula) → numerical impact (table + figure) → interpretation.
+  A subsection that just states "tracking efficiency: 0.94%" without
+  explaining how 0.94% was derived is incomplete.
 - Every cut needs a distribution plot. Every systematic needs an impact
   figure. Every cross-check needs a comparison plot.
+- Every validation test (closure, stress, cross-check) must include ALL
+  of: what was tested, expected result, observed result (chi2/p-value),
+  figure, and interpretation. "Passes" without these is Category B.
+- The Corrections section must display the key equations as $$...$$ —
+  the correction formula, the likelihood or chi2, and the propagation
+  formula. The reader must be able to implement the method from the AN.
+- The Systematic section must end with an error budget narrative: what
+  dominates, why, what could reduce it, and whether chi2/ndf << 1
+  indicates overcoverage.
+- Every comparison to a published value must state a number (chi2, pull,
+  ratio). "Consistent with published values" alone is Category B.
 
 DATA STAGING:
 The AN is a living document that grows across phases. At each stage,
