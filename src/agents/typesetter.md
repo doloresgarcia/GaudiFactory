@@ -151,11 +151,11 @@ Read ANALYSIS_NOTE.tex. Improve it:
    grep -q '\\section{Abstract}' "$TEX" && echo "FAIL: Abstract is a numbered section"
    # 2. References must not be a numbered section
    grep -q '\\section{References}' "$TEX" && echo "FAIL: References is a numbered section"
-   # 3. Figure combining ratio
+   # 3. Figure combining ratio (informational — not a hard gate)
    STANDALONE=$(grep -c '\\begin{figure}' "$TEX")
    SUBFLOAT=$(grep -c '\\subfloat\|\\subcaptionbox\|\\begin{subfigure}' "$TEX" || true)
    echo "Standalone figure environments: $STANDALONE, Sub-figures: $SUBFLOAT"
-   [ "$SUBFLOAT" -lt "$STANDALONE" ] && echo "FAIL: More standalone figures than composites"
+   echo "NOTE: Combine where readability permits, but never sacrifice legibility for ratio."
    # 4. FloatBarrier coverage
    SECTIONS=$(grep -c '\\section{' "$TEX")
    BARRIERS=$(grep -c '\\FloatBarrier' "$TEX" || true)
