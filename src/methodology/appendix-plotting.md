@@ -393,6 +393,13 @@ if 'pcolormesh' in code or 'imshow' in code or 'hist2dplot' in code:
         print("VIOLATION: 2D plot without make_square_add_cbar or cbarextend=True")
 if 'ax.legend(' in code and 'mpl_magic' not in code:
     print("VIOLATION: legend without mpl_magic(ax) — legend-data overlap risk")
+# Axis 0 suppression check — sharex ratio plots with exp_label need
+# suppression of the spurious "Axis 0" text from mplhep
+if 'sharex=True' in code and 'exp_label' in code:
+    if 'Axis' not in code and 'loc=2' not in code:
+        print("VIOLATION: sharex ratio plot with exp_label but no Axis 0 "
+              "suppression — add: for txt in rax.texts: if 'Axis' in "
+              "txt.get_text(): txt.remove()  OR use loc=2")
 ```
 
 **Step 2: Visual inspection of every rendered PNG.** Read the PNG at actual
@@ -409,6 +416,12 @@ rendered size and check:
 - [ ] Figure contains actual data (not empty axes with only labels/ticks,
   not a placeholder, not a white canvas — if no data was plotted, the
   figure should not exist)
+- [ ] **Error bar sanity.** For any derived quantity (normalized spectrum,
+  EEC, correction factor, ratio, efficiency), error bars must be
+  plausible — typically a few percent to tens of percent of the value,
+  not larger than the signal. If error bars span the full y-axis or
+  are visibly >100% relative, this almost certainly means `yerr` was
+  not passed and mplhep is showing sqrt(bin content). Category A.
 
 **Step 3: Label quality grep.** Check that no code variable names leaked
 into labels:
@@ -452,13 +465,19 @@ quantities is Category A.
 ### Captions
 
 See §5.2 for caption requirements. Captions must be self-contained and
-follow the format: **`<Plot name>. <Context and conclusion.>`**
+follow the structure: **`<What> (<where>) <description/conclusion>.`**
+
+- **What:** Name the observable or quantity being plotted.
+- **Where:** For composite figures, indicate which panel: "(left)", "(right)",
+  "(top left)", etc. For single figures, omit.
+- **Description:** Context not visible in the plot, key observation, conclusion.
 
 A good caption is 2-4 sentences. It must:
 1. Name the plot (what observable, what selection stage, what comparison).
-2. State context not visible in the plot (selection applied, normalization
+2. For composites: identify each panel with a positional pointer, then describe.
+3. State context not visible in the plot (selection applied, normalization
    method, which phase/systematic this validates, connection to other results).
-3. State the key observation or conclusion the reader should draw.
+4. State the key observation or conclusion the reader should draw.
 
 **Do NOT restate what is already in the legend or axis labels.** If the
 legend says "Data (black)" and "MC (blue)", the caption does not need to
@@ -490,18 +509,68 @@ Good:
 
 Sparse captions — anything under two full sentences — are Category A.
 
-### Subfigures and figure grouping
+### Figure compositing in the AN
 
-Group related figures into grids rather than presenting them as separate
-figures. Use letter labels (`(a)`, `(b)`, etc.) with
-`mh.label.add_text("(a)", ax=ax)` in each panel.
-Write a single caption describing all sub-panels. This keeps the note
-compact and makes comparisons easier for the reader.
+Group related figures side-by-side in the AN rather than presenting them
+as separate full-page figures. **Do NOT use `\subfloat` or `\subcaptionbox`**
+— these produce clunky layouts with redundant sub-captions, excessive
+whitespace, and small panels. Instead, use simple side-by-side
+`\includegraphics` with a single unified caption.
 
-**Grid sizing:** Selection cut distributions can be grouped into a 3x3 grid
-with a single caption. Related comparisons (e.g., data/MC for multiple
-variables) should be side-by-side. A 2x2 grid uses `figsize=(20, 20)`, a
-3x3 uses `figsize=(30, 30)` — following the 10-inches-per-subplot rule.
+**Compositing pattern (pairs):**
+```latex
+\begin{figure}[!htbp]
+\centering
+\includegraphics[height=0.38\linewidth]{figures/left.pdf}\hfill
+\includegraphics[height=0.38\linewidth]{figures/right.pdf}
+\caption{The ln(1/Delta-theta) projection (left) and ln(kt) projection
+  (right) of the unfolded Lund plane density from Figure X, compared to
+  Pythia 8 Monash and Pythia 6. Both projections show ...}
+\label{fig:label}
+\end{figure}
+```
+
+**Compositing pattern (2x2 grid):**
+```latex
+\begin{figure}[!htbp]
+\centering
+\includegraphics[height=0.32\linewidth]{figures/tl.pdf}\hfill
+\includegraphics[height=0.32\linewidth]{figures/tr.pdf}\\[0.5em]
+\includegraphics[height=0.32\linewidth]{figures/bl.pdf}\hfill
+\includegraphics[height=0.32\linewidth]{figures/br.pdf}
+\caption{Shift maps for four sub-dominant sources: angular resolution
+  (top left), non-closure (top right), thrust axis (bottom left), and
+  momentum resolution (bottom right). All are below 1\% ...}
+\label{fig:label}
+\end{figure}
+```
+
+**Caption structure for composites:** Follow the `<What> (<where>)
+<description>` pattern. Name each panel's content with a positional
+pointer, then describe the joint conclusion:
+
+> "The ln(1/Delta-theta) projection (left) and the ln(kt/GeV) projection
+> (right) of the unfolded ALEPH data from Figure 27, compared to Pythia 8
+> Monash (blue) and Pythia 6 (red dashed). Data lies 10-30% above both
+> generators in the perturbative region, confirming the soft radiation
+> deficit is not tune-specific."
+
+**Key rules:**
+- Use `height=` (not `width=`) so panels with different aspect ratios
+  align visually at the same height.
+- Minimum panel height: `0.30\linewidth`. Below this, text becomes illegible.
+- No `(a)`, `(b)` labels — use "(left)", "(right)" in the caption text.
+- The caption is a single paragraph synthesizing both panels, not a
+  concatenation of individual captions.
+
+**Sizing reference:**
+
+| Grid | Per-panel height | Example |
+|------|-----------------|---------|
+| 1x2 (pair) | `0.38\linewidth` | Projection comparisons |
+| 2x2 | `0.32\linewidth` | Sub-dominant shift maps |
+| 3x3 | `0.28\linewidth` | Full input variable survey |
+| 2x3 | `0.30\linewidth` | Per-subperiod comparisons |
 
 **Variable survey and per-cut compositions.** When presenting N
 related distributions (input variable data/MC comparisons, per-cut
@@ -509,18 +578,6 @@ motivation plots, per-systematic shift maps, per-subperiod
 comparisons), compose them as a single multi-panel figure rather than
 N separate figures. Produce individual `(10, 10)` figures per the
 standard rules, then reference them in the AN as a composed grid.
-Sizing for composed grids in the AN:
-
-| Grid | Per-panel height | Example |
-|------|-----------------|---------|
-| 2x2 | `0.35\linewidth` | Data/MC for 4 key variables |
-| 3x3 | `0.28\linewidth` | Full input variable survey |
-| 2x3 | `0.30\linewidth` | Per-subperiod comparisons |
-
-Use `(a)`–`(i)` panel labels in each individual figure via
-`mh.label.add_text("(a)", ax=ax)`. Write one shared caption for the
-composed figure describing all panels. In the AN markdown, use
-side-by-side image syntax or pandoc-crossref subfigure syntax.
 
 ### Figure cross-referencing
 
