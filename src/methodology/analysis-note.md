@@ -27,7 +27,11 @@ paper, note it explicitly if it differs from notation used earlier in the AN.
 The AN is the complete record — not a journal paper, not an executive
 summary, not a set of results with a brief methods section. ~50-100
 rendered pages for a typical measurement. **Under 30 pages means detail
-is missing** — this is a Category A finding at Phase 5 review.
+is missing** — this is Category A at Phase 5 review unless the reviewer
+can confirm that the analysis is genuinely simple (single observable,
+fewer than 5 systematic sources, no MVA, no unfolding) AND the
+completeness test still passes. A simple, fully documented 35-page AN
+is acceptable; a complex analysis crammed into 40 pages is not.
 
 Common causes of thin ANs:
 - Missing per-cut distribution plots (before and after each cut)
@@ -262,6 +266,16 @@ aggregates them. Missing diagnostics are Category A at review.
   reproduce every number from the AN alone
 - **BibTeX:** `[@key]` with `references.bib`. Entries must include `doi`,
   `url`, `eprint`. Use `unsrt`-style. Use `get_paper` for RAG papers.
+  **Never generate BibTeX entries from training data.** Every BibTeX
+  entry must be obtained from a verifiable source: `get_paper` MCP tool,
+  DOI lookup, INSPIRE search, or the actual paper PDF. An agent that
+  writes `@article{ALEPH:2005foo, ...}` from memory is almost certainly
+  hallucinating — the INSPIRE key, author list, journal metadata, and
+  even the existence of the paper may be fabricated. When you need a
+  citation: (1) search for the paper by title, author, or topic,
+  (2) obtain its INSPIRE record or DOI, (3) construct the BibTeX from
+  verified metadata. A BibTeX entry that cannot be traced to a real
+  source is Category A.
 
 ### Literature requirements
 
@@ -283,10 +297,13 @@ aggregates them. Missing diagnostics are Category A at review.
   measurement, cite the closest precursor measurements and explain
   what is new.
 - **Reference citation count diagnostic.** A 50+ page AN with fewer than
-  15 references almost certainly has citation gaps — missing foundational
+  25 references almost certainly has citation gaps — missing foundational
   theory, missing prior measurements, missing methodology references, or
-  missing detector papers. This is not a hard floor, but the BibTeX
-  reviewer should flag it and investigate.
+  missing detector papers. Fewer than 20 references in a 50+ page AN is
+  Category B. This is guidance, not a hard floor, but experience shows
+  that a thorough AN cites foundational theory (~3-5), reference analyses
+  (~3-5), detector papers (~2-3), methodology references (~3-5), and
+  PDG/world-average sources (~3-5) — 15-25 is typical.
 - **Phase 1 data extraction (binding).** When reference analyses are
   identified in Phase 1, the executor must extract not just the systematic
   list but also the **published numerical results** (central values and

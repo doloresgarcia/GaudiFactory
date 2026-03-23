@@ -163,7 +163,7 @@ def fix_figure_placement(lines):
            'height=' not in line:
             lines[i] = line.replace(
                 '\\includegraphics[keepaspectratio',
-                '\\includegraphics[height=0.35\\textheight,keepaspectratio')
+                '\\includegraphics[height=0.35\\textheight,width=\\linewidth,keepaspectratio')
             count += 1
     # Redefine pandocbounded as identity (passthrough) — the height=
     # constraint above makes the scaling unnecessary.

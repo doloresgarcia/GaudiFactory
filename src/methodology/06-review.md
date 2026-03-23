@@ -68,6 +68,24 @@ Before concluding, the reviewer must answer:
 
 "No" or "non-empty" without justification → Category A.
 
+5. **Were limitations accepted without evidence of attempted
+   improvement?** For each documented limitation or downscoped
+   commitment, check: did the executor try to solve the problem before
+   accepting it? "Single generator" without evidence of attempting
+   PYTHIA 8 installation is Category B. "Uncalibrated variable" without
+   evidence of attempting data-driven calibration is Category B.
+   "Dominant systematic" without evidence of investigating decomposition
+   or alternative evaluation is Category B. The analysis should
+   demonstrate ambition — the best achievable result, not the minimum
+   passing result.
+6. **Does every result have context?** A number without comparison to
+   published values, theory predictions, or cross-checks is incomplete.
+   Check that every extracted parameter is compared to at least one
+   independent reference with a quantitative pull or chi2. Check that
+   the AN states the measurement's resolving power: "this precision can
+   distinguish X from Y at N-sigma." A measurement that is "consistent
+   with everything" is not informative.
+
 ### 6.3.1 Reviewer Investigation Subagents
 
 Reviewers may spawn focused investigation subagents when a concern
@@ -99,15 +117,133 @@ investigation was needed and what it found.
 
 ### 6.4 Review Focus by Phase
 
-| Phase | Focus |
-|-------|-------|
-| Strategy | Backgrounds complete? Systematic plan covers conventions? 2-3 reference analyses tabulated? Selection exploration plan identifies >=2 approaches to try in Phase 3 (or documents why alternatives are infeasible)? |
-| Exploration | Samples complete? Data quality OK? Distributions physical? |
-| Processing | Background model closes? Every cut motivated by plot? Cutflow monotonic? **Approach comparison:** Did the executor try >=2 selection approaches and report a quantitative comparison? If not, is the Phase 1 infeasibility exemption satisfied? Implementing a single approach without comparison is Category A unless the exemption applies. **MVA:** data/MC on classifier OK? Alternative architecture tried? **MVA input modelling check:** Did the executor check data/MC agreement on all classifier inputs before training? Any input with data/MC chi^2/ndf > 5 that enters the classifier without documented justification or calibration is Category A. A classifier that passes MC closure but fails on data due to a mismodelled input is a preventable error, not a discovery. |
-| 4a: Expected | Systematics complete vs. conventions + references? Signal injection/closure passes? Operating point stable (Category A if not)? MC coverage matches data periods — if MC covers fewer periods than data, is the extrapolation uncertainty reflected in per-period results? Validation target check (§6.8). **Phase 1 traceability:** every Phase 1 systematic commitment implemented or formally downscoped? |
-| 4b: 10% | Draft AN publication-quality? Results consistent with expected? Diagnostics clean? Validation target check (§6.8). |
-| 4c: Full data | Post-fit diagnostics healthy? Anomalies characterized? **GoF of primary configuration:** chi2/ndf < 3 (p > 0.01) — selecting the smallest-error configuration while ignoring poor GoF is Category A. **Systematics re-evaluated on full data** (not just transferred from MC)? If a systematic evaluated on data differs by >2x from MC, is the discrepancy discussed? **Viability check on ALL reported measurements** (primary and secondary) — any failing the 50%/30% criteria must be explicitly noted. **Fit pathologies:** any near-degeneracies, boundary hits, or flat likelihood directions investigated (not silently worked around)? **Validation target check:** every result compared to PDG/reference values — any pull > 3-sigma is Category A unless quantitatively explained (see §6.8). |
-| 5: Documentation | See §6.4.3. |
+Summary table (see subsections below for detailed checklists):
+
+| Phase | Primary Focus |
+|-------|---------------|
+| Strategy | Backgrounds, systematic plan, selection exploration, reference analyses |
+| Exploration | Samples, data quality, data archaeology findings |
+| Processing | Closure, approach comparison, cut motivation, MVA input modelling |
+| 4a: Expected | Systematic completeness + implementation audit, closure alarm bands, formula audit, Phase 1 traceability, published overlay |
+| 4b: 10% | Draft AN quality, consistency with expected, diagnostics, number consistency |
+| 4c: Full data | GoF, viability, competitiveness, fit pathologies, number consistency |
+| 5: Documentation | See §6.4.3 |
+
+#### Phase 1 (Strategy) review focus
+
+Backgrounds complete? Systematic plan covers conventions? 2-3 reference
+analyses tabulated? Selection exploration plan identifies >=2 approaches to
+try in Phase 3 (or documents why alternatives are infeasible)?
+
+#### Phase 2 (Exploration) review focus
+
+Samples complete? Data quality OK? Distributions physical? **Data
+archaeology** (archived data): were all weight/flag branches checked for
+non-triviality? Was pre-selection efficiency characterized? Are any
+strategy revision inputs flagged?
+
+#### Phase 3 (Processing) review focus
+
+Background model closes? Every cut motivated by plot? Cutflow monotonic?
+
+**Approach comparison:** Did the executor try >=2 selection approaches and
+report a quantitative comparison? If not, is the Phase 1 infeasibility
+exemption satisfied? Implementing a single approach without comparison is
+Category A unless the exemption applies.
+
+**MVA:** data/MC on classifier OK? Alternative architecture tried?
+
+**MVA input modelling check:** Did the executor check data/MC agreement on
+all classifier inputs before training? Any input with data/MC chi^2/ndf > 5
+that enters the classifier without documented justification or calibration
+is Category A. A classifier that passes MC closure but fails on data due to
+a mismodelled input is a preventable error, not a discovery.
+
+**Closure alarm bands:** chi2/ndf < 0.1 is Category A (suspicious);
+chi2/ndf > 3 or any pull > 5-sigma is Category A (failure).
+
+#### Phase 4a (Expected Results) review focus
+
+**Systematic completeness:** Every source from conventions + references
+implemented or formally downscoped? Signal injection/closure passes?
+Operating point stable (Category A if not)? MC coverage matches data periods?
+
+**Phase 1 traceability:** Every Phase 1 commitment implemented or formally
+downscoped. Cross-check COMMITMENTS.md if it exists.
+
+**Closure test alarm bands:** chi2/ndf < 0.1 is Category A (suspicious);
+chi2/ndf > 3 or any pull > 5-sigma is Category A (failure); `passes: false`
+in JSON while text claims acceptable is Category A (misrepresentation).
+
+**Systematic implementation audit:** For each systematic, verify the
+variation input actually changes, the impact is non-zero and has the
+expected sign, and the evaluation level is consistent (gen vs reco). A
+systematic with exactly zero impact in every bin without documented
+verification is Category A.
+
+**Formula audit:** For every formula that transforms measured quantities
+into physics results, verify dimensional consistency, limiting cases (100%
+purity → no correction), and cross-check against the published reference
+method. The first hypothesis for a closure failure is a formula bug, not a
+physics effect.
+
+**Generator comparison:** If the analysis committed to independent generator
+comparison and downscoped it, verify the downscope justification includes
+evidence of attempted installation/generation — "not attempted" is not a
+justification.
+
+**Published overlay:** If reference analyses published numerical results,
+verify they are overlaid on the measurement with chi2 — a measurement
+without comparison is incomplete.
+
+**Validation target check (§6.8).**
+
+#### Phase 4b (10% Validation) review focus
+
+Draft AN publication-quality? Results consistent with expected? Diagnostics
+clean? **Number consistency:** do AN text/table values match the latest
+machine-readable outputs? Any discrepancy > 1% relative is Category A
+(stale numbers). Validation target check (§6.8).
+
+#### Phase 4c (Full Data) review focus
+
+Post-fit diagnostics healthy? Anomalies characterized?
+
+**GoF of primary configuration:** chi2/ndf < 3 (p > 0.01) — selecting the
+smallest-error configuration while ignoring poor GoF is Category A.
+
+**Systematics re-evaluated on full data** (not just transferred from MC)?
+If a systematic evaluated on data differs by >2x from MC, is the
+discrepancy discussed?
+
+**Viability check on ALL reported measurements** (primary and secondary) —
+any failing the 50%/30% criteria must be explicitly noted.
+
+**Competitiveness check** for multi-observable analyses: any measurement
+with total uncertainty > 5× published precision flagged as non-competitive —
+is improvement feasible?
+
+**Fit pathologies:** any near-degeneracies, boundary hits, or flat likelihood
+directions investigated (not silently worked around)?
+
+**Validation target check:** every result compared to PDG/reference values —
+any pull > 3-sigma is Category A unless quantitatively explained (§6.8).
+
+**Number consistency:** do numerical values in the AN text/tables match the
+machine-readable JSON outputs? Any discrepancy > 1% relative is Category A
+(stale numbers).
+
+**Conditional escalation to 4-bot.** Phase 4c normally gets 1-bot review
+(methodology already human-approved at 4b). However, if ANY of the
+following occur, the orchestrator MUST escalate to a full 4-bot review:
+- Any result deviates from Phase 4a expected by > 2-sigma
+- Any new regression trigger fires (§6.7)
+- Any systematic evaluated on full data differs from MC by > 3×
+- GoF is pathological (chi2/ndf > 5 or chi2/ndf < 0.05)
+
+The most important result in the analysis deserves adequate review. The
+1-bot is sufficient when full data is consistent with expectations; it is
+insufficient when surprises appear.
 
 #### 6.4.1 Completeness Review (Phases 1 and 4a)
 
@@ -174,6 +310,17 @@ looks at the picture. The visual checklist:
     where it should fall, sharp features with no physics explanation.
   - Two distributions that should differ (e.g., signal vs background)
     appearing identical.
+  - **Insane uncertainties.** Error bars visibly larger than the
+    signal itself, or uncertainties that span the entire y-axis range.
+    Common cause: plotting derived quantities (normalized spectra,
+    EEC values, correction factors, ratios) without explicit `yerr`,
+    so mplhep auto-computes sqrt(bin content) — which is meaningless
+    for non-count values (e.g., sqrt(0.03) = 0.17 on an EEC value
+    known to 4%). Any figure where error bars are obviously
+    unphysical — relative uncertainties of 100%+ on quantities that
+    should be well-measured — is Category A. The reviewer must check
+    whether the error bar magnitude is consistent with the stated
+    statistical precision of the measurement.
   Any of these visible in a figure that the AN presents without
   comment is Category A. The reviewer must state what the figure
   shows and whether it is consistent with the accompanying text.
@@ -188,6 +335,31 @@ Reviewer reads the AN as a standalone document — as a journal referee would.
 Check: every systematic described with method + impact? Every comparison
 quantitative? Reproducible from the note alone? Conventions covered?
 
+**Physics narrative quality (Category B if weak).** The reviewer must assess
+not just completeness but whether the AN tells a convincing physics story —
+the "nodding physicist" test:
+
+- **Motivation:** Does the introduction clearly state why this measurement
+  matters beyond "it hasn't been done with this data"? Is there a physics
+  question being addressed?
+- **Logical flow:** Does each section follow from the previous? Selection
+  motivated by physics, corrections motivated by selection, systematics
+  motivated by corrections?
+- **Evidence of thoroughness:** Are cross-checks well-chosen and interpreted
+  (not random)? Do limitations show evidence of attempted improvement?
+- **Interpretation:** After results, does the AN explain what the numbers
+  mean physically? Not just "M_Z = 91.188 ± 0.004" but "consistent with
+  the world average, with precision limited by the 4-point energy scan"?
+- **Context:** Is the result placed in the broader landscape of existing
+  measurements? Does the reader understand what this measurement adds?
+- **Equations:** Does the AN contain equations defining the observable, the
+  correction procedure, the systematic evaluation, and the fit/extraction?
+  Zero equations is Category A — it means the reader cannot verify the
+  mathematics independently.
+- **Resolving power:** After the final result, does the AN state what
+  deviations the measurement can detect at 2-sigma? A measurement without
+  a resolving power statement is incomplete.
+
 **Tautological comparisons.** If the "comparison to theory/MC" is
 mathematically identical to the "comparison to expected" (e.g., the
 expected result was derived from the same MC that serves as the theory
@@ -196,6 +368,29 @@ consistency. Either (a) remove the redundant comparison, or (b) explicitly
 state the tautology and explain what independent information, if any, the
 comparison provides. Presenting tautological agreement as validation is
 Category A.
+
+**Tautology detection — concrete alarm criteria.** Reviewers must verify
+algebraic independence for every validation comparison. Specific alarms:
+- **chi2/ndf < 0.1 between corrected data and MC truth:** Almost
+  certainly tautological. If the correction was derived from that MC,
+  corrected_data = reco_data × (gen_truth / reco_MC), so
+  corrected_data / gen_truth ≈ reco_data / reco_MC — this is a
+  data/MC closure check, not an independent validation. Label it as
+  such; do not present chi2 = 0.19 as evidence of physics agreement.
+- **chi2 identically zero (not just small):** Diagnostic of algebraic
+  circularity. All three fitted parameters may be determined by input
+  assumptions, not data. Investigate immediately (see §3 Phase 4c
+  fit triviality gate).
+- **Per-subset fits returning identical central values:** If splitting
+  the data by year, run period, or subsample produces central values
+  that agree to 5+ decimal places, the fit is not using the data —
+  the result is determined by construction.
+- **True validation requires comparison to:** (a) an independent
+  dataset, (b) published results from a different analysis, (c) a
+  different method applied to the same data, or (d) theory predictions
+  not used in the analysis chain. Comparison to the MC used for
+  corrections is a closure check, not a validation. Both are useful
+  but they are different things, and the AN must not conflate them.
 
 ### 6.5 Iteration and Escalation
 
@@ -344,6 +539,26 @@ problems. Concrete triggers (must not be rationalized away):
    artifact → traces forward to identify affected phases →
    produces `REGRESSION_TICKET.md`
 4. Fix origin phase → re-review → re-run affected downstream phases
+
+**Upstream improvement cascade (applies to all fixes, not just regression).**
+When any component is improved — a better truth labeling method, a refined
+calibration, an updated selection — the executor must trace all downstream
+consumers of that component and re-evaluate them. This is not optional.
+Concretely:
+- Identify every script, figure, table, and AN section that used the old
+  component's output
+- Re-run each with the improved input, or document why the improvement
+  does not affect the downstream result (e.g., the BDT was rejected for
+  data/MC disagreement on inputs, which is independent of training labels)
+- Update the AN with the improved numbers/figures
+- If a downstream result changes materially (>1σ shift or qualitative
+  change in ranking/selection), the change propagates further downstream
+
+The cost of re-running a script is low; the cost of leaving stale results
+that contradict the improved methodology is high. A variable survey
+computed with approximate labels while the analysis uses high-purity
+neutrino labels is internally inconsistent — a referee will notice. When
+in doubt, re-run.
 
 **Timing:** Regression may be triggered at any phase gate or by the
 human gate. After human approval and entry into Phase 4c, new issues
