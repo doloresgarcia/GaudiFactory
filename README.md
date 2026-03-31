@@ -1,8 +1,25 @@
-# jfc
+# Just Furnish Context (JFC)
 
-LLM-driven HEP analysis framework. An orchestrator agent delegates work to
-subagents through sequential phases, producing a publication-quality analysis
-note.
+JFC is a proof-of-concept framework for autonomous high energy physics analysis.
+It integrates autonomous analysis agents with literature-based knowledge retrieval
+and multi-agent review, and is sufficient to plan, execute, and document a
+credible HEP analysis from a short physics prompt.
+
+The framework specification splits into three components:
+
+- **Methodology** — a structured encoding of the typical particle physics analysis
+  workflow, from planning and data exploration to statistical analysis and paper
+  drafting, including tiered multi-agent review at every stage.
+- **General agent behavior** — strict specifications for what each subagent
+  receives and outputs, context management across phases, and an experiment log
+  for human oversight and debugging.
+- **Domain-specific conventions** — HEP-specific tool use, visualization
+  standards, and analysis technique guidance that general models cannot reliably
+  infer on their own.
+
+For details see our paper:
+> *AI Agents Can Already Autonomously Perform Experimental High Energy Physics*  
+> E. A. Moreno, S. Bright-Thonney, A. Novak, D. Garcia, P. Harris
 
 ## Quick start
 
