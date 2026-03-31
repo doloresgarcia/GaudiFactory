@@ -1,8 +1,8 @@
-# slopspec
+# jfc
 
 LLM-driven HEP analysis framework. An orchestrator agent delegates work to
-subagents through five sequential phases, producing a publication-quality
-analysis note.
+subagents through sequential phases, producing a publication-quality analysis
+note.
 
 ## Quick start
 
@@ -110,11 +110,6 @@ agents must: state it → evaluate feasibility → estimate cost → decide
 (attempt if it affects the core result, document if minor or infeasible) →
 log the reasoning.
 
-**Isolation.** A PreToolUse hook checks every file access against
-`.analysis_config` (which lists `data_dir` and `allow=` paths). Symlinks
-within the analysis dir (like `conventions/`) are allowed via logical path
-checking.
-
 **Pixi everywhere.** Each analysis has its own `pixi.toml` with deps and
 tasks. `pixi run all` is the reproducibility contract. `pixi run build-pdf`
 compiles the analysis note via pandoc.
@@ -122,17 +117,17 @@ compiles the analysis note via pandoc.
 ## Directory structure
 
 ```
-slopspec/
-  src/                        Spec infrastructure
+jfc/
+  src/                        Framework infrastructure
     methodology/              Full spec: phases, review, orchestration, appendices
     conventions/              Domain knowledge (symlinked into analyses)
     templates/                CLAUDE.md and pixi.toml templates
     scaffold_analysis.py      Scaffolder
   analyses/                   Each is its own git repo
     <name>/
-      CLAUDE.md               ~570 lines — self-contained instructions
+      CLAUDE.md               Self-contained instructions for the orchestrator
       pixi.toml               Environment + task graph
-      .analysis_config        data_dir + allow paths for isolation hook
+      .analysis_config        data_dir + allow paths
       conventions/ → src/conventions/
       phase{1..5}_*/          Phase dirs with CLAUDE.md, outputs/, src/, review/, logs/
 ```
@@ -153,26 +148,13 @@ templates in `src/templates/`:
 4. **`.analysis_config`** is created with `analysis_type` set. Edit it to
    add `data_dir=` pointing to the input data.
 5. **Git repo** is initialized in the analysis directory.
-
 6. **Methodology symlink** — `methodology/` → `../../src/methodology/` is
-   created so agents can consult the full methodology spec for detailed
-   protocol definitions.
+   created so agents can consult the full methodology spec.
 7. **Agents symlink** — `agents/` → `../../src/agents/` is created so the
    orchestrator can read agent role definitions.
 
 After scaffolding, the analysis directory is self-contained: its CLAUDE.md
-files carry the essential instructions for execution. The full methodology
-spec (`src/methodology/`) is also available via symlink for agents that need
-detailed protocol definitions (review criteria, blinding protocol, etc.).
-
-**How templates map to methodology:** Each template distills the relevant
-methodology sections into execution-ready instructions:
-- `root_claude.md` — §3 (phases), §6 (review, summary), §7 (tools/scaling), §12 (feasibility)
-- `phase1_claude.md` — §3 Phase 1, §6.4 review focus for strategy
-- `phase2_claude.md` — §3 Phase 2, §5 (artifact format)
-- `phase3_claude.md` — §3 Phase 3, §6.4 review focus for selection
-- `phase4_claude.md` — §3 Phase 4, §4 (blinding), §6.4 review focus for inference
-- `phase5_claude.md` — §3 Phase 5, §6.4.3 (documentation review), Appendix D (plotting)
+files carry the essential instructions for execution.
 
 ## Requirements
 
