@@ -1,0 +1,3 @@
+[submodule "algorithms/v0_finder"]
+	path = algorithms/v0_finder
+	url = git@github.com:doloresgarcia/v0-finder.git
