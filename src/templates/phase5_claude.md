@@ -96,8 +96,11 @@ noting any deviations from the original design and why.
 
 ### 4. Algorithm report (PDF)
 
-Write `phase5_documentation/outputs/REPORT.md` — a single pandoc-compatible
-markdown document combining all phases into a readable report:
+Write `phase5_documentation/outputs/REPORT.md` — a self-contained technical
+report that a physicist unfamiliar with the code could read and understand.
+It must contain **written prose**, not just figures and tables.
+
+**Required sections and content:**
 
 ```markdown
 ---
@@ -106,29 +109,74 @@ date: "<today>"
 ---
 
 # Overview
-<one paragraph from README>
 
-# Design
-<content from phase1_design/outputs/DESIGN.md>
+Two to three paragraphs explaining:
+- What physics problem this algorithm solves
+- What approach it takes (algorithm pattern, data flow)
+- What a user should expect as output
 
-# Implementation
-<summary of source files produced, key design decisions in the code>
+# Algorithm Design
 
-# Build & Run
-<content from phase3_build/outputs/BUILD_RUN.md>
+Describe the chosen Gaudi pattern and why it was selected over alternatives.
+Explain the data products: what collections are read, what is produced, and
+what each configurable property controls. Include the data product table from
+DESIGN.md. Explain any non-trivial implementation choices (e.g. why ITHistSvc
+is used, how the DCA is computed, how candidate selection works).
 
 # Validation
-<content from phase4_validation/outputs/VALIDATION.md>
 
-## Figures
+## Test Setup
 
-![Caption](../phase4_validation/outputs/figures/xxx.png)
+Explain what test data was used (e.g. synthetic generator, real events),
+how many events were processed, and what the expected outputs are.
 
-(include all figures from Phase 4)
+## Results
+
+For each figure: embed the figure AND write 2–4 sentences explaining what
+it shows, what the expected behaviour is, and whether the algorithm is
+performing correctly.
+
+Example:
+> Figure 1 shows the invariant mass spectrum of K0s candidates reconstructed
+> by the V0Finder algorithm running on 1000 synthetic events. The peak at
+> 497.6 MeV is consistent with the PDG K0s mass, confirming that the
+> invariant mass calculation and candidate selection are working correctly.
+> The width of the peak reflects the momentum resolution of the test producer.
+
+Repeat for every figure from Phase 4. Do not include a figure without
+an explanatory paragraph.
+
+## Cross-checks
+
+Summarise the numeric cross-checks from VALIDATION.md with brief
+interpretation: are the results as expected? Are there any caveats?
 
 # Usage
-<build + run instructions from README>
+
+## Build
+
+\`\`\`bash
+source /cvmfs/sw.hsf.org/key4hep/setup.sh
+mkdir build && cd build
+cmake -G Ninja ..
+ninja install
+\`\`\`
+
+## Run
+
+\`\`\`bash
+k4run options/myAlg.py
+\`\`\`
+
+## Configuration
+
+Table of all properties with their defaults and a sentence on when to
+change each one.
 ```
+
+**Writing standard:** every figure must have a paragraph. "See figure above"
+is not acceptable. The explanation must state what the figure shows, what
+the expected result is, and whether the algorithm passes.
 
 Then compile to PDF:
 
@@ -157,13 +205,17 @@ fall back to `--pdf-engine=pdflatex`.
 - [ ] README covers: purpose, pattern, collections, properties, build, run, example output
 - [ ] README references at least one figure from Phase 4
 - [ ] No "TODO" left in comments
-- [ ] `REPORT.md` includes all Phase 4 figures
+- [ ] `REPORT.md` includes all Phase 4 figures, each with an explanatory paragraph
+- [ ] No figure appears without at least 2 sentences of interpretation
 - [ ] `REPORT.pdf` compiles without errors and is non-empty
+- [ ] Report reads coherently as a standalone document (no orphan figures, no unexplained jargon)
 
 ## Review
 
 2-bot: critical + constructive reviewers.
 - Critical: checks completeness — every property documented, all
-  collections in README table, PDF compiled and non-empty.
-- Constructive: clarity and usability — would a new developer understand
-  how to use this algorithm from the PDF report alone?
+  collections in README table, PDF compiled and non-empty, every figure
+  has an explanatory paragraph (figures without prose are Category A).
+- Constructive: clarity — would a physicist unfamiliar with the code
+  understand what the algorithm does and whether it works correctly from
+  reading the PDF alone?
