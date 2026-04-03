@@ -62,7 +62,7 @@ Every phase must produce its artifact before the next phase begins.
 | 2 | Source files: `src/components/*.{h,cpp}`, `options/*.py`, `CMakeLists.txt` | 1-bot (critical) |
 | 3 | `phase3_build/outputs/BUILD_RUN.md` (clean build + run log) | 1-bot (critical) |
 | 4 | `phase4_validation/outputs/VALIDATION.md` + figures | 1-bot (critical + plot validator) |
-| 5 | Updated `README.md` + annotated header | 2-bot (critical + constructive) |
+| 5 | Updated `README.md` + annotated header + `REPORT.pdf` | 2-bot (critical + constructive) |
 
 **Phase 3 is a hard gate.** If the build or run fails, fix it before
 advancing — no exceptions.

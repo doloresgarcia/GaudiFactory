@@ -198,10 +198,18 @@ runtime log for any non-clean output).
 - Update `DESIGN.md` to mark all design decisions as implemented or
   deviated from (with justification for deviations).
 
-**Artifact:** Updated `README.md`, annotated `src/components/MyAlg.h`.
+**Artifact:** Updated `README.md`, annotated `src/components/MyAlg.h`,
+`phase5_documentation/outputs/REPORT.md`, and compiled `REPORT.pdf`.
+
+Compile with:
+```bash
+pixi run build-report
+```
+
+`REPORT.pdf` must exist and be non-empty before review.
 
 **Review:** 2-bot (critical + constructive reviewers — completeness and
-clarity of documentation).
+clarity of documentation; PDF must compile cleanly).
 
 ---
 

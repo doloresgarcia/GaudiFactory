@@ -4,6 +4,7 @@
 
 **Goal:** Self-contained, usable documentation so another developer can
 understand, build, and use the algorithm without reading the source.
+Deliverables: annotated header, README, and a compiled PDF report.
 
 ## Tasks
 
@@ -93,6 +94,62 @@ Brief description of what the plot shows.
 Add a final section "Implementation notes" to `phase1_design/outputs/DESIGN.md`
 noting any deviations from the original design and why.
 
+### 4. Algorithm report (PDF)
+
+Write `phase5_documentation/outputs/REPORT.md` — a single pandoc-compatible
+markdown document combining all phases into a readable report:
+
+```markdown
+---
+title: "MyAlg — Algorithm Report"
+date: "<today>"
+---
+
+# Overview
+<one paragraph from README>
+
+# Design
+<content from phase1_design/outputs/DESIGN.md>
+
+# Implementation
+<summary of source files produced, key design decisions in the code>
+
+# Build & Run
+<content from phase3_build/outputs/BUILD_RUN.md>
+
+# Validation
+<content from phase4_validation/outputs/VALIDATION.md>
+
+## Figures
+
+![Caption](../phase4_validation/outputs/figures/xxx.png)
+
+(include all figures from Phase 4)
+
+# Usage
+<build + run instructions from README>
+```
+
+Then compile to PDF:
+
+```bash
+pixi run build-report
+```
+
+This runs:
+```bash
+cd phase5_documentation/outputs && \
+pandoc REPORT.md -o REPORT.pdf \
+  --pdf-engine=tectonic \
+  --number-sections \
+  --toc \
+  -V geometry:margin=2.5cm \
+  -V fontsize=11pt
+```
+
+Verify `REPORT.pdf` exists and is non-empty. If tectonic is not available,
+fall back to `--pdf-engine=pdflatex`.
+
 ## Self-check before review
 
 - [ ] Every property has an inline doxygen comment
@@ -100,11 +157,13 @@ noting any deviations from the original design and why.
 - [ ] README covers: purpose, pattern, collections, properties, build, run, example output
 - [ ] README references at least one figure from Phase 4
 - [ ] No "TODO" left in comments
+- [ ] `REPORT.md` includes all Phase 4 figures
+- [ ] `REPORT.pdf` compiles without errors and is non-empty
 
 ## Review
 
 2-bot: critical + constructive reviewers.
 - Critical: checks completeness — every property documented, all
-  collections in README table, build instructions tested.
+  collections in README table, PDF compiled and non-empty.
 - Constructive: clarity and usability — would a new developer understand
-  how to use this algorithm from the README alone?
+  how to use this algorithm from the PDF report alone?
