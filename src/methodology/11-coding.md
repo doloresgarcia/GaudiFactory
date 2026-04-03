@@ -1,141 +1,86 @@
-## 11. Version Control and Coding Practices
+## 11. Coding Practices
 
 ### 11.1 Git
 
-**Conventional commits:** `<type>(phase): <description>`. Types: feat, fix,
-data, plot, doc, refactor, test, chore.
+**Conventional commits:** `<type>(phase): <description>`.
+Types: `feat`, `fix`, `build`, `test`, `docs`, `refactor`, `chore`.
 
-**Commit after every meaningful step.** Commits are checkpoints — if the
-agent crashes, resume from the last commit.
+Examples:
+```
+feat(phase2): implement MCParticle energy filter transformer
+fix(phase3): add ROOT::Hist to LINK_LIBRARIES
+docs(phase5): add doxygen comments to MyAlg header
+```
 
-**Branch per phase** (`phase1_strategy`, etc.). Merge to main after review
-passes.
+**Commit after every phase.** Commits are checkpoints — if an agent session
+crashes, resume from the last commit.
 
-### 11.2 Code Quality
+### 11.2 C++ Code Quality
 
-- **KISS/YAGNI.** Scripts, not frameworks. No CLIs, config systems, plugins.
-- **`__file__`-relative output paths.** Scripts must resolve output paths
-  relative to the script file, not the current working directory:
+**Gaudi idioms (mandatory):**
+- Use `Gaudi::Property<T>` for all configurable parameters
+- Use `info()` / `debug()` / `warning()` / `error()` — never `std::cout`
+- Use PODIO/EDM4hep collection APIs — never raw `new`/`delete` for event data
+- Override methods must have `override` keyword
+- Destructors should be `= default` unless non-trivial cleanup is needed
+
+**Modern C++ practices:**
+- Use `const auto&` for loop variables over collections
+- Use `auto` for iterator types
+- Prefer range-based `for` loops over index loops
+- Use `nullptr` not `NULL` or `0` for pointers
+
+**What not to do:**
+```cpp
+// BAD: std::cout
+std::cout << "Processing event" << std::endl;
+
+// GOOD: Gaudi logging
+info() << "Processing event " << eventNumber << endmsg;
+
+// BAD: raw memory
+MCParticleCollection* output = new MCParticleCollection();
+
+// GOOD: PODIO API
+auto output = edm4hep::MCParticleCollection();
+```
+
+### 11.3 CMake Quality
+
+- Always use `gaudi_add_module` for algorithm plugins (not `add_library`)
+- List all required packages in `LINK_LIBRARIES` — missing entries cause
+  linker errors at build time, not compile time
+- Use `file(GLOB _sources src/components/*.cpp)` to pick up all components
+- Install both the library target and the `options/` directory
+
+### 11.4 Python Steering Files
+
+- Use keyword arguments for `ApplicationMgr` — easier to read and maintain
+- Configure `THistSvc.Output` when booking histograms:
   ```python
-  HERE = Path(__file__).resolve().parent
-  OUT = HERE.parent / "outputs"
-  FIG = OUT / "figures"
+  histsvc = THistSvc()
+  histsvc.Output = ["output DATAFILE='output.root' OPT='RECREATE'"]
   ```
-  This ensures `pixi run py path/to/script.py` produces the same output
-  regardless of the shell's CWD. CWD-relative paths like
-  `Path("phase4_inference/outputs/figures")` break when the script is
-  invoked from a different directory.
-- **Columnar.** Arrays + masks, not event loops.
-- **Logging, not printing.** `logging` + `rich.logging.RichHandler`. Ruff
-  `T201` enforces no `print()`. Standard setup:
+- Set `OutputLevel` explicitly (INFO for normal use, DEBUG for development)
+- Name algorithm instances meaningfully:
+  ```python
+  alg = MyProducer("MyProducer")  # not MyProducer("a1")
+  ```
+
+### 11.5 Logging in Phase 4 Python Scripts
+
+No bare `print()` in validation scripts:
 
 ```python
 import logging
 from rich.logging import RichHandler
-logging.basicConfig(level=logging.INFO, format="%(message)s",
-                    handlers=[RichHandler(rich_tracebacks=True)])
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    handlers=[RichHandler(rich_tracebacks=True)],
+)
 log = logging.getLogger(__name__)
+
+log.info("Found %d entries in histogram", n)
 ```
-
-- **Ruff + pre-commit** for formatting and linting on every commit.
-
-### 11.3 Testing
-
-Focus on **structural bugs** (wrong branch, wrong weight, inverted cut) —
-not unit test coverage. These are catastrophic because they require re-running
-everything and produce plausible-looking wrong numbers.
-
-**Always:** Smoke test per phase (~100 events, no crashes). Integration test
-(output files exist, correct structure, no NaN).
-
-**Check:** Variable names → right quantities. Cut inversions → correct
-complement. Object efficiencies → consistent with published. Cutflow →
-monotonically decreasing. Systematic variations → expected direction.
-**Parallel outputs not identical.** If a parallel processing step
-produces N independent results (e.g., per-file histograms, per-year
-densities), verify they are not bit-for-bit identical. Identical
-outputs from independent inputs indicate a fork/threading bug.
-
-### 11.4 Separation of Analysis and Plotting
-
-**Analysis code and plotting code must be independent.** Analysis scripts
-produce machine-readable artifacts (JSON, NPZ, CSV) — histograms, yields,
-fit results, systematic shifts. Plotting scripts read those artifacts and
-produce figures. The two must never be entangled in the same script.
-
-This separation provides three benefits:
-1. **Plots are rerunnable.** Tweaking a legend, axis range, or color does
-   not require re-running the analysis chain. `pixi run plot-X` regenerates
-   the figure in seconds from the saved artifact.
-2. **Artifacts are the handoff.** Downstream phases and the AN read
-   artifacts, not figures. If a plotting script crashes, no data is lost.
-3. **Review is cleaner.** Code reviewers can audit the analysis logic
-   without wading through matplotlib boilerplate, and vice versa.
-
-**In practice:**
-- Analysis scripts write to `outputs/` (JSON, NPZ): yields, efficiencies,
-  fit parameters, systematic shifts, histograms.
-- Plotting scripts read from `outputs/` and write to `outputs/figures/`
-  (PDF, PNG).
-- Each plotting script has its own pixi task (e.g., `p3-plots`,
-  `p4a-plots`). The `all` task runs analysis first, then plots.
-- Plotting scripts must NOT call `uproot.open()` or process ROOT files
-  directly. If a plot needs data not in the artifacts, the analysis script
-  must be extended to produce it — do not bypass the artifact layer.
-
-**Exception:** Quick data/MC overlay plots during Phase 2 exploration may
-read ROOT files directly (exploration is inherently interactive). From
-Phase 3 onward, the separation is mandatory.
-
-### 11.5 Task Graph
-
-**Every script → pixi task.** `pixi run all` reproduces the full analysis
-from raw data. Task names are human-readable. Scripts are idempotent (fixed
-seeds, fixed output paths).
-
-The `all` task is the reproducibility backbone. It must:
-- Run every script in the correct order (not just the final step)
-- Be idempotent (running twice produces the same output)
-- Include systematic variation reruns, not just the nominal
-- Produce all figures, tables, and machine-readable outputs
-- Complete without manual intervention
-
-Document the `all` task's execution graph in the AN reproduction
-contract appendix (see `analysis-note.md` → Reproduction contract).
-The reproduction contract makes the `all` task legible to a new user
-who needs to understand what it does and why, not just run it.
-
-Split scripts exceeding ~5 min into stages with intermediate outputs.
-Update `pixi.toml` whenever scripts are added or removed.
-
-### 11.6 Debug Code and Diagnostic Outputs
-
-Debug scripts are prefixed with `debug_` or placed in `scratch/`. They are
-never included in the `all` task and are not part of the reproducibility
-chain.
-
-**But debug outputs are valuable — preserve them in logs.** Debug plots,
-diagnostic tables, intermediate sanity checks, and exploratory figures
-should NOT be deleted or "cleaned up before review." They should be saved
-to `logs/` or `outputs/debug/` and referenced in the experiment log. A
-reviewer or future analyst tracing a decision ("why did you choose this
-binning?") should be able to find the debug plot that motivated it.
-
-What goes where:
-- **`outputs/`** — production artifacts (JSON, NPZ). These enter the
-  analysis chain and the AN.
-- **`outputs/figures/`** — publication-quality figures for the AN.
-- **`outputs/debug/`** — diagnostic figures and intermediate outputs.
-  Not in the AN, but preserved and referenced in the experiment log.
-  Examples: alternative binning comparisons, failed fit attempts,
-  variable correlations checked during exploration, quick-and-dirty
-  plots used to make decisions.
-- **`logs/`** — session logs, experiment log entries. The narrative
-  record of what was tried and why.
-
-The rule is: anything that informed a decision should be traceable.
-"I chose 8 bins because the 12-bin version had empty bins" is only
-useful if the 12-bin plot is in `outputs/debug/` and referenced in the
-experiment log.
-
----

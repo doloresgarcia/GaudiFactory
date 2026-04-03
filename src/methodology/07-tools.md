@@ -1,106 +1,72 @@
 ## 7. Tools and Paradigms
 
-### 7.1 Preferred Tools
+### 7.1 Core Tools
 
 | Capability | Tool | Notes |
 |-----------|------|-------|
-| ROOT file I/O | uproot | Pythonic, no ROOT install. `uproot.open()` to explore, `arrays()` to load. |
-| Arrays | awkward-array, numpy | Columnar — no event loops. awkward for jagged, numpy for flat. |
-| Histogramming | hist, boost-histogram | ND axes for systematic variations — store as axis dimensions, not separate histograms. |
-| Statistical model | pyhf, cabinetry | HistFactory JSON workspaces. cabinetry for ranking/pulls. |
-| Unbinned fits | zfit | When binned HistFactory is insufficient. |
-| MVA | xgboost, scikit-learn | BDTs via xgboost. sklearn for preprocessing, metrics. |
-| Plotting | matplotlib, mplhep | See `appendix-plotting.md` for all figure standards. |
-| Columnar model | coffea | `NanoEvents` for schema-driven access, `PackedSelection` for cutflows. Optional. |
-| Jet clustering | fastjet | e+e-: Durham (`ee_genkt_algorithm`, p=1). pp: anti-kt. |
-| b-tagging | tiered (see below) | Agent builds taggers during Phase 2. |
-| Logging | logging + rich | No bare `print()`. See §11. |
-| Documents | pandoc (>=3.0) + pdflatex | Markdown → PDF. Never use LLM for conversion. |
-| Dependencies | pixi | `pixi.toml` is single source of truth for environment. |
-| Experiment knowledge | RAG (SciTreeRAG) | See §2.2. |
+| C++ framework | Gaudi / k4FWCore | See `conventions/gaudi_algorithm.md` |
+| Event data model | EDM4hep | Header: `edm4hep/<Type>Collection.h` |
+| Persistent I/O | PODIO + IOSvc | Configured in Python steering file |
+| ROOT histograms | ROOT TH1/TH2 via `ITHistSvc` | Only for `Gaudi::Algorithm` pattern |
+| Algorithm runner | `k4run` or `gaudirun.py` | `k4run options/myAlg.py` |
+| Build system | CMake + Ninja | `cmake -G Ninja .. && ninja install` |
+| Environment | Key4hep cvmfs stack | `source /cvmfs/sw.hsf.org/key4hep/setup.sh` |
+| Plot reading | `uproot` | Read ROOT output files for validation plots |
+| Plotting | `matplotlib` + `mplhep` | For diagnostic figures in Phase 4 |
+| Logging (Python) | `logging` + `rich` | No bare `print()` |
 
-**Tiered tagging:** (1) Cut-based as cross-check — always exists.
-(2) BDT as default primary. (3) NN only if input space justifies it.
+### 7.2 Environment Setup
 
-### 7.2 Paradigms
+Always source the Key4hep environment before building or running:
 
-- **Prototype on a slice (~1000 events), then scale.** Full dataset is for
-  production, not debugging.
-- **Read the API before working around it.** Check docstrings/docs before
-  writing workarounds. Add idioms to `appendix-heuristics.md`.
-- **Columnar analysis.** Arrays + boolean masks, not event loops.
-- **Immutable cuts.** Named boolean masks, never modify arrays.
-- **Workspace as artifact.** pyhf JSON written to disk, committed.
-- **Fit reproducibility.** Each fit has a pixi task. Human can re-run.
-- **Plots are evidence.** Every claim has a figure or table.
-- **Pin random seeds.** Record software versions.
-- **MC normalization:** weight = sigma * L / sum(w_generated) (algebraic sum for NLO).
-- **Data-driven normalization.** When MC normalization does not match data
-  after proper cross-section/luminosity scaling and calibrations, include
-  control regions in the fit model with floating normalization parameters.
-  The fit constrains overall yields from data, absorbing residual
-  normalization mismatches that calibrations cannot resolve. This is
-  standard for searches (CR→SR transfer factors) and equally applicable
-  to measurements (sideband or anti-signal regions constraining background
-  normalizations). Do not manually scale MC to match data — let the fit
-  do it with a constrained or unconstrained normalization parameter.
-- **Systematic naming:** `{source}Up` / `{source}Down` (pyhf/cabinetry convention).
-- **Binning:** No bin with < ~5 expected events. Variable binning when motivated.
-
-### 7.3 Scale-Out
-
-Estimate before running: input size, per-event cost on 1000-event slice,
-peak memory.
-
-| Estimated time | Mode |
-|----------------|------|
-| < 2 min | Single-core local |
-| 2–15 min | `ProcessPoolExecutor` or multicore |
-| > 15 min | SLURM: `sbatch --wait` (single) or `--array` (per-file) |
-
-Prefer the simplest pattern that works. See `appendix-automation.md` for
-SLURM job templates. Never wait >15 min on a login node when SLURM exists.
-
-### 7.4 Multiprocessing Safety
-
-When using `ProcessPoolExecutor` with libraries that use OpenMP or other
-threading (fastjet, ROOT, numpy with MKL), always set the start method
-to `forkserver` or `spawn`:
-
-```python
-import multiprocessing
-multiprocessing.set_start_method("forkserver", force=True)
+```bash
+source /cvmfs/sw.hsf.org/key4hep/setup.sh
 ```
 
-The default `fork` method copies the parent process's thread state into
-child processes. Libraries with active thread pools (OpenMP in fastjet,
-Intel MKL in numpy) can produce silently wrong results — child processes
-may return cached data from the parent instead of computing fresh
-results. This bug is insidious because the output looks plausible
-(correct types, reasonable magnitudes) but is numerically wrong.
+This provides: `Gaudi`, `k4FWCore`, `EDM4hep`, `PODIO`, `ROOT`, `k4run`.
 
-**Validation rule:** After any parallel processing step that produces N
-independent outputs, verify they are not trivially identical. If N
-inputs produce N bit-for-bit identical outputs, this is a
-multiprocessing bug, not a physics result.
+If cvmfs is not available, a local Key4hep install or Docker image provides
+the same stack. See https://key4hep.github.io/key4hep-doc/ for alternatives.
 
-### 7.5 Calibration Verification
+### 7.3 Paradigms
 
-**Every calibration must have a before/after comparison.** When applying
-any correction to a quantity (beam spot correction to d0, energy scale
-to jet pT, tracking efficiency scale factor, MC reweighting), produce
-a plot showing the distribution before and after the correction. The
-correction must visibly improve the relevant distribution — narrower
-residuals, better data/MC agreement, or reduced bias. If a correction
-*widens* a distribution or *worsens* data/MC agreement, the correction
-is wrong (e.g., the quantity is already corrected at reconstruction
-level). Do not apply corrections without verifying their effect.
+- **Read the conventions first.** `conventions/gaudi_algorithm.md` has the
+  authoritative pattern for every algorithm type. Do not invent alternatives.
+- **Compile early.** After writing the skeleton (header + DECLARE_COMPONENT),
+  attempt a build before filling in logic. Catch structural errors early.
+- **One algorithm per file.** Each `.h`/`.cpp` pair contains exactly one
+  algorithm class.
+- **Properties for everything user-configurable.** Collection names,
+  thresholds, flags — all as `Gaudi::Property<T>`. Hard-coded values that
+  should be configurable are Category B at review.
+- **Plots are evidence.** Every claim about algorithm behavior has a figure
+  or table in `VALIDATION.md`.
+- **Pin tool versions.** Record the Key4hep stack version used in `BUILD_RUN.md`
+  (`echo $KEY4HEP_STACK` or `cat $KEY4HEP_STACK`).
 
-This is particularly important for archival data where the processing
-chain is not fully documented. Track parameters (d0, z0) may already
-be corrected for the beam spot or primary vertex position at the
-reconstruction stage. Applying the correction again (double-correction)
-produces unphysical results. The verification plot catches this
-immediately.
+### 7.4 Reading Output Files (Phase 4)
 
----
+To read a ROOT file produced by the algorithm:
+
+```python
+import uproot
+import matplotlib.pyplot as plt
+import mplhep as mh
+
+mh.style.use("CMS")
+
+with uproot.open("output.root") as f:
+    print(f.keys())           # explore contents
+    hist = f["energy"]        # TH1 histogram
+    values, edges = hist.to_numpy()
+
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.stairs(values, edges, fill=True)
+ax.set_xlabel("Energy [GeV]")
+ax.set_ylabel("Entries")
+fig.savefig("outputs/figures/energy.png", bbox_inches="tight", dpi=150)
+plt.close()
+```
+
+For EDM4hep collections written via `IOSvc`, use podio's Python bindings
+or `uproot` with the PODIO ROOT layout.

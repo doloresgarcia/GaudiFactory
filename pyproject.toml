@@ -1,7 +1,7 @@
 [project]
-name = "slopspec"
+name = "gaudifactory"
 version = "0.1.0"
-description = "slopspec — LLM-driven HEP analysis specification."
+description = "GaudiFactory — generate Gaudi/k4FWCore algorithms from a prompt."
 requires-python = ">=3.11"
 
 [tool.pixi.workspace]

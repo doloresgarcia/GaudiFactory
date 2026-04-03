@@ -1,61 +1,87 @@
-## Appendix C: Tool Heuristics (Agent-Maintained)
+# Appendix: Tool Heuristics (Agent-Maintained)
 
-This appendix is a living document. On first encounter with a tool, the agent
-queries the tool's current documentation, extracts best practices and common
-pitfalls, and records a concise summary here. Subsequent agents (or sessions)
-consult this appendix first and only re-query upstream docs if something is
-out of date or missing.
-
-**Purpose:** Avoid repeated full-doc lookups. Each entry captures what the agent
-learned so the next session starts with working knowledge rather than reading
-the full API surface from scratch. This is analogous to the blessed snippets
-library but for tool-level idioms and gotchas.
-
-**Format:** One subsection per tool. Each entry should include:
-- Version tested against
-- Key idioms and recommended patterns
-- Common pitfalls and how to avoid them
-- Performance notes if relevant
+This appendix is a living document. When an agent encounters a non-obvious
+Gaudi/k4FWCore/EDM4hep pattern, it records the working solution here so
+subsequent sessions start with working knowledge rather than rediscovering
+the same pitfalls.
 
 **Maintenance rules:**
-- The agent **must** check this appendix before querying external docs for any
-  tool listed in Section 7.1.
-- If an entry exists and is sufficient, use it — do not re-query.
-- If an entry is missing or incomplete, query the current docs and use the
-  result. **Do not modify this file during analysis execution** — it lives
-  in the spec directory. Instead, note the missing/outdated entry in the
-  experiment log. Updates to this appendix happen after the analysis completes,
-  following the same process as `conventions/` updates.
+- Check this appendix before querying external docs for a listed tool.
+- If an entry exists and is sufficient, use it without re-querying.
+- If an entry is missing or incomplete, query current docs, use the result,
+  and add a note to `experiment_log.md` flagging the gap (update the
+  appendix after the phase completes).
 - Keep entries concise — heuristics and gotchas, not full API references.
 
-<!-- Agent: populate entries below as you encounter each tool. -->
+---
 
-### mplhep
+## k4FWCore Functional Patterns
 
-**Version:** 1.1.0+
+*(Entries added as agents encounter patterns)*
 
-**Key idioms:**
-- Use `mplhep.style.use("CMS")` for the default style sheet. This sets fonts,
-  tick sizes, and figure aesthetics. It does NOT add experiment labels.
-- Experiment labels are added via `mplhep.label.exp_label(...)` — the generic
-  function that works for any experiment. See Appendix D for the full template
-  and parameter reference (`exp`, `text`, `llabel`, `rlabel`, `data`, `com`,
-  `lumi`, etc.).
-- **Do NOT** hack around unwanted label text by patching rcParams or removing
-  matplotlib text objects after the fact. The `exp_label` function exposes all
-  the controls you need as kwargs. Read `help(mplhep.label.exp_label)`.
-- For ALEPH analyses using CMS style: call
-  `mplhep.label.exp_label(exp='ALEPH', data=True, rlabel=r'$\sqrt{s} = 91.2$ GeV')`
-  to get clean labeling without CMS branding.
+**Common pitfall:** Functional algorithm template parameters must match the
+`operator()` signature exactly. A `Producer<edm4hep::MCParticleCollection()>`
+must have `operator()() const` returning `edm4hep::MCParticleCollection` by
+value — returning a pointer or reference will not compile.
 
-**Common pitfalls:**
-- Using experiment-specific functions (e.g., `mplhep.cms.label`) instead of
-  the generic `mplhep.label.exp_label`. The generic function works for any
-  experiment; experiment-specific functions add unwanted branding.
-- Forgetting `rlabel=''` and getting a default "(13 TeV)" watermark from CMS
-  style. Always set `rlabel` explicitly.
-- When `data=False`, mplhep auto-adds "Simulation" as text. Setting `llabel`
-  on top of this causes stacking. Either use `data=False` alone, or set
-  `data=True, llabel="MC Simulation"` to fully control the left side.
+**Constructor key syntax:** The `KeyValues` constructor argument sets both
+the default collection name and the property name used in the steering file.
+```cpp
+// Sets default to "MCParticles"; overridable via MyProducer.MCParticles = "..."
+: k4FWCore::Producer(name, svcLoc, KeyValues("MCParticles", "MCParticles"))
+```
 
-**Performance:** No concerns — plotting is never the bottleneck.
+---
+
+## EDM4hep
+
+*(Entries added as agents encounter patterns)*
+
+**MCParticle creation:**
+```cpp
+auto particles = edm4hep::MCParticleCollection();
+auto p = particles.create();
+p.setMass(0.139f);   // GeV
+p.setPDG(211);       // pi+
+// momentum is a Vector3f: {px, py, pz}
+p.setMomentum({0.f, 0.f, 1.f});
+```
+
+**Reading a collection in Consumer:**
+```cpp
+for (const auto& p : particles) {
+  float e = p.getEnergy();
+  auto mom = p.getMomentum();  // edm4hep::Vector3f
+  float pt = std::sqrt(mom.x*mom.x + mom.y*mom.y);
+}
+```
+
+---
+
+## CMake / Gaudi Build
+
+*(Entries added as agents encounter patterns)*
+
+**Missing `GaudiPluginService` linker error:** Add `Gaudi::GaudiPluginService`
+to `LINK_LIBRARIES`. This provides the plugin registration infrastructure
+that `DECLARE_COMPONENT` depends on. Required whenever `DECLARE_COMPONENT`
+is used.
+
+**`gaudi_add_module` vs `gaudi_add_library`:** Use `gaudi_add_module` for
+algorithm plugins (loaded at runtime). Use `gaudi_add_library` only for
+shared utility libraries that other targets link against.
+
+---
+
+## ROOT / ITHistSvc
+
+*(Entries added as agents encounter patterns)*
+
+**Histogram registration path:** Must start with `/` and match the
+`THistSvc.Output` stream name. For `Output = ["out DATAFILE='x.root' ..."]`,
+register histograms under `/out/`:
+```cpp
+m_histSvc->regHist("/out/energy", m_hEnergy);
+```
+Mismatched paths produce a silent registration failure — the histogram
+exists in memory but is not written to file.

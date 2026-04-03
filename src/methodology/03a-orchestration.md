@@ -6,80 +6,49 @@
 
 The orchestrator is a **thin coordinator** — it spawns subagents, reads
 summaries, makes phase-transition decisions, and commits. It never writes
-analysis code, produces figures, or debugs. Subagent contexts are discarded
-after each phase; the orchestrator stays small.
+C++ code, builds, or debugs. Subagent contexts are discarded after each
+phase; the orchestrator stays small.
 
 **The orchestrator loop** is EXECUTE → REVIEW → CHECK → COMMIT → ADVANCE.
-The canonical loop (with human gates, anti-patterns) lives in
-`templates/root_claude.md` (auto-loaded at runtime). This section provides
-architectural rationale; the template provides operational instructions.
 
-**Review is always by subagent.** Self-review is not acceptable except for
-Phase 2. All other phases require independent reviewer agents.
+**Review is always by subagent.** The orchestrator does not self-review code.
 
-**Anti-patterns:** Skipping phases. Writing code as orchestrator. Accepting
-weak reviews to save tokens. Spawning subagents without `model: "opus"`.
-
-**Binding commitment tracking.** The orchestrator must maintain awareness
-of all "Will implement" commitments from the Phase 1 strategy. At each
-phase gate, verify that all commitments scheduled for that phase have
-been fulfilled. Unfulfilled binding commitments are Category A at review
-regardless of whether the reviewer catches them — the orchestrator is
-the last line of defense. When a commitment is deferred (e.g., generator
-comparison moved from Phase 4a to 4b), the deferral must be explicitly
-documented with justification and a hard deadline. Commitments cannot be
-deferred indefinitely.
+**Anti-patterns:**
+- Orchestrator writing C++ code directly
+- Skipping the build/run phase (Phase 3 is mandatory)
+- Accepting a PASS with unresolved Category A items
+- Proceeding to Phase 4 if Phase 3 failed
 
 ---
 
 ### 3a.2 Subagent Roles and Context
 
 Subagents are **executors** or **reviewers**. Each receives curated context
-(§3a.4). See `appendix-prompts.md` for literal prompt templates.
+(§3a.4). See `agents/README.md` for the phase activation matrix.
 
-**Executors** receive phase CLAUDE.md, upstream artifacts, experiment log,
-conventions. They work plan-then-code: `plan.md` first, then code in `src/`,
-figures in `outputs/figures/`, artifact last.
+**Executors** receive the phase CLAUDE.md, upstream artifacts, and
+`conventions/gaudi_algorithm.md`. They work plan-then-code: design or
+implementation plan first, then code, then artifact.
 
 **Reviewers:**
 
 | Role | Context | Goal |
 |------|---------|------|
-| Physics reviewer | Physics prompt + artifact only | "Would I approve this for publication?" |
-| Critical reviewer | Full context + conventions + RAG corpus | Find all flaws in correctness and completeness |
-| Constructive reviewer | Same as critical (including RAG) | Strengthen: clarity, validation, presentation |
+| Critical reviewer | Phase artifact + conventions | Find all correctness and completeness flaws |
+| Constructive reviewer | Phase artifact + conventions | Strengthen clarity, best practices |
+| Plot validator | Phase 4 figures | Empty plots, missing labels — Category A |
 | Arbiter | All reviews + artifact + conventions | PASS / ITERATE / ESCALATE |
-
-**Reviewer RAG access.** Critical and constructive reviewers have access
-to the experiment corpus (MCP tools). They should query it to verify claims,
-check how reference analyses handled similar concerns, and identify
-published standards. When a reviewer encounters a questionable approach
-(e.g., a flat systematic estimate, a novel validation criterion), they
-should search for how this was handled in published analyses before
-accepting or rejecting it.
-
-**4-bot review:** first three in parallel, then arbiter. See §6.2–6.4 for
-the full protocol. The bar is high: ITERATE liberally.
 
 ---
 
 ### 3a.3 Health Monitoring
 
 - **Commit before spawning** each subagent (checkpoint).
-- **Monitor agent progress.** If an agent produces no output or commits
-  for a sustained period, check logs before respawning.
-- **Context splitting** for Phase 4b/5: separate subagents for statistical analysis and AN writing.
-- **Phase 4/5 execution pipeline.** At sub-phases that produce or update
-  the AN (4a, 4b, 4c, 5), keep statistical analysis, AN writing, and
-  typesetting as separate concerns. The PDF must exist before review
-  begins at 4a and 4b. The review panel reads the PDF. How the
-  orchestrator structures the work (separate agents, combined passes)
-  is a judgment call based on context pressure and task complexity.
-- **Session logs survive crashes.** Every agent writes an incremental
-  session log to `logs/` as it works (see `appendix-sessions.md`). If an
-  agent is terminated or crashes, the log up to that point is on disk.
-  The orchestrator should check the session log after a stalled agent is
-  killed to understand what was accomplished before respawning.
+- **Monitor agent progress.** If an agent produces no output for a sustained
+  period, check logs before respawning.
+- **Session logs survive crashes.** Every agent writes an incremental session
+  log to `phase*/logs/`. If an agent is terminated, check the log to
+  understand progress before respawning.
 
 ---
 
@@ -90,43 +59,29 @@ variables. Each session starts from artifacts + instructions.
 
 **Three context layers per agent:**
 
-1. **Bird's-eye framing (~1 page):** physics prompt, analysis type, current
-   phase, applicable conventions, end goal (publication-quality AN).
-2. **Relevant methodology sections (~2-5 pages):**
+1. **Framing (~0.5 page):** the algorithm prompt, current phase, end goal
+   (compilable, validated Gaudi algorithm).
+2. **Relevant methodology sections:**
 
-| Role | Sections |
-|------|----------|
-| Phase 1 executor | §1, §2, §3 (Phase 1), §5, §7 |
-| Phase 2 executor | §3 (Phase 2), §5, §7, Appendix D |
-| Phase 3 executor | §3 (Phase 3), §5, §7, §11, Appendix D |
-| Phase 4 executor | §3 (Phase 4), §4, §5, §7, §11, Appendix D |
-| Phase 5 executor | §3 (Phase 5), §5, Appendix D |
-| 4/5-bot reviewer | §6, applicable phase from §3, conventions, checklist |
-| 1-bot reviewer | §6, applicable phase from §3, conventions |
-| Arbiter | §6, conventions |
+| Role | Sections to include |
+|------|---------------------|
+| Phase 1 executor | §1, §2, §3 Phase 1, `conventions/gaudi_algorithm.md` |
+| Phase 2 executor | §3 Phase 2, §5, §11, `conventions/gaudi_algorithm.md` |
+| Phase 3 executor | §3 Phase 3, §5, §7 |
+| Phase 4 executor | §3 Phase 4, §5, §7 |
+| Phase 5 executor | §3 Phase 5, §5 |
+| Critical reviewer | §6, applicable phase from §3, `conventions/gaudi_algorithm.md` |
+| Plot validator | §6.4 |
+| Arbiter | §6, `conventions/gaudi_algorithm.md` |
 
-3. **Upstream artifacts (~2-10 pages):** prior phase artifacts + experiment
-   log if continuing within a phase.
-
-**Context budget:** ~20-30 pages max at Phase 5. Summarize artifacts
-exceeding ~5 pages. Experiment log consulted on demand, not loaded in full.
-
-**Artifacts before speed.** When context pressure mounts, write the current
-artifact and stop cleanly. Never skip an artifact to "save context."
+3. **Upstream artifacts:** prior phase artifacts. Pass paths — subagent
+   reads from disk.
 
 ---
 
-### 3a.5 Parallelism and Sub-delegation
+### 3a.5 Parallelism
 
-- **Within a phase:** parallel sub-agents writing to separate directories,
-  consolidated before review.
-- **Across phases:** sequential (Phase N reads Phase N-1 artifact).
-- **Per-channel:** channel-specific work in Phases 2-3 can run in parallel.
-
-**Sub-delegation within a phase:** Delegate compute-heavy tasks (MVA
-training, systematic evaluation, plot generation, closure tests) to
-sub-agents. The executor coordinates and integrates. Sub-agents handle
-execution; the executor retains judgment (which backgrounds, whether
-closure tests pass).
-
----
+The five phases are sequential — each depends on the prior. Within Phase 4,
+plot generation for multiple output types can be parallelised (separate
+subagent per output collection). Within review, multiple reviewer roles run
+in parallel before the arbiter.
