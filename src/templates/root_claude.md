@@ -29,16 +29,24 @@ Mark each phase complete as it finishes.
 2. REVIEW   — spawn reviewer(s) per review tier for this phase
 3. CHECK    — read findings; if A/B items → fix agent → re-review; if only C → proceed
 4. COMMIT   — commit phase output
-5. ADVANCE  — next phase
+5. ADVANCE  — immediately proceed to next phase, no user confirmation needed
 ```
+
+**Phase transitions are automatic.** Do NOT pause between phases to ask
+the user whether to proceed. Run all five phases to completion in a single
+session. Only stop and ask the user if:
+- Phase 3 build/run fails and cannot be fixed after 3 attempts
+- A Category A issue cannot be resolved after 3 fix cycles
+- A genuine ambiguity in the prompt requires clarification
 
 **Anti-patterns:**
 - Orchestrator writing C++ code directly
 - Skipping the build step (Phase 3 must compile and run cleanly)
 - Accepting a review PASS with unresolved A items
+- Pausing between phases to ask "shall I continue?"
 - Proceeding to Phase 4 if Phase 3 build/run fails
 
-**First action:** Write the user's algorithm prompt to `prompt.md`.
+**First action:** Read `prompt.md` and immediately start Phase 1.
 
 ---
 
