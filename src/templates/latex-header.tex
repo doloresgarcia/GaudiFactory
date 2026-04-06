@@ -1,0 +1,18 @@
+%% GaudiFactory report LaTeX header
+%% Included by the pandoc build-report command.
+%% Fixes: (1) wide tables overflowing the page, (2) longtable font size.
+
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{etoolbox}
+
+% Reduce font size inside all longtable environments so wide tables
+% fit within the text width.
+\AtBeginEnvironment{longtable}{\small}
+
+% Align longtables to the left margin (pandoc default centers them).
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+
+% Allow table columns to break long words rather than overflow.
+\setlength{\emergencystretch}{3em}

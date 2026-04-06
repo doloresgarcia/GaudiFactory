@@ -178,6 +178,33 @@ change each one.
 is not acceptable. The explanation must state what the figure shows, what
 the expected result is, and whether the algorithm passes.
 
+**LaTeX formatting rules — MANDATORY.** The REPORT.md is compiled to PDF
+via pandoc → tectonic. Violating these rules produces garbled or unreadable
+PDF output.
+
+1. **Identifiers with underscores must be in backticks.**
+   Write `` `TrackerHitSmear` ``, `` `residual_z` ``, `` `SigmaZ` `` — never
+   as bare text. Bare underscores in LaTeX text mode break compilation.
+   - Wrong: `The residual_z histogram shows...`
+   - Correct: ``The `residual_z` histogram shows...``
+
+2. **Mathematical notation must use `$...$` inline math.**
+   Write `$\sigma_z$`, `$\delta z$`, `$r \cdot \phi$` — never as Unicode
+   symbols in bare text. Subscripts outside math mode break LaTeX.
+   - Wrong: `σ_z ~ N(0, 0.1 mm)`
+   - Correct: `$\sigma_z \sim \mathcal{N}(0, 0.1\,\text{mm})$`
+
+3. **Keep table cells short.** Tables with long cell content overflow the
+   page width. If a cell needs more than ~30 characters, abbreviate or
+   split into two rows. Never paste a full path or long sentence into a
+   table cell.
+
+4. **YAML frontmatter title must not contain underscores.**
+   If the algorithm name has underscores, use a human-readable title in the
+   frontmatter.
+   - Wrong: `title: "custom_smear_v3 — Report"`
+   - Correct: `title: "TrackerHit Smearing Algorithm — Report"`
+
 Then compile to PDF:
 
 ```bash
@@ -186,14 +213,14 @@ pixi run build-report
 
 This runs:
 ```bash
-cd phase5_documentation/outputs && \
-pandoc REPORT.md -o REPORT.pdf \
-  --pdf-engine=tectonic \
-  --number-sections \
-  --toc \
-  -V geometry:margin=2.5cm \
-  -V fontsize=11pt
+cd phase5_documentation/outputs && pandoc REPORT.md -o REPORT.pdf \
+  --pdf-engine=tectonic --number-sections --toc \
+  -V geometry:margin=2.5cm -V fontsize=11pt \
+  --from=markdown+tex_math_dollars -H ../../latex-header.tex
 ```
+
+`latex-header.tex` (at the algorithm root) reduces table font size and
+prevents table overflow. It is created by the scaffold script.
 
 Verify `REPORT.pdf` exists and is non-empty. If tectonic is not available,
 fall back to `--pdf-engine=pdflatex`.
@@ -209,6 +236,10 @@ fall back to `--pdf-engine=pdflatex`.
 - [ ] No figure appears without at least 2 sentences of interpretation
 - [ ] `REPORT.pdf` compiles without errors and is non-empty
 - [ ] Report reads coherently as a standalone document (no orphan figures, no unexplained jargon)
+- [ ] No bare underscores in prose — all identifiers with `_` are in backtick code spans
+- [ ] All mathematical notation uses `$...$` inline math, not Unicode symbols in plain text
+- [ ] YAML frontmatter `title:` contains no underscores
+- [ ] No table cell is longer than ~30 characters (split or abbreviate if needed)
 
 ## Review
 

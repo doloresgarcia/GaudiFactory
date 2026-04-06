@@ -123,6 +123,14 @@ def scaffold(algorithm_dir: Path, alg_name: str):
         )
         print(f"  wrote {claude_settings}")
 
+    # LaTeX header for pandoc PDF report (phase 5)
+    latex_header = algorithm_dir / "latex-header.tex"
+    if not latex_header.exists():
+        src_header = TEMPLATES / "latex-header.tex"
+        if src_header.exists():
+            latex_header.write_text(src_header.read_text())
+            print(f"  wrote {latex_header}")
+
     # Stub prompt file
     prompt_path = algorithm_dir / "prompt.md"
     if not prompt_path.exists():

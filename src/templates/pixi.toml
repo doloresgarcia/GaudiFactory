@@ -23,7 +23,7 @@ rich = ">=13.0"
 
 [tasks]
 py = "python"
-build-report = "cd phase5_documentation/outputs && pandoc REPORT.md -o REPORT.pdf --pdf-engine=tectonic --number-sections --toc -V geometry:margin=2.5cm -V fontsize=11pt"
+build-report = "cd phase5_documentation/outputs && pandoc REPORT.md -o REPORT.pdf --pdf-engine=tectonic --number-sections --toc -V geometry:margin=2.5cm -V fontsize=11pt --from=markdown+tex_math_dollars -H ../../latex-header.tex"
 # --- Validation tasks: add as you write Phase 4 scripts ---
 # validate = "python phase4_validation/src/make_plots.py"
 # all = "python phase4_validation/src/make_plots.py && pixi run build-report"
