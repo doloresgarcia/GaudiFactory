@@ -38,8 +38,8 @@ DECLARE_COMPONENT(MyConsumer)
 ```
 
 ### Use `k4FWCore::Transformer` when:
-- The algorithm **reads** one or more collections and **produces** one or more
-  new collections.
+- The algorithm **reads** one or more collections and **produces exactly one**
+  new collection.
 - Example: filtering particles, computing derived quantities, applying corrections.
 
 ```cpp
@@ -57,31 +57,53 @@ struct MyTransformer final
 DECLARE_COMPONENT(MyTransformer)
 ```
 
-### Use `Gaudi::Algorithm` when:
-- The algorithm needs **persistent state across events** (e.g., accumulating
-  histograms using `ITHistSvc`, running counters, multi-event accumulators).
-- The algorithm needs **complex service access** in `initialize()`.
-- The algorithm has a non-trivial `finalize()` step (writing files, computing
-  final normalization).
+### Use `k4FWCore::MultiTransformer` when:
+- The algorithm **reads** one or more collections and **produces two or more**
+  new collections simultaneously.
+- Example: digitisation producing a hit collection and a hit-to-sim-hit link
+  collection (see DDCaloDigi in k4GaudiPandora).
 
 ```cpp
-#include "Gaudi/Algorithm.h"
-#include "GaudiKernel/ITHistSvc.h"
+#include <k4FWCore/Transformer.h>
+#include <edm4hep/CalorimeterHitCollection.h>
+#include <edm4hep/CaloHitSimCaloHitLinkCollection.h>
+#include <edm4hep/SimCalorimeterHitCollection.h>
+#include <edm4hep/EventHeaderCollection.h>
 
-class MyAlg : public Gaudi::Algorithm {
-public:
-  MyAlg(const std::string& name, ISvcLocator* svcLoc);
+using retType = std::tuple<edm4hep::CalorimeterHitCollection,
+                           edm4hep::CaloHitSimCaloHitLinkCollection>;
+
+struct MyMultiTransformer final
+    : k4FWCore::MultiTransformer<retType(
+          const edm4hep::SimCalorimeterHitCollection&,
+          const edm4hep::EventHeaderCollection&)> {
+
+  MyMultiTransformer(const std::string& name, ISvcLocator* svcLoc)
+      : MultiTransformer(name, svcLoc,
+                         {
+                             KeyValues("InputHits",   {"SimCalorimeterHits"}),
+                             KeyValues("HeaderName",  {"EventHeader"}),
+                         },
+                         {
+                             KeyValues("OutputHits",  {"CalorimeterHits"}),
+                             KeyValues("OutputLinks",  {"CaloHitLinks"}),
+                         }) {}
+
   StatusCode initialize() override;
-  StatusCode execute() override;
-  StatusCode finalize() override;
-private:
-  Gaudi::Property<std::string> m_inputCollection{
-      this, "InputCollection", "MCParticles", "Input collection name"};
-  SmartIF<ITHistSvc> m_histSvc;
-  TH1F* m_hEnergy = nullptr;
+
+  retType operator()(const edm4hep::SimCalorimeterHitCollection& simHits,
+                     const edm4hep::EventHeaderCollection& headers) const override;
 };
-DECLARE_COMPONENT(MyAlg)
+DECLARE_COMPONENT(MyMultiTransformer)
 ```
+
+Key points:
+- The constructor passes `KeyValues` pairs to the base class for every input
+  and output. The first argument is the property name exposed to the steering
+  file; the second is the default collection name.
+- `operator()` is `const` — use `mutable` for any state that must be mutated
+  (e.g., histograms, counters).
+- There is **no** `execute()` method; the framework calls `operator()`.
 
 ---
 
@@ -102,28 +124,7 @@ Gaudi::Property<std::vector<float>> m_cuts{this, "Cuts", {0.5f, 1.0f}, "Cut valu
 
 ---
 
-## 3. Data Handles (traditional Gaudi::Algorithm only)
-
-For traditional algorithms, use `DataHandle<T>` for explicit data access:
-
-```cpp
-#include "k4FWCore/DataHandle.h"
-#include "edm4hep/MCParticleCollection.h"
-
-// In class declaration:
-DataHandle<edm4hep::MCParticleCollection> m_inputHandle{
-    "MCParticles", Gaudi::DataHandle::Reader, this};
-DataHandle<edm4hep::MCParticleCollection> m_outputHandle{
-    "FilteredParticles", Gaudi::DataHandle::Writer, this};
-
-// In execute():
-const auto* input = m_inputHandle.get();
-auto* output = m_outputHandle.createAndPut();
-```
-
----
-
-## 4. Logging
+## 3. Logging
 
 Use Gaudi message streams — never `std::cout` or `printf`.
 
@@ -136,35 +137,115 @@ error()   << "Failed to retrieve service" << endmsg;
 
 ---
 
-## 5. Histogram Service (Gaudi::Algorithm)
+## 4. Histogramming with `Gaudi::Accumulators`
 
-For algorithms that book histograms:
+The modern approach for histogramming in k4FWCore functional algorithms
+(Transformer, MultiTransformer, Producer, Consumer) is
+`Gaudi::Accumulators::StaticHistogram` / `StaticWeightedHistogram`.
+This avoids `ITHistSvc` boilerplate entirely — histograms self-register with
+the owning algorithm via the `this` pointer at construction time.
+
+This pattern is used by DDCaloDigi in k4GaudiPandora.
+
+### Include
 
 ```cpp
-// In initialize():
-m_histSvc = service<ITHistSvc>("THistSvc");
-if (!m_histSvc) return StatusCode::FAILURE;
-
-m_hEnergy = new TH1F("energy", "Particle energy;E [GeV];Entries", 100, 0, 100);
-if (m_histSvc->regHist("/output/energy", m_hEnergy).isFailure())
-  return StatusCode::FAILURE;
-
-// In execute():
-for (const auto& p : *inputCollection) {
-  m_hEnergy->Fill(p.getEnergy());
-}
+#include <Gaudi/Accumulators/RootHistogram.h>
 ```
 
-In the steering file, configure `THistSvc`:
+### Declaration (in class body)
+
+Because `operator()` is `const`, histogram members must be `mutable`.
+
+```cpp
+// 1D unweighted histogram: ++h[x]
+mutable Gaudi::Accumulators::StaticHistogram<1> m_hNHits{
+    this, "nHits", "Number of hits per event", {100, 0., 1000.}};
+
+// 1D weighted histogram: h[x] += weight
+mutable Gaudi::Accumulators::StaticWeightedHistogram<1> m_hEnergy{
+    this, "energy", "Hit energy profile", {200, 0., 100.}};
+
+// 2D unweighted histogram: ++h[{x, y}]
+mutable Gaudi::Accumulators::StaticHistogram<2> m_hXY{
+    this, "hitXY", "Hit map XY", {{300, -4500., 4500.}, {300, -4500., 4500.}}};
+```
+
+Constructor arguments: `{this, "name", "title", {nBins, min, max}}` for 1D,
+`{{nBinsX,xMin,xMax}, {nBinsY,yMin,yMax}}` for 2D.
+
+### No booking step needed
+
+There is no `regHist()` or `book()` call. The histograms are ready to use
+as soon as the algorithm object is constructed.
+
+### Filling (inside `operator()`)
+
+```cpp
+// Unweighted 1D fill
+++m_hNHits[static_cast<double>(simHits.size())];
+
+// Weighted 1D fill
+m_hEnergy[hit.getEnergy()] += calibrationWeight;
+
+// Unweighted 2D fill
+++m_hXY[{hit.getPosition().x, hit.getPosition().y}];
+```
+
+### Full minimal example
+
+```cpp
+#include <Gaudi/Accumulators/RootHistogram.h>
+#include <k4FWCore/Transformer.h>
+#include <edm4hep/CalorimeterHitCollection.h>
+#include <edm4hep/SimCalorimeterHitCollection.h>
+
+struct CaloDigitizer final
+    : k4FWCore::Transformer<edm4hep::CalorimeterHitCollection(
+          const edm4hep::SimCalorimeterHitCollection&)> {
+
+  CaloDigitizer(const std::string& name, ISvcLocator* svcLoc)
+      : Transformer(name, svcLoc,
+                    KeyValues("InputHits", {"SimCalorimeterHits"}),
+                    KeyValues("OutputHits", {"CalorimeterHits"})) {}
+
+  edm4hep::CalorimeterHitCollection operator()(
+      const edm4hep::SimCalorimeterHitCollection& simHits) const override {
+
+    edm4hep::CalorimeterHitCollection output;
+    for (const auto& sh : simHits) {
+      ++m_hNHits[1.0];                    // count hits
+      m_hEnergy[sh.getEnergy()] += 1.0;  // energy spectrum
+      auto hit = output.create();
+      hit.setEnergy(sh.getEnergy() * m_calibCoeff);
+    }
+    return output;
+  }
+
+  Gaudi::Property<float> m_calibCoeff{this, "CalibCoeff", 1.0f, "Calibration coefficient"};
+
+  mutable Gaudi::Accumulators::StaticHistogram<1> m_hNHits{
+      this, "nHits", "Hits per event", {200, 0., 200.}};
+  mutable Gaudi::Accumulators::StaticWeightedHistogram<1> m_hEnergy{
+      this, "energy", "Hit energy [GeV]", {200, 0., 10.}};
+};
+DECLARE_COMPONENT(CaloDigitizer)
+```
+
+### Steering file for histogram output
+
 ```python
-from Configurables import THistSvc
-histsvc = THistSvc()
-histsvc.Output = ["output DATAFILE='output.root' OPT='RECREATE'"]
+from Configurables import Gaudi__Histograming__Sink__Root as RootHistoSink
+histSink = RootHistoSink("RootHistoSink")
+histSink.FileName = "histograms.root"
+
+from Gaudi.Configuration import ApplicationMgr
+ApplicationMgr(ExtSvc=[histSink], ...)
 ```
 
 ---
 
-## 6. CMakeLists.txt Pattern
+## 5. CMakeLists.txt Pattern
 
 ```cmake
 file(GLOB _sources src/components/*.cpp)
@@ -188,7 +269,7 @@ install(DIRECTORY options DESTINATION ${CMAKE_INSTALL_DATADIR}/MyAlgorithm)
 
 ---
 
-## 7. Python Steering File
+## 6. Python Steering File
 
 ### Minimal (no I/O):
 ```python
@@ -235,7 +316,7 @@ gaudirun.py options/myAlg.py
 
 ---
 
-## 8. Common EDM4hep Types
+## 7. Common EDM4hep Types
 
 | Type | Header | Use case |
 |------|--------|---------|
@@ -259,7 +340,7 @@ for (const auto& p : *collection) {
 
 ---
 
-## 9. Project Directory Structure
+## 8. Project Directory Structure
 
 Following k4-project-template:
 ```
