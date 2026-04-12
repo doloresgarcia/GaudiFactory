@@ -1,6 +1,6 @@
 [submodule "algorithms/v0_finder"]
 	path = algorithms/v0_finder
 	url = git@github.com:doloresgarcia/v0-finder.git
-[submodule "algorithms/custom_smear_v3"]
-	path = algorithms/custom_smear_v3
-	url = https://github.com/doloresgarcia/tracker-hit-smear.git
+[submodule "algorithms/custom_smear_v5"]
+	path = algorithms/custom_smear_v5
+	url = https://github.com/doloresgarcia/tracker-hit-smearing.git
