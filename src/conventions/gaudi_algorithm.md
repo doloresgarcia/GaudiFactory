@@ -101,9 +101,44 @@ Key points:
 - The constructor passes `KeyValues` pairs to the base class for every input
   and output. The first argument is the property name exposed to the steering
   file; the second is the default collection name.
+- `KeyValue` (singular) can be used instead of `KeyValues` when the input or
+  output is a single collection. In the steering file, a single string can
+  then be used instead of a list of strings.
 - `operator()` is `const` — use `mutable` for any state that must be mutated
   (e.g., histograms, counters).
 - There is **no** `execute()` method; the framework calls `operator()`.
+
+### Random Number Seeding
+
+When an algorithm requires random numbers, seeding **must** be done through
+the `UniqueIDSvc` to ensure reproducibility per event. The `EventHeaderCollection`
+must be passed as an input, and the `UniqueIDSvc` must be instantiated in the
+steering file.
+
+```cpp
+// In the algorithm — obtain a unique, reproducible seed per event
+auto uid  = m_uniqueIDSvc->getUniqueID(evtHeader, name());
+auto prng = TRandom3(uid);
+```
+
+The `UniqueIDSvc` service handle is declared as a member:
+```cpp
+ServiceHandle<IUniqueIDGenSvc> m_uniqueIDSvc{"UniqueIDGenSvc", name()};
+```
+
+In the steering file, instantiate the service:
+```python
+from Configurables import UniqueIDGenSvc
+idSvc = UniqueIDGenSvc("UniqueIDGenSvc")
+
+ApplicationMgr(
+    ExtSvc=[idSvc, ...],
+    ...
+)
+```
+
+See the [full reference example](https://github.com/key4hep/k4FWCore/blob/main/test/k4FWCoreTest/src/components/ExampleRNGSeedingAlg.cpp#L1)
+in k4FWCore for a complete working implementation.
 
 ---
 

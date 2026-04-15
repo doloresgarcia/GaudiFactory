@@ -82,6 +82,12 @@ correctness of pattern selection).
   - Set property values
   - `ApplicationMgr(TopAlg=[...], EvtSel=..., EvtMax=...)` or `k4run`-
     compatible structure with `IOSvc` if reading/writing collections
+- Generate a test script (`test/test_myAlg.sh` or equivalent) that
+  exercises the algorithm end-to-end via `k4run` on the steering file
+  (or a dedicated minimal test steering) and exits non-zero on failure.
+  The test must be runnable from the repository root without manual setup
+  beyond the standard build environment. Wire it into CTest via
+  `test/CMakeLists.txt` (`add_test(...)`) so `ctest` picks it up.
 
 **Self-check before artifact submission:**
 - [ ] Header compiles standalone (no circular includes)
@@ -91,12 +97,14 @@ correctness of pattern selection).
 - [ ] CMake target name matches `DECLARE_COMPONENT` class name convention
 - [ ] No `std::cout` — use Gaudi `MsgStream` (`info()`, `debug()`, etc.)
 - [ ] No raw `new`/`delete` — use PODIO/EDM4hep collection APIs
+- [ ] Test script exists under `test/` and is registered with CTest
 
 **Artifact:** All source files in place:
   - `src/components/MyAlg.h`
   - `src/components/MyAlg.cpp`
   - `options/myAlg.py`
   - Updated `CMakeLists.txt`
+  - `test/test_myAlg.sh` (or equivalent) + `test/CMakeLists.txt` with `add_test`
 
 **Review:** 1-bot (critical reviewer — code correctness, Gaudi idioms,
 EDM4hep API usage).
@@ -124,6 +132,11 @@ EDM4hep API usage).
   ```
 - Verify clean execution: no `ERROR` or `FATAL` messages in the log.
 - Capture the output log as `build_run.log`.
+- Run the test script via CTest from the build directory:
+  ```bash
+  ctest --output-on-failure
+  ```
+  All tests must pass. A failing or missing test is a Category A blocker.
 
 **Failure protocol:**
 - Compiler error → fix source, re-run, do not advance until clean.
@@ -135,6 +148,7 @@ EDM4hep API usage).
 **Artifact:** `BUILD_RUN.md` — summary of:
   - CMake/ninja output (last 20 lines or first error)
   - `k4run` output (last 20 lines or first ERROR/FATAL)
+  - `ctest` output with the list of tests executed and their status
   - PASS / FAIL verdict with specific error if FAIL
 
 **Review:** 1-bot (critical reviewer checks build log for warnings and
